@@ -1,0 +1,75 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block title %}
+    <title>FDXP - Shift Log</title>
+{% endblock %}
+{% block body %}
+
+    {% include 'BraincraftedBootstrapBundle::flash.html.twig' with { 'close': true } %}
+
+    {% if app.user and is_granted('ROLE_SHIFT_MANAGER_FD') %}
+    <div class="archiver row center-block {{ shift_summary.menu_state }}">
+        <p class="text-center">
+            <a class="btn btn-warning" href="{{ path('shiftlog_archive') }}">Archive {{ shift_text }} shift</a>
+        </p>
+    </div>
+    {% endif %}
+
+    {% for info in information %}
+
+        {% if loop.index is odd %}
+            <div class="row">
+        {% endif %}
+
+        {% include 'AppBundle:ShiftLog:infotype.html.twig'
+        with {'content' : info.content, 'info_type' : info.info_type, 'header' : info.info_header} %}
+
+        {% if (loop.index is even) or loop.last %}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    {% if app.user and is_granted('ROLE_SHIFT_MANAGER_FD') %}
+        <script src="//cdn.ckeditor.com/4.4.7/basic/ckeditor.js"></script>
+        <script>
+            $('.edit_button').click(function(){
+                var info_type = $(this).data('id');
+                var editor = CKEDITOR.instances[info_type];
+                if (!editor)
+                {
+                    CKEDITOR.replace(info_type);
+                    $('#'+ info_type +'_save').removeClass('invisible');
+                }
+            })
+            $('.save_button').click(function(){
+                var info_type = $(this).data('id');
+                var editor = CKEDITOR.instances[info_type];
+                if (editor)
+                {
+                    $.post( "{{ path('shiftlog_update') }}/"+ info_type,
+                            { content: CKEDITOR.instances[info_type].getData() } );
+                    CKEDITOR.instances[info_type].destroy();
+                    $('#'+ info_type +'_save').addClass('invisible');
+                }
+            })
+            function checkTimer(){
+                $.getJSON("{{ path('shiftlog_timecheck') }}", function(json){
+                    if(json.activate === 0){
+                        if(!$('.archiver').hasClass('hidden')){
+                            $('.archiver').addClass('hidden');
+                        }
+                    }else{
+                        if(!$('.archiver').hasClass('show')){
+                            $('.archiver').removeClass('hidden');
+                        }
+                    }
+                });
+            }
+            setInterval(checkTimer, 60000);
+        </script>
+    {% endif %}
+{% endblock %}

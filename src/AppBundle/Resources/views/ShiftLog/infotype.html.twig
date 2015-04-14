@@ -1,0 +1,21 @@
+<div class="col-xs-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {{ header }}
+                {% if is_granted('ROLE_SHIFT_MANAGER_FD') %}
+                <button type="button" class="btn btn-default btn-xs edit_button" data-id="{{ info_type }}">
+                    <span class="glyphicon glyphicon-edit"></span> Edit
+                </button>
+                <button type="button" class="btn btn-default btn-xs save_button invisible" data-id="{{ info_type }}"
+                        id="{{ info_type }}_save">
+                    <span class="glyphicon glyphicon-floppy-disk"></span> Save
+                </button>
+                {% endif %}
+            </h3>
+        </div>
+        <div class="panel-body" id="{{ info_type }}">
+            {{ content|raw }}
+        </div>
+    </div>
+</div>

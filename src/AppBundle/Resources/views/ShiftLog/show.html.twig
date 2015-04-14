@@ -1,0 +1,48 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>ShiftLog</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Infotype</th>
+                <td>{{ entity.infoType }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ entity.content }}</td>
+            </tr>
+            <tr>
+                <th>Current</th>
+                <td>{{ entity.current }}</td>
+            </tr>
+            <tr>
+                <th>Shiftarchive</th>
+                <td>{{ entity.shiftArchive|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Archivedby</th>
+                <td>{{ entity.archivedBy }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('shiftlog') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('shiftlog_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
