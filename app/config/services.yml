@@ -20,6 +20,9 @@ services:
         class: AppBundle\Utils\AppUtils
         arguments: [@doctrine.orm.entity_manager]
 
+    app.geo_utils:
+        class: AppBundle\Utils\GeoUtils
+
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

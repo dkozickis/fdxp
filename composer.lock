@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "446871894402b3b9473c69c43e212b2a",
+    "hash": "109298ca913e1b9c7db8ec6c8b3c8c4f",
     "packages": [
         {
             "name": "braincrafted/bootstrap-bundle",
@@ -1055,16 +1055,16 @@
         },
         {
             "name": "javiereguiluz/easyadmin-bundle",
-            "version": "v1.1.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/javiereguiluz/EasyAdminBundle.git",
-                "reference": "06e1c6390d617bdfffeec8baad949605f31a5f6f"
+                "reference": "019bec9d3694644ef1232a26d211f7acb5250e89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/javiereguiluz/EasyAdminBundle/zipball/06e1c6390d617bdfffeec8baad949605f31a5f6f",
-                "reference": "06e1c6390d617bdfffeec8baad949605f31a5f6f",
+                "url": "https://api.github.com/repos/javiereguiluz/EasyAdminBundle/zipball/019bec9d3694644ef1232a26d211f7acb5250e89",
+                "reference": "019bec9d3694644ef1232a26d211f7acb5250e89",
                 "shasum": ""
             },
             "require": {
@@ -1110,7 +1110,7 @@
                 "backend",
                 "generator"
             ],
-            "time": "2015-03-28 19:49:52"
+            "time": "2015-04-12 20:31:50"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1161,59 +1161,6 @@
                 "sql"
             ],
             "time": "2014-01-12 16:20:24"
-        },
-        {
-            "name": "jmikola/geojson",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jmikola/geojson.git",
-                "reference": "086963e4fa5276a47d079b6b288a64f525196bce"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jmikola/geojson/zipball/086963e4fa5276a47d079b6b288a64f525196bce",
-                "reference": "086963e4fa5276a47d079b6b288a64f525196bce",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~3.7"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "GeoJson\\": "src/"
-                },
-                "classmap": [
-                    "stubs/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jeremy Mikola",
-                    "email": "jmikola@gmail.com"
-                }
-            ],
-            "description": "GeoJSON implementation for PHP",
-            "homepage": "https://github.com/jmikola/geojson",
-            "keywords": [
-                "geo",
-                "geojson",
-                "geospatial"
-            ],
-            "time": "2014-09-03 15:22:39"
         },
         {
             "name": "jquery/jquery",
