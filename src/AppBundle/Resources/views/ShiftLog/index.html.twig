@@ -30,6 +30,13 @@
 
     {% endfor %}
 
+    <div class="row">
+        <div class="col-xs-6">
+            {{ form(form, {'style': 'inline'}) }}
+            {{ form_errors(form, { 'global_errors': true }) }}
+        </div>
+    </div>
+
 {% endblock %}
 {% block javascript %}
     {{ parent() }}

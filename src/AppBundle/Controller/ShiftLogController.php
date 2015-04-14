@@ -3,8 +3,10 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ShiftLogArchive;
+use AppBundle\Entity\ShiftLogFiles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\ShiftLog;
@@ -23,8 +25,30 @@ class ShiftLogController extends Controller
      * Lists all ShiftLog entities.
      * @Route("/", name="shiftlog_index")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
+
+        $file = new ShiftLogFiles();
+
+        $form = $this->createFormBuilder($file)
+            ->add('name')
+            ->add('file')
+            ->add('upload', 'submit')
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $form->getData();
+
+            $file->upload();
+
+            $em->persist($file);
+            $em->flush();
+        }
+
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('AppBundle:ShiftLog')->findAllCurrent();
@@ -59,7 +83,8 @@ class ShiftLogController extends Controller
         return $this->render('AppBundle:ShiftLog:index.html.twig', array(
             'information' => $info_result,
             'shift_summary' => $shift_summary,
-            'shift_text' => $shift_text
+            'shift_text' => $shift_text,
+            'form' => $form->createView()
         ));
     }
 
@@ -160,6 +185,39 @@ class ShiftLogController extends Controller
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
+
+    /**
+     * @Route("/upload", name="shiftlog_file_upload")
+     */
+    public function uploadAction(Request $request)
+    {
+        $file = new ShiftLogFiles();
+
+        $form = $this->createFormBuilder($file)
+            ->add('name')
+            ->add('file')
+            ->add('upload', 'submit')
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $form->getData();
+
+            $file->upload();
+
+            $em->persist($file);
+            $em->flush();
+
+            return $this->redirectToRoute("shiftlog_index");
+        }
+
+        dump($form->getErrors());
+
+        return $this->redirectToRoute("shiftlog_index");
     }
 
 }
