@@ -42,6 +42,10 @@ assetic:
             node_paths: [/usr/lib/node_modules]
             apply_to: "\.less$"
         cssrewrite: ~
+        uglifycss:
+          bin: /usr/bin/uglifycss
+        uglifyjs2:
+          bin: /usr/bin/uglifyjs
 
 braincrafted_bootstrap:
     less_filter: less
