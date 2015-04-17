@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ShiftLogArchive;
 use AppBundle\Entity\ShiftLogFiles;
+use AppBundle\Form\Type\ShiftLogFileType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +27,14 @@ class ShiftLogController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $shift_summary = [];
+        $shift_text = '';
+        $proposer = $this->get('app.app_utils')->archiveDateShiftProposal();
+        $showButton = $this->get('app.app_utils')->showArchiveButton();
+
         $file = new ShiftLogFiles();
 
-        $form = $this->createFormBuilder($file)
-            ->add('name')
-            ->add('file')
-            ->add('upload', 'submit')
-            ->getForm();
+        $form = $this->createForm(new ShiftLogFileType(), $file);
 
         $form->handleRequest($request);
 
@@ -47,30 +49,15 @@ class ShiftLogController extends Controller
             $em->flush();
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $info_result = $this->getDoctrine()->getRepository('AppBundle:ShiftLog')->returnAllOrdered();
 
-        $entities = $em->getRepository('AppBundle:ShiftLog')->findAllCurrent();
-
-        if (!$entities) {
+        if (!$info_result) {
             throw $this->createNotFoundException('Unable to find ShiftLog entity.');
         }
-
-        foreach ($entities as $entity) {
-            $info_result[] = array('content' => $entity['content'],
-                                                        'info_header' => $entity['infoHeader'],
-                                                        'info_type' => $entity['infoType'], );
-        }
-
-        $shift_summary = [];
-        $shift_text = '';
-
-        $proposer = $this->get('app.app_utils')->archiveDateShiftProposal();
 
         if (!empty($proposer['date'])) {
             $shift_text = strtoupper($proposer['date']->format('dMy')).' '.$proposer['shift'];
         }
-
-        $showButton = $this->get('app.app_utils')->showArchiveButton();
 
         if ($showButton === 0) {
             $shift_summary['menu_state'] = 'hidden';
@@ -118,18 +105,10 @@ class ShiftLogController extends Controller
     public function archiveAction()
     {
         $flash = $this->get('braincrafted_bootstrap.flash');
-        $session = new Session();
-        $session->getFlashBag()->clear();
-
-        $time_now = new \DateTime('now');
-        $hours_now = $time_now->format('G');
-
+        $hours_now = $this->get('app.app_utils')->currentHours();
         $proposer = $this->get('app.app_utils')->archiveDateShiftProposal($hours_now);
 
-        if (!empty($proposer['date'])) {
-            $archivedDate = $proposer['date'];
-            $archivedShift = $proposer['shift'];
-        } else {
+        if (empty($proposer['date'])) {
             $flash->alert('You are not within archiving time limits!');
 
             return $this->redirectToRoute('shiftlog_index');
@@ -137,8 +116,8 @@ class ShiftLogController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        if ($em->getRepository('AppBundle:ShiftLogArchive')->checkExistsShiftReport($archivedDate, $archivedShift)) {
-            $flash->alert(strtoupper($archivedDate->format('dMy')).' '.$archivedShift.' shift already archived!');
+        if ($em->getRepository('AppBundle:ShiftLogArchive')->checkExistsShiftReport($proposer['date'], $proposer['shift'])) {
+            $flash->alert(strtoupper($proposer['date']->format('dMy')).' '.$proposer['shift'].' shift already archived!');
 
             return $this->redirectToRoute('shiftlog_index');
         } else {
@@ -146,18 +125,14 @@ class ShiftLogController extends Controller
 
             foreach ($entities as $entity) {
                 $shiftLogArchive = new ShiftLogArchive();
-                $shiftLogArchive->setContent($entity['content']);
-                $shiftLogArchive->setInfoType($entity['infoType']);
-                $shiftLogArchive->setInfoHeader($entity['infoHeader']);
-                $shiftLogArchive->setArchivedBy($this->getUser()->getUsername());
-                $shiftLogArchive->setArchivedShift($archivedShift);
-                $shiftLogArchive->setArchivedDate($archivedDate);
+                $shiftLogArchive->insertArchive($entity['content'], $entity['infoType'], $entity['infoHeader'],
+                    $this->getUser()->getUsername(), $proposer['shift'], $proposer['date']);
                 $em->persist($shiftLogArchive);
             }
 
             $em->flush();
 
-            $flash->success(strtoupper($archivedDate->format('dMy')).' '.$archivedShift.' shift archived!');
+            $flash->success(strtoupper($proposer['date']->format('dMy')).' '.$proposer['shift'].' shift archived!');
 
             return $this->redirectToRoute('shiftlog_index');
         }

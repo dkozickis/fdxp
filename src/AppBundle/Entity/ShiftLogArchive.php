@@ -251,4 +251,17 @@ class ShiftLogArchive
     {
         return $this->sequence;
     }
+
+    public function insertArchive($content, $info_type, $info_header, $user, $shift, $date){
+
+        $this->setContent($content);
+        $this->setInfoType($info_type);
+        $this->setInfoHeader($info_header);
+        $this->setArchivedBy($user);
+        $this->setArchivedShift($shift);
+        $this->setArchivedDate($date);
+
+        return $this;
+
+    }
 }

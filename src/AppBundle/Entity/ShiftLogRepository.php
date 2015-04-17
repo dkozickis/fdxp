@@ -12,16 +12,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class ShiftLogRepository extends EntityRepository
 {
-    public function findAllCurrent()
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('s')
-            ->from('AppBundle:ShiftLog', 's')
-            ->orderBy('s.sequence', 'ASC');
-
-        return $qb->getQuery()->getArrayResult();
-    }
-
     public function findCurrentByType($type = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
@@ -31,5 +21,23 @@ class ShiftLogRepository extends EntityRepository
             ->setParameter(1, $type);
 
         return $qb->getQuery()->getSingleResult();
+    }
+
+    public function returnAllOrdered()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('s')
+            ->from('AppBundle:ShiftLog', 's')
+            ->orderBy('s.sequence', 'ASC');
+
+        $entities = $qb->getQuery()->getArrayResult();
+
+        foreach ($entities as $entity) {
+            $info_result[] = array('content' => $entity['content'],
+                'info_header' => $entity['infoHeader'],
+                'info_type' => $entity['infoType'], );
+        }
+
+        return $info_result;
     }
 }
