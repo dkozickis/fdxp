@@ -7,9 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class AppUtilsTest extends KernelTestCase
 {
-
     public $em;
-
 
     public function setUp()
     {
@@ -19,32 +17,26 @@ class AppUtilsTest extends KernelTestCase
 
     public function testProposalNight()
     {
-
         $appUtils = new Utils\AppUtils($this->em);
         $proposal = $appUtils->archiveDateShiftProposal(2);
 
         $this->assertEquals('N', $proposal['shift']);
-
     }
 
     public function testProposalDay()
     {
-
         $appUtils = new Utils\AppUtils($this->em);
         $proposal = $appUtils->archiveDateShiftProposal(15);
 
         $this->assertEquals('D', $proposal['shift']);
-
     }
 
     public function testProposalFalse()
     {
-
         $appUtils = new Utils\AppUtils($this->em);
         $proposal = $appUtils->archiveDateShiftProposal(16);
 
-        $this->assertEquals(FALSE, $proposal['shift']);
-
+        $this->assertEquals(false, $proposal['shift']);
     }
 
     public function testProposalDefault()
@@ -57,7 +49,6 @@ class AppUtilsTest extends KernelTestCase
 
     public function testButtonPositiveWithTime()
     {
-
         $appUtils = new Utils\AppUtils($this->em);
         $button = $appUtils->showArchiveButton(15);
 
@@ -66,7 +57,6 @@ class AppUtilsTest extends KernelTestCase
 
     public function testButtonNegativeWithTime()
     {
-
         $appUtils = new Utils\AppUtils($this->em);
         $button = $appUtils->showArchiveButton(10);
 
@@ -75,7 +65,6 @@ class AppUtilsTest extends KernelTestCase
 
     public function testButtonNegative()
     {
-
         $stub = $this->getMockBuilder('AppUtils')
             ->setMethods(array('currentHours'))
             ->getMock();
@@ -92,7 +81,6 @@ class AppUtilsTest extends KernelTestCase
 
     public function testButtonNegativeProposer()
     {
-
         $stubTime = $this->getMockBuilder('AppUtils')
             ->setMethods(array('currentHours'))
             ->getMock();
@@ -113,5 +101,4 @@ class AppUtilsTest extends KernelTestCase
 
         $this->assertEquals(0, $button);
     }
-
 }

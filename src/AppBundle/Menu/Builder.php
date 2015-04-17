@@ -7,7 +7,6 @@ use Symfony\Component\Security\Core\SecurityContext;
 
 class Builder
 {
-
     private $factory;
 
     /**
@@ -18,17 +17,15 @@ class Builder
         $this->factory = $factory;
     }
 
-
     public function createMainMenu(SecurityContext $securityContext)
     {
         $menu = $this->factory->createItem('root');
 
         $menu->addChild('Shift Log', array('route' => 'shiftlog_index'));
 
-        if(!$securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED'))
-        {
+        if (!$securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $menu->addChild('Login', array('route' => 'fos_user_security_login'));
-        }else{
+        } else {
             $menu->addChild('Logout', array('route' => 'fos_user_security_logout'));
         }
 

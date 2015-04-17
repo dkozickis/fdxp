@@ -2,15 +2,13 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * ShiftLogArchive
+ * ShiftLogArchive.
  */
 class ShiftLogArchive
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -39,11 +37,10 @@ class ShiftLogArchive
      */
     private $archivedBy;
 
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -51,9 +48,10 @@ class ShiftLogArchive
     }
 
     /**
-     * Set infoType
+     * Set infoType.
      *
      * @param string $infoType
+     *
      * @return ShiftLogArchive
      */
     public function setInfoType($infoType)
@@ -64,9 +62,9 @@ class ShiftLogArchive
     }
 
     /**
-     * Get infoType
+     * Get infoType.
      *
-     * @return string 
+     * @return string
      */
     public function getInfoType()
     {
@@ -74,9 +72,10 @@ class ShiftLogArchive
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
+     *
      * @return ShiftLogArchive
      */
     public function setContent($content)
@@ -87,9 +86,9 @@ class ShiftLogArchive
     }
 
     /**
-     * Get content
+     * Get content.
      *
-     * @return string 
+     * @return string
      */
     public function getContent()
     {
@@ -97,9 +96,10 @@ class ShiftLogArchive
     }
 
     /**
-     * Set archivedDate
+     * Set archivedDate.
      *
      * @param \DateTime $archivedDate
+     *
      * @return ShiftLogArchive
      */
     public function setArchivedDate($archivedDate)
@@ -110,9 +110,9 @@ class ShiftLogArchive
     }
 
     /**
-     * Get archivedDate
+     * Get archivedDate.
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getArchivedDate()
     {
@@ -120,9 +120,10 @@ class ShiftLogArchive
     }
 
     /**
-     * Set archivedShift
+     * Set archivedShift.
      *
      * @param string $archivedShift
+     *
      * @return ShiftLogArchive
      */
     public function setArchivedShift($archivedShift)
@@ -133,9 +134,9 @@ class ShiftLogArchive
     }
 
     /**
-     * Get archivedShift
+     * Get archivedShift.
      *
-     * @return string 
+     * @return string
      */
     public function getArchivedShift()
     {
@@ -143,9 +144,10 @@ class ShiftLogArchive
     }
 
     /**
-     * Set archivedBy
+     * Set archivedBy.
      *
      * @param string $archivedBy
+     *
      * @return ShiftLogArchive
      */
     public function setArchivedBy($archivedBy)
@@ -156,9 +158,9 @@ class ShiftLogArchive
     }
 
     /**
-     * Get archivedBy
+     * Get archivedBy.
      *
-     * @return string 
+     * @return string
      */
     public function getArchivedBy()
     {
@@ -170,15 +172,15 @@ class ShiftLogArchive
     private $infoHeader;
 
     /**
-     * @var integer
+     * @var int
      */
     private $order;
 
-
     /**
-     * Set infoHeader
+     * Set infoHeader.
      *
      * @param string $infoHeader
+     *
      * @return ShiftLogArchive
      */
     public function setInfoHeader($infoHeader)
@@ -189,9 +191,9 @@ class ShiftLogArchive
     }
 
     /**
-     * Get infoHeader
+     * Get infoHeader.
      *
-     * @return string 
+     * @return string
      */
     public function getInfoHeader()
     {
@@ -199,9 +201,10 @@ class ShiftLogArchive
     }
 
     /**
-     * Set order
+     * Set order.
      *
-     * @param integer $order
+     * @param int $order
+     *
      * @return ShiftLogArchive
      */
     public function setOrder($order)
@@ -212,24 +215,24 @@ class ShiftLogArchive
     }
 
     /**
-     * Get order
+     * Get order.
      *
-     * @return integer 
+     * @return int
      */
     public function getOrder()
     {
         return $this->order;
     }
     /**
-     * @var integer
+     * @var int
      */
     private $sequence;
 
-
     /**
-     * Set sequence
+     * Set sequence.
      *
-     * @param integer $sequence
+     * @param int $sequence
+     *
      * @return ShiftLogArchive
      */
     public function setSequence($sequence)
@@ -240,9 +243,9 @@ class ShiftLogArchive
     }
 
     /**
-     * Get sequence
+     * Get sequence.
      *
-     * @return integer 
+     * @return int
      */
     public function getSequence()
     {

@@ -1,12 +1,14 @@
 <?php
+
 // src/Acme/UserBundle/Entity/User.php
+
 
 namespace AppBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
- * User
+ * User.
  */
 class User extends BaseUser
 {
@@ -15,5 +17,4 @@ class User extends BaseUser
         parent::__construct();
         // your own logic
     }
-
 }

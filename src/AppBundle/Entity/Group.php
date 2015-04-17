@@ -5,7 +5,7 @@ namespace AppBundle\Entity;
 use FOS\UserBundle\Model\Group as BaseGroup;
 
 /**
- * Group
+ * Group.
  */
 class Group extends BaseGroup
 {

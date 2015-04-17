@@ -2,15 +2,13 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * ShiftLog
+ * ShiftLog.
  */
 class ShiftLog
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -25,7 +23,7 @@ class ShiftLog
     private $content;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $current;
 
@@ -40,15 +38,14 @@ class ShiftLog
     private $archivedShift;
 
     /**
-     * @var integer
+     * @var int
      */
     private $archivedBy;
 
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -56,9 +53,10 @@ class ShiftLog
     }
 
     /**
-     * Set infoType
+     * Set infoType.
      *
      * @param string $infoType
+     *
      * @return ShiftLog
      */
     public function setInfoType($infoType)
@@ -69,9 +67,9 @@ class ShiftLog
     }
 
     /**
-     * Get infoType
+     * Get infoType.
      *
-     * @return string 
+     * @return string
      */
     public function getInfoType()
     {
@@ -79,9 +77,10 @@ class ShiftLog
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
+     *
      * @return ShiftLog
      */
     public function setContent($content)
@@ -92,9 +91,9 @@ class ShiftLog
     }
 
     /**
-     * Get content
+     * Get content.
      *
-     * @return string 
+     * @return string
      */
     public function getContent()
     {
@@ -102,9 +101,10 @@ class ShiftLog
     }
 
     /**
-     * Set current
+     * Set current.
      *
-     * @param boolean $current
+     * @param bool $current
+     *
      * @return ShiftLog
      */
     public function setCurrent($current)
@@ -115,9 +115,9 @@ class ShiftLog
     }
 
     /**
-     * Get current
+     * Get current.
      *
-     * @return boolean 
+     * @return bool
      */
     public function getCurrent()
     {
@@ -125,9 +125,10 @@ class ShiftLog
     }
 
     /**
-     * Set archivedDate
+     * Set archivedDate.
      *
      * @param \DateTime $archivedDate
+     *
      * @return ShiftLog
      */
     public function setArchivedDate($archivedDate)
@@ -138,9 +139,9 @@ class ShiftLog
     }
 
     /**
-     * Get archivedDate
+     * Get archivedDate.
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getArchivedDate()
     {
@@ -148,9 +149,10 @@ class ShiftLog
     }
 
     /**
-     * Set archivedShift
+     * Set archivedShift.
      *
      * @param string $archivedShift
+     *
      * @return ShiftLog
      */
     public function setArchivedShift($archivedShift)
@@ -161,9 +163,9 @@ class ShiftLog
     }
 
     /**
-     * Get archivedShift
+     * Get archivedShift.
      *
-     * @return string 
+     * @return string
      */
     public function getArchivedShift()
     {
@@ -171,9 +173,10 @@ class ShiftLog
     }
 
     /**
-     * Set archivedBy
+     * Set archivedBy.
      *
-     * @param integer $archivedBy
+     * @param int $archivedBy
+     *
      * @return ShiftLog
      */
     public function setArchivedBy($archivedBy)
@@ -184,9 +187,9 @@ class ShiftLog
     }
 
     /**
-     * Get archivedBy
+     * Get archivedBy.
      *
-     * @return integer 
+     * @return int
      */
     public function getArchivedBy()
     {
@@ -197,11 +200,11 @@ class ShiftLog
      */
     private $infoHeader;
 
-
     /**
-     * Set infoHeader
+     * Set infoHeader.
      *
      * @param string $infoHeader
+     *
      * @return ShiftLog
      */
     public function setInfoHeader($infoHeader)
@@ -212,24 +215,24 @@ class ShiftLog
     }
 
     /**
-     * Get infoHeader
+     * Get infoHeader.
      *
-     * @return string 
+     * @return string
      */
     public function getInfoHeader()
     {
         return $this->infoHeader;
     }
     /**
-     * @var integer
+     * @var int
      */
     private $order;
 
-
     /**
-     * Set order
+     * Set order.
      *
-     * @param integer $order
+     * @param int $order
+     *
      * @return ShiftLog
      */
     public function setOrder($order)
@@ -240,24 +243,24 @@ class ShiftLog
     }
 
     /**
-     * Get order
+     * Get order.
      *
-     * @return integer 
+     * @return int
      */
     public function getOrder()
     {
         return $this->order;
     }
     /**
-     * @var integer
+     * @var int
      */
     private $sequence;
 
-
     /**
-     * Set sequence
+     * Set sequence.
      *
-     * @param integer $sequence
+     * @param int $sequence
+     *
      * @return ShiftLog
      */
     public function setSequence($sequence)
@@ -268,9 +271,9 @@ class ShiftLog
     }
 
     /**
-     * Get sequence
+     * Get sequence.
      *
-     * @return integer 
+     * @return int
      */
     public function getSequence()
     {

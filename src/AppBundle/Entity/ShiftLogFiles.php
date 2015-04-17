@@ -2,17 +2,16 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * ShiftLogFiles
+ * ShiftLogFiles.
  */
 class ShiftLogFiles
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -27,18 +26,16 @@ class ShiftLogFiles
      */
     private $path;
 
-
     /**
      * @Assert\File(maxSize="6000000")
      * @Assert\NotBlank()
      */
     private $file;
 
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -46,9 +43,10 @@ class ShiftLogFiles
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
+     *
      * @return ShiftLogFiles
      */
     public function setName($name)
@@ -59,9 +57,9 @@ class ShiftLogFiles
     }
 
     /**
-     * Get name
+     * Get name.
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -69,9 +67,10 @@ class ShiftLogFiles
     }
 
     /**
-     * Set path
+     * Set path.
      *
      * @param string $path
+     *
      * @return ShiftLogFiles
      */
     public function setPath($path)
@@ -82,9 +81,9 @@ class ShiftLogFiles
     }
 
     /**
-     * Get path
+     * Get path.
      *
-     * @return string 
+     * @return string
      */
     public function getPath()
     {

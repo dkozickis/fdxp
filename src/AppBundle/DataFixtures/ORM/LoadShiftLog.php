@@ -18,14 +18,12 @@ class LoadShiftLog implements FixtureInterface
         $manager->persist($shiftLog);
         $manager->flush();
 
-
         $shiftLog = new ShiftLog();
         $shiftLog->setInfoType('info_wx');
         $shiftLog->setContent('WX INFORMATION CURRENT');
         $shiftLog->setInfoHeader('Weather information');
         $manager->persist($shiftLog);
         $manager->flush();
-
 
         $shiftLog = new ShiftLog();
         $shiftLog->setInfoType('info_notam');
@@ -40,6 +38,5 @@ class LoadShiftLog implements FixtureInterface
         $shiftLog->setInfoHeader('Other information');
         $manager->persist($shiftLog);
         $manager->flush();
-
     }
 }
