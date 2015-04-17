@@ -53,7 +53,9 @@
 <!-- Include all JavaScripts, compiled by Assetic -->
 <script src="{{ asset('js/bootstrap.js') }}"></script>
     #}
-    {% javascripts 'js/*' filter='uglifyjs2' %}
+    {% javascripts 'js/jquery.js'
+        'js/*'
+    filter='?uglifyjs2' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

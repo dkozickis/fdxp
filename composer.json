@@ -1,5 +1,6 @@
 {
     "name": "vagrant/fdxp",
+    "description": "FDXP web application",
     "license": "proprietary",
     "type": "project",
     "autoload": {
