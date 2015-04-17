@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ class GeoController extends Controller
     /**
      * @return Response
      * @Route("/")
+     * @Method({"GET"})
      */
     public function indexAction()
     {
@@ -24,6 +26,7 @@ class GeoController extends Controller
 
     /**
      * @Route("/csv/{flightNo}")
+     * @Method({"GET"})
      */
     public function generateCSVAction($flightNo)
     {

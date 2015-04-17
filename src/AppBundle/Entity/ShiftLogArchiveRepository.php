@@ -24,4 +24,20 @@ class ShiftLogArchiveRepository extends EntityRepository
             return false;
         }
     }
+
+    public function moveActiveToArchive($user, $shift, $date)
+    {
+        $em = $this->getEntityManager();
+
+        $entities = $em->getRepository('AppBundle:ShiftLog')->returnAllOrdered();
+
+        foreach ($entities as $entity) {
+            $shiftLogArchive = new ShiftLogArchive();
+            $shiftLogArchive->insertArchive($entity['content'], $entity['info_type'], $entity['info_header'],
+                $user, $shift, $date);
+            $em->persist($shiftLogArchive);
+        }
+
+        $em->flush();
+    }
 }

@@ -23,6 +23,7 @@ class ShiftLogController extends Controller
      * Lists all ShiftLog entities.
      *
      * @Route("/", name="shiftlog_index")
+     * @Method({"GET"})
      */
     public function indexAction(Request $request)
     {
@@ -120,16 +121,9 @@ class ShiftLogController extends Controller
 
             return $this->redirectToRoute('shiftlog_index');
         } else {
-            $entities = $em->getRepository('AppBundle:ShiftLog')->findAllCurrent();
 
-            foreach ($entities as $entity) {
-                $shiftLogArchive = new ShiftLogArchive();
-                $shiftLogArchive->insertArchive($entity['content'], $entity['infoType'], $entity['infoHeader'],
-                    $this->getUser()->getUsername(), $proposer['shift'], $proposer['date']);
-                $em->persist($shiftLogArchive);
-            }
-
-            $em->flush();
+            $em->getRepository('AppBundle:ShiftLogArchive')->moveActiveToArchive($this->getUser()->getUsername(),
+                $proposer['shift'], $proposer['date']);
 
             $flash->success(strtoupper($proposer['date']->format('dMy')).' '.$proposer['shift'].' shift archived!');
 
@@ -140,6 +134,7 @@ class ShiftLogController extends Controller
     /**
      * @return Response
      * @Route("/timecheck", name="shiftlog_timecheck")
+     * @Method({"GET"})
      */
     public function archiveTimeCheckAction()
     {
@@ -154,36 +149,4 @@ class ShiftLogController extends Controller
         return $response;
     }
 
-    /**
-     * @Route("/upload", name="shiftlog_file_upload")
-     */
-    public function uploadAction(Request $request)
-    {
-        $file = new ShiftLogFiles();
-
-        $form = $this->createFormBuilder($file)
-            ->add('name')
-            ->add('file')
-            ->add('upload', 'submit')
-            ->getForm();
-
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
-            $form->getData();
-
-            $file->upload();
-
-            $em->persist($file);
-            $em->flush();
-
-            return $this->redirectToRoute('shiftlog_index');
-        }
-
-        dump($form->getErrors());
-
-        return $this->redirectToRoute('shiftlog_index');
-    }
 }
