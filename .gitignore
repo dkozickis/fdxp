@@ -12,3 +12,5 @@
 /.idea
 /web/cov
 /web/uploads
+/bower_components
+/node_modules
