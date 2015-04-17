@@ -14,3 +14,4 @@
 /web/uploads
 /bower_components
 /node_modules
+/web/phpinfo.php

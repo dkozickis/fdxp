@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ShiftLogFileType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -21,5 +20,4 @@ class ShiftLogFileType extends AbstractType
     {
         return 'shiftlogfile';
     }
-
 }

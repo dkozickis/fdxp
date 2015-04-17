@@ -252,8 +252,8 @@ class ShiftLogArchive
         return $this->sequence;
     }
 
-    public function insertArchive($content, $info_type, $info_header, $user, $shift, $date){
-
+    public function insertArchive($content, $info_type, $info_header, $user, $shift, $date)
+    {
         $this->setContent($content);
         $this->setInfoType($info_type);
         $this->setInfoHeader($info_header);
@@ -262,6 +262,5 @@ class ShiftLogArchive
         $this->setArchivedDate($date);
 
         return $this;
-
     }
 }
