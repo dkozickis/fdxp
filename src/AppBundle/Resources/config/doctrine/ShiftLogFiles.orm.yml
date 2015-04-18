@@ -11,4 +11,7 @@ AppBundle\Entity\ShiftLogFiles:
         file_name:
             type: string
             length: 255
+        description:
+            type: string
+            length: 255
     lifecycleCallbacks: {  }

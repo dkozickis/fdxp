@@ -39,7 +39,33 @@
                     </h3>
                 </div>
                 <div class="panel-body" id="file_upload">
-                    {{ form(form, {'style': 'inline'}) }}
+                    {{ form(form, {'style': 'horizontal'}) }}
+                    {% if files|length > 0 %}
+                        <table class="table table-condensed">
+                            <tr>
+                                <th class="col-md-1">#</th>
+                                <th class="col-md-9">Description</th>
+                                <th class="col-md-2">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </th>
+                            </tr>
+                            {% for file in files %}
+                                <tr>
+                                    <td class="col-md-1">{{ loop.index }}</td>
+                                    <td class="col-md-9">
+                                        <a href="{{ vich_uploader_asset(file, 'file') }}">{{ file.description }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('shiftlog_filedelete', {'id': file.id}) }}">Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <p class="text-center">
+                            No files yet.
+                        </p>
+                    {% endif %}
                 </div>
             </div>
         </div>

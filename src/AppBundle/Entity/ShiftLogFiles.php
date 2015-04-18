@@ -3,10 +3,12 @@
 namespace AppBundle\Entity;
 
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * ShiftLogFiles.
+ *
  * @Vich\Uploadable
  */
 class ShiftLogFiles
@@ -15,7 +17,7 @@ class ShiftLogFiles
      * @var int
      */
     protected $id;
-    
+
     /**
      * @var string
      */
@@ -24,14 +26,15 @@ class ShiftLogFiles
     /**
      * @Vich\UploadableField(mapping="shiftlog_file", fileNameProperty="file_name")
      *
-     * @var File $file
+     * @var File
      */
     protected $file;
 
     /**
-     * Set file_name
+     * Set file_name.
      *
      * @param string $fileName
+     *
      * @return ShiftLogFiles
      */
     public function setFileName($fileName)
@@ -42,9 +45,9 @@ class ShiftLogFiles
     }
 
     /**
-     * Get file_name
+     * Get file_name.
      *
-     * @return string 
+     * @return string
      */
     public function getFileName()
     {
@@ -52,23 +55,53 @@ class ShiftLogFiles
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
 
-    public function setFile($file) {
-
+    public function setFile($file)
+    {
         $this->file = $file;
 
         return $file;
     }
 
-    public function getFile() {
+    public function getFile()
+    {
         return $this->file;
+    }
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     */
+    private $description;
+
+    /**
+     * Set description.
+     *
+     * @param string $description
+     *
+     * @return ShiftLogFiles
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

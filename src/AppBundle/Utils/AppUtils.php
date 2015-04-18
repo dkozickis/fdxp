@@ -81,6 +81,5 @@ class AppUtils
         }
 
         return array('text' => $shift_text, 'menu_state' => $menu_state);
-
     }
 }

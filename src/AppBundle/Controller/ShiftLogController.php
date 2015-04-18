@@ -22,20 +22,24 @@ class ShiftLogController extends Controller
      * Lists all ShiftLog entities.
      *
      * @Route("/", name="shiftlog_index")
+     *
      * @Method({"GET","POST"})
      */
     public function indexAction(Request $request)
     {
         $shift_info = $this->get('app.app_utils')->mainePageInit();
+        $shift_files = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
 
         $file = new ShiftLogFiles();
         $form = $this->createForm(new ShiftLogFileType(), $file);
         $form->handleRequest($request);
         if ($form->isValid()) {
+            dump($form->isValid());
             $em = $this->getDoctrine()->getManager();
-            $form->getData();
             $em->persist($file);
             $em->flush();
+
+            return $this->redirectToRoute('shiftlog_index');
         }
 
         $info_result = $this->getDoctrine()->getRepository('AppBundle:ShiftLog')->returnAllOrdered();
@@ -47,6 +51,7 @@ class ShiftLogController extends Controller
             'information' => $info_result,
             'shift_info' => $shift_info,
             'form' => $form->createView(),
+            'files' => $shift_files,
         ));
     }
 
@@ -98,7 +103,6 @@ class ShiftLogController extends Controller
 
             return $this->redirectToRoute('shiftlog_index');
         } else {
-
             $em->getRepository('AppBundle:ShiftLogArchive')->moveActiveToArchive($this->getUser()->getUsername(),
                 $proposer['shift'], $proposer['date']);
 
@@ -111,6 +115,7 @@ class ShiftLogController extends Controller
     /**
      * @return Response
      * @Route("/timecheck", name="shiftlog_timecheck")
+     *
      * @Method({"GET"})
      */
     public function archiveTimeCheckAction()
@@ -126,4 +131,26 @@ class ShiftLogController extends Controller
         return $response;
     }
 
+    /**
+     * @Route("/filedelete/{id}", name="shiftlog_filedelete")
+     *
+     * @Method({"GET"})
+     */
+    public function deleteFileAction($id)
+    {
+        $flash = $this->get('braincrafted_bootstrap.flash');
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:ShiftLogFiles')->findOneBy(array('id' => $id));
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find this file record.');
+        }
+
+        $em->remove($entity);
+        $em->flush();
+
+        $flash->success('File removed');
+
+        return $this->redirectToRoute('shiftlog_index');
+    }
 }

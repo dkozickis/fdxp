@@ -11,6 +11,7 @@ class DefaultController extends Controller
     /**
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/")
+     *
      * @Method({"GET"})
      */
     public function indexAction()
