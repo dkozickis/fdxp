@@ -62,4 +62,25 @@ class AppUtils
 
         return $activate;
     }
+
+    public function mainePageInit()
+    {
+        $proposer = $this->archiveDateShiftProposal();
+        $showButton = $this->showArchiveButton();
+
+        if (!empty($proposer['date'])) {
+            $shift_text = strtoupper($proposer['date']->format('dMy')).' '.$proposer['shift'];
+        } else {
+            $shift_text = '';
+        }
+
+        if ($showButton === 0) {
+            $menu_state = 'hidden';
+        } else {
+            $menu_state = '';
+        }
+
+        return array('text' => $shift_text, 'menu_state' => $menu_state);
+
+    }
 }

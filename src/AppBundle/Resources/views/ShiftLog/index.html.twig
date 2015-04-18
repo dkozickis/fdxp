@@ -8,9 +8,9 @@
     {% include 'BraincraftedBootstrapBundle::flash.html.twig' with { 'close': true } %}
 
     {% if app.user and is_granted('ROLE_SHIFT_MANAGER_FD') %}
-    <div class="archiver row center-block {{ shift_summary.menu_state }}">
+    <div class="archiver row center-block {{ shift_info.menu_state }}">
         <p class="text-center">
-            <a class="btn btn-warning" href="{{ path('shiftlog_archive') }}">Archive {{ shift_text }} shift</a>
+            <a class="btn btn-warning" href="{{ path('shiftlog_archive') }}">Archive {{ shift_info.text }} shift</a>
         </p>
     </div>
     {% endif %}

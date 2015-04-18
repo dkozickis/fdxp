@@ -26,17 +26,11 @@ class ShiftLogController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $shift_summary = [];
-        $shift_text = '';
-        $proposer = $this->get('app.app_utils')->archiveDateShiftProposal();
-        $showButton = $this->get('app.app_utils')->showArchiveButton();
+        $shift_info = $this->get('app.app_utils')->mainePageInit();
 
         $file = new ShiftLogFiles();
-
         $form = $this->createForm(new ShiftLogFileType(), $file);
-
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $form->getData();
@@ -45,25 +39,13 @@ class ShiftLogController extends Controller
         }
 
         $info_result = $this->getDoctrine()->getRepository('AppBundle:ShiftLog')->returnAllOrdered();
-
         if (!$info_result) {
             throw $this->createNotFoundException('Unable to find ShiftLog entity.');
         }
 
-        if (!empty($proposer['date'])) {
-            $shift_text = strtoupper($proposer['date']->format('dMy')).' '.$proposer['shift'];
-        }
-
-        if ($showButton === 0) {
-            $shift_summary['menu_state'] = 'hidden';
-        } else {
-            $shift_summary['menu_state'] = '';
-        }
-
         return $this->render('AppBundle:ShiftLog:index.html.twig', array(
             'information' => $info_result,
-            'shift_summary' => $shift_summary,
-            'shift_text' => $shift_text,
+            'shift_info' => $shift_info,
             'form' => $form->createView(),
         ));
     }
