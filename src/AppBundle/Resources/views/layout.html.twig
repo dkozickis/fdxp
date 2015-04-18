@@ -24,12 +24,14 @@
             </button>
             <a class="navbar-brand" href="#">Flight Dispatch</a>
         </div>
+        {% block navbar %}
         <div class="collapse navbar-collapse">
             {{ knp_menu_render('main', {'style': 'navbar'}) }}
             {% if app.user and is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             <p class="navbar-text navbar-right">Signed in as {{ app.user.username }}</p>
             {% endif %}
         </div><!--/.nav-collapse -->
+        {% endblock %}
     </div>
 </div>
 
