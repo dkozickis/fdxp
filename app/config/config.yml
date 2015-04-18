@@ -93,3 +93,11 @@ easy_admin:
   entities:
     - AppBundle\Entity\User
     - AppBundle\Entity\Group
+
+vich_uploader:
+  db_driver: orm
+  mappings:
+    shiftlog_file:
+      uri_prefix: /uploads/shiftlog
+      upload_destination: %kernel.root_dir%/../web/uploads/shiftlog
+

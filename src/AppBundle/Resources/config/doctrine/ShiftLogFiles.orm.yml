@@ -8,7 +8,7 @@ AppBundle\Entity\ShiftLogFiles:
             generator:
                 strategy: AUTO
     fields:
-        path:
+        file_name:
             type: string
             length: 255
     lifecycleCallbacks: {  }

@@ -40,7 +40,6 @@ class ShiftLogController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $form->getData();
-            $file->upload();
             $em->persist($file);
             $em->flush();
         }
