@@ -17,12 +17,6 @@ class ShiftLogFiles
 
     /**
      * @var string
-     * @Assert\NotBlank()
-     */
-    private $name;
-
-    /**
-     * @var string
      */
     private $path;
 
@@ -42,29 +36,6 @@ class ShiftLogFiles
         return $this->id;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return ShiftLogFiles
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
     /**
      * Set path.

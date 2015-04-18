@@ -10,9 +10,7 @@ class ShiftLogFileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
             ->add('file')
-            ->add('upload', 'submit')
             ->getForm();
     }
 

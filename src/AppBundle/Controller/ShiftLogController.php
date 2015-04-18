@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ShiftLogArchive;
 use AppBundle\Entity\ShiftLogFiles;
 use AppBundle\Form\Type\ShiftLogFileType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -23,7 +22,7 @@ class ShiftLogController extends Controller
      * Lists all ShiftLog entities.
      *
      * @Route("/", name="shiftlog_index")
-     * @Method({"GET"})
+     * @Method({"GET","POST"})
      */
     public function indexAction(Request $request)
     {
@@ -40,11 +39,8 @@ class ShiftLogController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-
             $form->getData();
-
             $file->upload();
-
             $em->persist($file);
             $em->flush();
         }

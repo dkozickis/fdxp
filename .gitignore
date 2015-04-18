@@ -16,3 +16,4 @@
 /node_modules
 /web/phpinfo.php
 /web/config.php
+npm-debug.log

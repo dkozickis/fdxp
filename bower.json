@@ -1,0 +1,7 @@
+{
+  "name": "fdxp-web-app",
+  "dependencies": {
+    "jquery": "1.11.*",
+    "bootstrap": "3.1.*"
+  }
+}
