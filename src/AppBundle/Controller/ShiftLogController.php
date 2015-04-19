@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ShiftLogFiles;
 use AppBundle\Form\Type\ShiftLogFileType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,9 +25,14 @@ class ShiftLogController extends Controller
      * @Route("/", name="shiftlog_index")
      *
      * @Method({"GET","POST"})
+     *
+     * @Cache(expires="+15 min")
      */
     public function indexAction(Request $request)
     {
+
+        $aa = new Response();
+        $aa->setExpires();
         $shift_info = $this->get('app.app_utils')->mainePageInit();
         $shift_files = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
 
