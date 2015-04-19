@@ -34,7 +34,6 @@ class ShiftLogController extends Controller
         $form = $this->createForm(new ShiftLogFileType(), $file);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            dump($form->isValid());
             $em = $this->getDoctrine()->getManager();
             $em->persist($file);
             $em->flush();
