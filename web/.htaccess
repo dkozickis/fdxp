@@ -66,6 +66,13 @@ ExpiresByType image/gif "access 1 month"
 ExpiresByType image/jpg "access 1 month"
 ExpiresByType image/jpeg "access 1 month"
 ExpiresByType image/png "access 1 month"
-ExpiresByType text/css "access 3 month"
-ExpiresByType text/js "access 3 week"
-ExpiresByType application/javascript "access 3 week"
+
+# CSS & JS
+ExpiresByType text/css "access 1 year"
+ExpiresByType text/js "access 1 year"
+ExpiresByType application/javascript "access 1 year"
+
+# FONTS
+ExpiresByType application/vnd.ms-fontobject "access 1 year"
+ExpiresByType application/font-woff2 "access 1 year"
+ExpiresByType application/font-woff "access 1 year"
