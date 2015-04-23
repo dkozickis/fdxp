@@ -17,7 +17,7 @@ AppBundle\Entity\ComparisonCase:
   manyToOne:
     comparison:
       targetEntity: AppBundle\Entity\Comparison
-      inversedBy: ComparisonCase
+      inversedBy: cases
       joinColumn:
         name: comparison_id
         referencedColumnName: id

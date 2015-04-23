@@ -12,7 +12,6 @@ class DefaultControllerTest extends WebTestCase
         $client->followRedirects();
         $crawler = $client->request('GET', '/');
 
-        //$this->assertRegExp('/\/login$/', $client->getRequest()->getUri());
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Login")')->count());
     }
 
