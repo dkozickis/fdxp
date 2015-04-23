@@ -1,6 +1,6 @@
 AppBundle\Entity\ShiftLogFiles:
     type: entity
-    table: null
+    table: shift_log_files
     id:
         id:
             type: integer

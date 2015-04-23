@@ -1,6 +1,6 @@
 AppBundle\Entity\ShiftLogArchive:
     type: entity
-    table: null
+    table: shift_log_archive
     repositoryClass: AppBundle\Entity\ShiftLogArchiveRepository
     id:
         id:

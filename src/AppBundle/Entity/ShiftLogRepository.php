@@ -25,6 +25,7 @@ class ShiftLogRepository extends EntityRepository
 
     public function returnAllOrdered()
     {
+        $info_result = [];
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('s')
             ->from('AppBundle:ShiftLog', 's')

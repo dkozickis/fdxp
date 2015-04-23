@@ -101,4 +101,44 @@ class AppUtilsTest extends KernelTestCase
 
         $this->assertEquals(0, $button);
     }
+
+    public function testMpNegative()
+    {
+        $stubTime = $this->getMockBuilder('AppUtils')
+            ->setMethods(array('currentHours'))
+            ->getMock();
+
+        $stubTime->method('currentHours')
+            ->willReturn(10);
+
+        $appUtils = new Utils\AppUtils($this->em);
+
+        $result = $appUtils->mainePageInit();
+
+        $this->assertEquals('hidden', $result['menu_state']);
+    }
+
+    public function testMpPositive()
+    {
+        $stubTime = $this->getMockBuilder('AppUtils')
+            ->setMethods(array('currentHours'))
+            ->getMock();
+
+        $stubTime->method('currentHours')
+            ->willReturn(15);
+
+        $stub = $this->getMockBuilder('AppUtils')
+            ->setMethods(array('showArchiveButton'))
+            ->getMock();
+
+        $stub->method('showArchiveButton')
+            ->willReturn(1);
+
+        $appUtils = new Utils\AppUtils($this->em);
+
+        $result = $appUtils->mainePageInit();
+
+        $this->assertEquals('', $result['menu_state']);
+    }
+
 }

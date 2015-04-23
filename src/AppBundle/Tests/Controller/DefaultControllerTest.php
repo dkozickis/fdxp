@@ -6,26 +6,26 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndexNoAuth()
+    public function testWithoutIndexAuth()
     {
         $client = static::createClient();
         $client->followRedirects();
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
 
-        $this->assertRegExp('/\/login$/', $client->getRequest()->getUri());
+        //$this->assertRegExp('/\/login$/', $client->getRequest()->getUri());
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Login")')->count());
     }
 
-    public function textIndexAuth()
+    public function testWithIndexAuth()
     {
         $client = static::createClient(array(), array(
             'PHP_AUTH_USER' => 'admin',
             'PHP_AUTH_PW'   => 'admin',
         ));
-
         $client->followRedirects();
-
         $crawler = $client->request('GET', '/');
 
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Logout")')->count());
     }
+
 }

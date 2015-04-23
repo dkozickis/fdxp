@@ -1,6 +1,6 @@
 AppBundle\Entity\ShiftLog:
     type: entity
-    table: null
+    table: shift_log
     repositoryClass: AppBundle\Entity\ShiftLogRepository
     id:
         id:

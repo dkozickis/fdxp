@@ -1,0 +1,23 @@
+AppBundle\Entity\ComparisonCase:
+  type: entity
+  table: comparison_case
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    name:
+      type: string
+      length: 50
+    basic:
+      type: boolean
+      nullable: true
+      options:
+        default: NULL
+  manyToOne:
+    comparison:
+      targetEntity: AppBundle\Entity\Comparison
+      inversedBy: ComparisonCase
+      joinColumn:
+        name: comparison_id
+        referencedColumnName: id
