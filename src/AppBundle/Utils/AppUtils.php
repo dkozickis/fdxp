@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 class AppUtils
 {
-    protected $em;
+    private $managerRegistry;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
