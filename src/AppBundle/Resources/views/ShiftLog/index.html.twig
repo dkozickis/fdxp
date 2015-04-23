@@ -5,8 +5,6 @@
 {% endblock %}
 {% block body %}
 
-    {% include 'BraincraftedBootstrapBundle::flash.html.twig' with { 'close': true } %}
-
     {% if app.user and is_granted('ROLE_SHIFT_MANAGER_FD') %}
     <div class="archiver row center-block {{ shift_info.menu_state }}">
         <p class="text-center">

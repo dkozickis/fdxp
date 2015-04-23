@@ -2,9 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Utils\ComparisonUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class RouteComparisonController
@@ -16,7 +17,7 @@ class ComparisonController extends Controller
     /**
      * @Route("/")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $grand_var = "Sequence No. |     1      |     2      |     3      |     4      |     5      |     6      |
 Flight No.   |     EY0001 |     EY0001 |     EY0001 |     EY0001 |     EY0001 |     EY0001 |
@@ -71,40 +72,25 @@ Curr/Date    |   USD210415|   USD210415|   USD210415|   USD210415|   USD210415| 
              |            |            |            |            |            |            |
 Run-Date     |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |";
 
+        $platoArray = [];
 
-        $grand_var = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "", $grand_var);
+        $form = $this->createFormBuilder(array('plato' => 'Copy PLATO text here'))
+            ->add('plato', 'textarea')
+            ->add('Parse','submit')
+            ->getForm();
 
-        $parsed_info = [];
+        $form->handleRequest($request);
 
-        $data = str_getcsv($grand_var, "\n"); //parse the rows
-        foreach($data as &$row)
-        {
-            $row = str_getcsv($row, "|");
-            $row = array_filter(array_map("trim", $row),'strlen');
-            if(count($row) > 0) {
-                if ($row[0] == 'Dep-Dest') {
-                    for ($i = 1; $i < count($row); $i++) {
-                        $parsed_info[$i-1] = array('airport_pair' => $row[$i]);
-                    }
-                }
-                if ($row[0] == 'Total Costs'){
-                    for ($i = 1; $i < count($row); $i++) {
-                        $parsed_info[$i-1]['t_costs'] = $row[$i];
-                    }
-                }
-                if ($row[0] == 'Trip Time'){
-                    for ($i = 1; $i < count($row); $i++) {
-                        $parsed_info[$i-1]['t_time'] = $row[$i];
-                    }
-                }
-            }
-
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $utils = new ComparisonUtils();
+            $platoArray = $utils->platoToArray($data['plato']);
+            dump($platoArray);
         }
 
-        dump($parsed_info);
-
-        throw new \Exception('Need to throw this one');
-
-        return new Response();
+        return $this->render('AppBundle:Comparison:index.html.twig', array(
+            'form' => $form->createView(),
+            'plato_info' => $platoArray
+        ));
     }
 }

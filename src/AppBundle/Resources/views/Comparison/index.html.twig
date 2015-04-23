@@ -1,0 +1,32 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block title %}
+    <title>FDXP - Route Comparisons</title>
+{% endblock %}
+
+{% block body %}
+
+    {{ form(form) }}
+
+    {% if plato_info is not empty %}
+
+        <div class="col-md-4">
+            <table class="table table-condensed">
+                <tr>
+                    <th>Citypair</th>
+                    <th>Cost</th>
+                    <th>Time</th>
+                </tr>
+                {% for info in plato_info %}
+                    <tr>
+                        <td>{{ info.airport_pair }}</td>
+                        <td>{{ info.t_costs }}</td>
+                        <td>{{ info.t_time }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
