@@ -18,7 +18,7 @@ services:
 
     app.app_utils:
         class: AppBundle\Utils\AppUtils
-        arguments: [@doctrine.orm.entity_manager]
+        arguments: [@doctrine]
 
     app.geo_utils:
         class: AppBundle\Utils\GeoUtils

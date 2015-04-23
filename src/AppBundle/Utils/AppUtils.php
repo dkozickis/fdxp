@@ -2,13 +2,15 @@
 
 namespace AppBundle\Utils;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+
 class AppUtils
 {
     protected $em;
 
-    public function __construct(\Doctrine\ORM\EntityManager $em)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->em = $em;
+        $this->managerRegistry = $managerRegistry;
     }
 
     public function currentHours()
@@ -49,7 +51,7 @@ class AppUtils
         $proposer = $this->archiveDateShiftProposal($hours_now);
 
         if (in_array($hours_now, array(2, 3, 14, 15)) && !empty($proposer['date'])) {
-            $checker = $this->em->getRepository('AppBundle:ShiftLogArchive')->checkExistsShiftReport($proposer['date'],
+            $checker = $this->managerRegistry->getRepository('AppBundle:ShiftLogArchive')->checkExistsShiftReport($proposer['date'],
                 $proposer['shift']);
             if (!$checker) {
                 $activate = 1;
