@@ -91,8 +91,7 @@ fos_user:
 
 easy_admin:
   entities:
-    - AppBundle\Entity\User
-    - AppBundle\Entity\Group
+    - AppBundle\Entity\ShiftLog
 
 vich_uploader:
   db_driver: orm
