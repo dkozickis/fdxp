@@ -19,6 +19,7 @@ AppBundle\Entity\ShiftLogArchive:
             column: info_header
         content:
             type: text
+            nullable: true
         sequence:
             type: integer
             nullable: true
