@@ -85,7 +85,6 @@ Run-Date     |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 | 
             $data = $form->getData();
             $utils = new ComparisonUtils();
             $platoArray = $utils->platoToArray($data['plato']);
-            dump($platoArray);
         }
 
         return $this->render('AppBundle:Comparison:index.html.twig', array(
