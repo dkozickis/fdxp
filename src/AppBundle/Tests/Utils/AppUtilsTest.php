@@ -93,5 +93,4 @@ class AppUtilsTest extends KernelTestCase
 
         $this->assertEquals(0, $button);
     }
-
 }

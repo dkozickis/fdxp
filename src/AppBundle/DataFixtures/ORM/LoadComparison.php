@@ -9,7 +9,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadComparison implements FixtureInterface
 {
-
     public function load(ObjectManager $manager)
     {
         $comparison = new Comparison();
@@ -24,7 +23,5 @@ class LoadComparison implements FixtureInterface
         $manager->persist($c_case);
 
         $manager->flush();
-
     }
-
 }

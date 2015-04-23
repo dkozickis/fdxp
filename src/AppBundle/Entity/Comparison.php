@@ -2,15 +2,13 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * Comparison
+ * Comparison.
  */
 class Comparison
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -19,11 +17,10 @@ class Comparison
      */
     private $name;
 
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -31,9 +28,10 @@ class Comparison
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
+     *
      * @return Comparison
      */
     public function setName($name)
@@ -44,9 +42,9 @@ class Comparison
     }
 
     /**
-     * Get name
+     * Get name.
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -58,7 +56,7 @@ class Comparison
     private $cases;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -66,9 +64,10 @@ class Comparison
     }
 
     /**
-     * Add cases
+     * Add cases.
      *
      * @param \AppBundle\Entity\ComparisonCase $cases
+     *
      * @return Comparison
      */
     public function addCase(\AppBundle\Entity\ComparisonCase $cases)
@@ -79,7 +78,7 @@ class Comparison
     }
 
     /**
-     * Remove cases
+     * Remove cases.
      *
      * @param \AppBundle\Entity\ComparisonCase $cases
      */
@@ -89,9 +88,9 @@ class Comparison
     }
 
     /**
-     * Get cases
+     * Get cases.
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCases()
     {

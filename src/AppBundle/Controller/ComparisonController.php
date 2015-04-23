@@ -8,8 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class RouteComparisonController
- * @package AppBundle\Controller
+ * Class RouteComparisonController.
+ *
  * @Route("/compare")
  */
 class ComparisonController extends Controller
@@ -19,7 +19,7 @@ class ComparisonController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $grand_var = "Sequence No. |     1      |     2      |     3      |     4      |     5      |     6      |
+        $grand_var = 'Sequence No. |     1      |     2      |     3      |     4      |     5      |     6      |
 Flight No.   |     EY0001 |     EY0001 |     EY0001 |     EY0001 |     EY0001 |     EY0001 |
 Dep-Dest     |    ALA-AUH |    DME-AUH |    TBS-AUH |    GYD-AUH |    EVN-AUH |    MSQ-AUH |
 Route        |     MCT    |     MCT    |     MCT    |     MCT    |     MCT    |     MCT    |
@@ -70,13 +70,13 @@ Time Costs   |       6147 |       6672 |       4067 |       3512 |       3714 | 
 Curr/Date    |   USD210415|   USD210415|   USD210415|   USD210415|   USD210415|   USD210415|
              |            |            |            |            |            |            |
              |            |            |            |            |            |            |
-Run-Date     |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |";
+Run-Date     |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |';
 
         $platoArray = [];
 
         $form = $this->createFormBuilder(array('plato' => 'Copy PLATO text here'))
             ->add('plato', 'textarea')
-            ->add('Parse','submit')
+            ->add('Parse', 'submit')
             ->getForm();
 
         $form->handleRequest($request);
@@ -89,7 +89,7 @@ Run-Date     |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 |   20.04.15 | 
 
         return $this->render('AppBundle:Comparison:index.html.twig', array(
             'form' => $form->createView(),
-            'plato_info' => $platoArray
+            'plato_info' => $platoArray,
         ));
     }
 }

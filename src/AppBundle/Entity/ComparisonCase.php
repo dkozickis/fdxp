@@ -2,15 +2,13 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * ComparisonCase
+ * ComparisonCase.
  */
 class ComparisonCase
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -20,15 +18,14 @@ class ComparisonCase
     private $name;
 
     /**
-     * @var integer
+     * @var int
      */
     private $basic;
 
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -36,9 +33,10 @@ class ComparisonCase
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
+     *
      * @return ComparisonCase
      */
     public function setName($name)
@@ -49,9 +47,9 @@ class ComparisonCase
     }
 
     /**
-     * Get name
+     * Get name.
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -59,9 +57,10 @@ class ComparisonCase
     }
 
     /**
-     * Set basic
+     * Set basic.
      *
-     * @param integer $basic
+     * @param int $basic
+     *
      * @return ComparisonCase
      */
     public function setBasic($basic)
@@ -72,9 +71,9 @@ class ComparisonCase
     }
 
     /**
-     * Get basic
+     * Get basic.
      *
-     * @return integer 
+     * @return int
      */
     public function getBasic()
     {
@@ -85,11 +84,11 @@ class ComparisonCase
      */
     private $comparison;
 
-
     /**
-     * Set comparison
+     * Set comparison.
      *
      * @param \AppBundle\Entity\Comparison $comparison
+     *
      * @return ComparisonCase
      */
     public function setComparison(\AppBundle\Entity\Comparison $comparison = null)
@@ -100,9 +99,9 @@ class ComparisonCase
     }
 
     /**
-     * Get comparison
+     * Get comparison.
      *
-     * @return \AppBundle\Entity\Comparison 
+     * @return \AppBundle\Entity\Comparison
      */
     public function getComparison()
     {

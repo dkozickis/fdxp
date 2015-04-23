@@ -26,5 +26,4 @@ class DefaultControllerTest extends WebTestCase
 
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Logout")')->count());
     }
-
 }

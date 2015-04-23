@@ -6,5 +6,4 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ShiftLogControllerTest extends WebTestCase
 {
-
 }

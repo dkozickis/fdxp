@@ -30,7 +30,6 @@ class ShiftLogController extends Controller
      */
     public function indexAction(Request $request)
     {
-
         $shift_info = $this->get('app.app_utils')->mainePageInit();
         $shift_files = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
 
