@@ -46,9 +46,6 @@ class ShiftLogController extends Controller
         }
 
         $info_result = $this->getDoctrine()->getRepository('AppBundle:ShiftLog')->returnAllOrdered();
-        if (!$info_result) {
-            throw $this->createNotFoundException('Unable to find ShiftLog entity.');
-        }
 
         return $this->render('AppBundle:ShiftLog:index.html.twig', array(
             'information' => $info_result,
