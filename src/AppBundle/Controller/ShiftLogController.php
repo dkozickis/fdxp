@@ -4,7 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ShiftLogFiles;
 use AppBundle\Form\Type\ShiftLogFileType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,8 +24,6 @@ class ShiftLogController extends Controller
      * @Route("/", name="shiftlog_index")
      *
      * @Method({"GET","POST"})
-     *
-     * @Cache(expires="+15 min")
      */
     public function indexAction(Request $request)
     {
@@ -85,6 +82,7 @@ class ShiftLogController extends Controller
      */
     public function archiveAction()
     {
+        $kernel_dir = $this->get('kernel')->getRootDir();
         $flash = $this->get('braincrafted_bootstrap.flash');
         $hours_now = $this->get('app.app_utils')->currentHours();
         $proposer = $this->get('app.app_utils')->archiveDateShiftProposal($hours_now);
@@ -103,7 +101,7 @@ class ShiftLogController extends Controller
             return $this->redirectToRoute('shiftlog_index');
         } else {
             $em->getRepository('AppBundle:ShiftLogArchive')->moveActiveToArchive($this->getUser()->getUsername(),
-                $proposer['shift'], $proposer['date']);
+                $proposer['shift'], $proposer['date'], $kernel_dir);
 
             $flash->success(strtoupper($proposer['date']->format('dMy')).' '.$proposer['shift'].' shift archived!');
 

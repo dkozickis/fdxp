@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * ShiftLogArchiveRepository.
@@ -25,18 +26,37 @@ class ShiftLogArchiveRepository extends EntityRepository
         }
     }
 
-    public function moveActiveToArchive($user, $shift, $date)
+    public function moveActiveToArchive($user, $shift, $date, $kernel_dir)
     {
+        $fs = new Filesystem();
+        $archive = [];
+
         $em = $this->getEntityManager();
 
         $entities = $em->getRepository('AppBundle:ShiftLog')->returnAllOrdered();
 
         foreach ($entities as $entity) {
-            $shiftLogArchive = new ShiftLogArchive();
-            $shiftLogArchive->insertArchive($entity['content'], $entity['info_type'], $entity['info_header'],
-                $user, $shift, $date);
-            $em->persist($shiftLogArchive);
+            $archive['log'][] = array('info_type' => $entity['info_type'],
+                                    'info_header' => $entity['info_header'],
+                                    'content' => $entity['content'], );
         }
+
+        $entities = $em->getRepository('AppBundle:ShiftLogFiles')->findAll();
+
+        foreach ($entities as $entity) {
+            $archive['files'][] = array('description' => $entity->getDescription(),
+                                        'file_name' => $entity->getFileName(), );
+
+            $fs->copy($kernel_dir.'/../web/uploads/shiftlog/'.$entity->getFileName(),
+                $kernel_dir.'/../web/uploads/shiftlog/archive/'.$entity->getFileName());
+        }
+
+        $shiftLogArchive = new ShiftLogArchive();
+        $shiftLogArchive->setContent(serialize($archive));
+        $shiftLogArchive->setArchivedDate($date);
+        $shiftLogArchive->setArchivedBy($user);
+        $shiftLogArchive->setArchivedShift($shift);
+        $em->persist($shiftLogArchive);
 
         $em->flush();
     }

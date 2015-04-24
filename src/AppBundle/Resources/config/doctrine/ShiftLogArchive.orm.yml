@@ -9,19 +9,8 @@ AppBundle\Entity\ShiftLogArchive:
             generator:
                 strategy: AUTO
     fields:
-        infoType:
-            type: string
-            length: 255
-            column: info_type
-        infoHeader:
-            type: string
-            length: 255
-            column: info_header
         content:
             type: text
-            nullable: true
-        sequence:
-            type: integer
             nullable: true
         archivedDate:
             type: date

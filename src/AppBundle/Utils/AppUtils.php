@@ -21,6 +21,36 @@ class AppUtils
         return $hours_now;
     }
 
+    public function currentShift()
+    {
+        $hoursNow = $this->currentHours();
+        $currentShift = '';
+
+        if ($hoursNow >= 3 && $hoursNow < 15) {
+            $currentShift = 'D';
+        } elseif ($hoursNow >= 15 || $hoursNow < 3) {
+            $currentShift = 'N';
+        }
+
+        return $currentShift;
+    }
+
+    public function personnelOnShift()
+    {
+        $currentShift = $this->currentShift();
+        $todayRoster = json_decode(file_get_contents('http://ey.lidousers.com/roster/index.php/roster/on_shift'));
+
+        $onShift = [];
+
+        foreach ($todayRoster as $shift_info) {
+            if (strpos($shift_info->planned, $currentShift) !== false) {
+                $onShift[] = $shift_info->f_name.' '.substr($shift_info->s_name, 0, 1);
+            }
+        }
+
+        return $onShift;
+    }
+
     public function archiveDateShiftProposal($hours_now = null)
     {
         if ($hours_now === null) {
@@ -51,7 +81,8 @@ class AppUtils
         $proposer = $this->archiveDateShiftProposal($hours_now);
 
         if (in_array($hours_now, array(2, 3, 14, 15)) && !empty($proposer['date'])) {
-            $checker = $this->managerRegistry->getRepository('AppBundle:ShiftLogArchive')->checkExistsShiftReport($proposer['date'],
+            $checker = $this->managerRegistry->getManager()
+                ->getRepository('AppBundle:ShiftLogArchive')->checkExistsShiftReport($proposer['date'],
                 $proposer['shift']);
             if (!$checker) {
                 $activate = 1;

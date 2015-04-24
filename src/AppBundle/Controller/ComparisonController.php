@@ -19,7 +19,6 @@ class ComparisonController extends Controller
      */
     public function indexAction(Request $request)
     {
-
         $platoArray = [];
 
         $form = $this->createFormBuilder(array('plato' => 'Copy PLATO text here'))

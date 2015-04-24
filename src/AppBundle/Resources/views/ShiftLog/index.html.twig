@@ -84,7 +84,7 @@
                     $('#'+ info_type +'_save').removeClass('invisible');
                 }
             })
-            $('#shiftlogfile_file').fileinput();
+            $('#shiftlogfile_file').fileinput({'showPreview' : false});
             $('.save_button').click(function(){
                 var info_type = $(this).data('id');
                 var editor = CKEDITOR.instances[info_type];
