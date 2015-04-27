@@ -5,28 +5,41 @@
 {% endblock %}
 
 {% block body %}
-
-    {{ form(form) }}
-
-    {% if plato_info is not empty %}
-
-        <div class="col-md-4">
-            <table class="table table-condensed">
+        {{ knp_menu_render('comparison_menu', { 'style' : 'breadcrumb', 'template' : 'AppBundle:Menu:mybootstrap.html.twig'}) }}
+        <div class="col-md-6">
+            <h1>List of existing comparisons</h1>
+            <table class="table">
+                <thead>
                 <tr>
-                    <th>Citypair</th>
-                    <th>Cost</th>
-                    <th>Time</th>
+                    <th>Name</th>
+                    <th>Actions</th>
                 </tr>
-                {% for info in plato_info %}
+                </thead>
+                <tbody>
+                {% for entity in entities %}
                     <tr>
-                        <td>{{ info.airport_pair }}</td>
-                        <td>{{ info.t_costs }}</td>
-                        <td>{{ info.t_time }}</td>
+                        <td>{{ entity.name }}</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{{ path('compare_case', { 'comp_id': entity.id }) }}">Show</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('compare_edit', { 'id': entity.id }) }}">Edit name</a>
+                                </li>
+                            </ul>
+                        </td>
                     </tr>
                 {% endfor %}
+                </tbody>
             </table>
+            <ul>
+                <li>
+                    <a href="{{ path('compare_new') }}">
+                        Create new comparison
+                    </a>
+                </li>
+            </ul>
         </div>
-
-    {% endif %}
 
 {% endblock %}

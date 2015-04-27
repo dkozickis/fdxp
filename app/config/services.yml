@@ -8,20 +8,28 @@ services:
         class: AppBundle\Menu\Builder
         arguments: ["@knp_menu.factory"]
 
-    app.main_menu:
-        class: Knp\Menu\MenuItem
-        factory_service: app.menu_builder
-        factory_method: createMainMenu
-        arguments: ["@security.context"]
-        tags:
-            - { name: knp_menu.menu, alias: main }
-
     app.app_utils:
         class: AppBundle\Utils\AppUtils
         arguments: [@doctrine]
 
     app.geo_utils:
         class: AppBundle\Utils\GeoUtils
+
+    app.main_menu:
+            class: Knp\Menu\MenuItem
+            factory_service: app.menu_builder
+            factory_method: createMainMenu
+            arguments: ["@security.context"]
+            tags:
+                - { name: knp_menu.menu, alias: main }
+
+    app.comparison_menu:
+            class: Knp\Menu\MenuItem
+            factory_service: app.menu_builder
+            factory_method: createComparisonMenu
+            arguments: [@request_stack, @service_container]
+            tags:
+                - { name: knp_menu.menu, alias: comparison_menu }
 
 #    service_name:
 #        class: AppBundle\Directory\ClassName

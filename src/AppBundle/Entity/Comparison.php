@@ -96,4 +96,9 @@ class Comparison
     {
         return $this->cases;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

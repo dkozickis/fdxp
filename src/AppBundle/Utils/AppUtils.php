@@ -53,6 +53,8 @@ class AppUtils
 
     public function archiveDateShiftProposal($hours_now = null)
     {
+        $proposal = [];
+
         if ($hours_now === null) {
             $hours_now = $this->currentHours();
         }

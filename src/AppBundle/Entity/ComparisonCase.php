@@ -107,4 +107,50 @@ class ComparisonCase
     {
         return $this->comparison;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $calcs;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->calcs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add calcs.
+     *
+     * @param \AppBundle\Entity\ComparisonCaseCalc $calcs
+     *
+     * @return ComparisonCase
+     */
+    public function addCalc(\AppBundle\Entity\ComparisonCaseCalc $calcs)
+    {
+        $this->calcs[] = $calcs;
+
+        return $this;
+    }
+
+    /**
+     * Remove calcs.
+     *
+     * @param \AppBundle\Entity\ComparisonCaseCalc $calcs
+     */
+    public function removeCalc(\AppBundle\Entity\ComparisonCaseCalc $calcs)
+    {
+        $this->calcs->removeElement($calcs);
+    }
+
+    /**
+     * Get calcs.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCalcs()
+    {
+        return $this->calcs;
+    }
 }

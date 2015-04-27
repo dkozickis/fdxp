@@ -21,3 +21,7 @@ AppBundle\Entity\ComparisonCase:
       joinColumn:
         name: comparison_id
         referencedColumnName: id
+  oneToMany:
+      calcs:
+        targetEntity: AppBundle\Entity\ComparisonCaseCalc
+        mappedBy: case

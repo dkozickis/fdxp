@@ -1,0 +1,17 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block body %}
+<div class="col-md-6">
+    <h1>Comparison creation</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('compare') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+    </div>
+{% endblock %}

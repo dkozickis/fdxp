@@ -1,0 +1,52 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block body %}
+<div class="col-md-6">
+    {{ knp_menu_render('comparison_menu', { 'style' : 'breadcrumb', 'template' : 'AppBundle:Menu:mybootstrap.html.twig'}) }}
+
+    <h1>Case calculations list</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Citypair</th>
+                <th>Cost</th>
+                <th>Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td>{{ entity.citypair }}</td>
+                <td>{{ entity.cost }}</td>
+                <td>{{ entity.time|date("h:m") }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('comparison_case_calc_show',
+                        { 'id': entity.id, 'case_id': app.request.get('case_id') }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('comparison_case_calc_edit',
+                        { 'id': entity.id, 'case_id': app.request.get('case_id') }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('comparison_case_calc_new', { 'case_id': app.request.get('case_id')}) }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    </div>
+    <div class="col-md-12">
+        {{ form(plato_form) }}
+    </div>
+    {% endblock %}
