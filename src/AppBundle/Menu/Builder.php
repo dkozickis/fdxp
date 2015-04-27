@@ -2,9 +2,9 @@
 
 namespace AppBundle\Menu;
 
+use Doctrine\ORM\EntityManager;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -35,23 +35,21 @@ class Builder extends ContainerAware
         return $menu;
     }
 
-    public function createComparisonMenu(RequestStack $requestStack, ContainerInterface $containerInterface)
+    public function createComparisonMenu(RequestStack $requestStack, EntityManager $entityManager)
     {
         $menu = $this->factory->createItem('root');
         $menu->addChild('Comparison', array('route' => 'compare'));
 
         switch ($requestStack->getCurrentRequest()->get('_route')) {
             case 'compare_case':
-                $comp = $containerInterface
-                    ->get('doctrine')
+                $comp = $entityManager
                     ->getRepository('AppBundle:Comparison')
                     ->find($requestStack->getCurrentRequest()->get('comp_id'));
                 $menu->addChild($comp->getName());
                 $menu->setCurrent(1);
                 break;
             case 'comparison_case_calc':
-                $case = $containerInterface
-                    ->get('doctrine')
+                $case = $entityManager
                     ->getRepository('AppBundle:ComparisonCase')
                     ->find($requestStack->getCurrentRequest('')->get('case_id'));
                 $case_name = $case->getName();

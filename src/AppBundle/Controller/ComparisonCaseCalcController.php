@@ -28,8 +28,6 @@ class ComparisonCaseCalcController extends Controller
      */
     public function indexAction(Request $request, $case_id)
     {
-        $platoArray = [];
-
         $form = $this->createPlatoForm($case_id);
 
         $form->handleRequest($request);
@@ -90,7 +88,7 @@ class ComparisonCaseCalcController extends Controller
         throw new \Exception('Yea');
     }
 
-    public function createPlatoForm($case_id)
+    private function createPlatoForm($case_id)
     {
         return $this->createFormBuilder(array('plato' => 'Copy PLATO text here'))
             ->setAction($this->generateUrl('comparison_case_calc_plato', array('case_id' => $case_id)))

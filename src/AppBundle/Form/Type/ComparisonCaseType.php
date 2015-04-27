@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\Form;
+namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ComparisonType extends AbstractType
+class ComparisonCaseType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -16,6 +16,8 @@ class ComparisonType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('basic')
+            ->add('comparison')
         ;
     }
 
@@ -25,7 +27,7 @@ class ComparisonType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Comparison',
+            'data_class' => 'AppBundle\Entity\ComparisonCase',
         ));
     }
 
@@ -34,6 +36,6 @@ class ComparisonType extends AbstractType
      */
     public function getName()
     {
-        return 'appbundle_comparison';
+        return 'appbundle_comparisoncase';
     }
 }
