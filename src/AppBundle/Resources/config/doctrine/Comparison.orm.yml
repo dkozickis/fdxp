@@ -13,3 +13,5 @@ AppBundle\Entity\Comparison:
     cases:
       targetEntity: AppBundle\Entity\ComparisonCase
       mappedBy: comparison
+      orphanRemoval: true
+      cascade: ['remove']

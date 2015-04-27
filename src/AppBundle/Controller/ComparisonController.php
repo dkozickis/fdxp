@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\Comparison;
-use AppBundle\Form\ComparisonType;
+use AppBundle\Form\Type\ComparisonType;
 
 /**
  * Comparison controller.
@@ -77,7 +77,14 @@ class ComparisonController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Create'));
+        $form->get('actions')->add('backToList', 'button', array(
+            'as_link' => true, 'attr' => array(
+                'href' => $this->generateUrl('compare')
+            )
+        ));
 
         return $form;
     }
@@ -169,7 +176,20 @@ class ComparisonController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Update'));
+        $form->get('actions')->add('delete', 'button', array(
+            'label' => 'Delete',
+            'button_class' => 'danger',
+            'attr' => array(
+                'id' => 'delete-button'
+            )));
+        $form->get('actions')->add('backToList', 'button', array(
+            'as_link' => true, 'attr' => array(
+                'href' => $this->generateUrl('compare')
+            )
+        ));
 
         return $form;
     }
@@ -246,7 +266,7 @@ class ComparisonController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('compare_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            //->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
     }

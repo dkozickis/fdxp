@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\ComparisonCaseCalc;
-use AppBundle\Form\ComparisonCaseCalcType;
+use AppBundle\Form\Type\ComparisonCaseCalcType;
 use AppBundle\Utils\ComparisonUtils;
 
 /**

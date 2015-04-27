@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\ComparisonCase;
-use AppBundle\Form\ComparisonCaseType;
+use AppBundle\Form\Type\ComparisonCaseType;
 
 /**
  * ComparisonCase controller.
@@ -29,10 +29,13 @@ class ComparisonCaseController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AppBundle:Comparison')->find($comp_id)->getCases();
+        $comparison = $em->getRepository('AppBundle:Comparison')->find($comp_id);
+        $comp_name = $comparison->getName();
+        $entities = $comparison->getCases();
 
         return array(
             'entities' => $entities,
+            'name' => $comp_name
         );
     }
     /**
@@ -54,7 +57,7 @@ class ComparisonCaseController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('compare_case_show', array('id' => $entity->getId(),
+            return $this->redirect($this->generateUrl('compare_case', array(
                 'comp_id' => $comp_id, )));
         }
 
@@ -73,12 +76,21 @@ class ComparisonCaseController extends Controller
      */
     private function createCreateForm(ComparisonCase $entity, $comp_id)
     {
+
         $form = $this->createForm(new ComparisonCaseType(), $entity, array(
             'action' => $this->generateUrl('compare_case_create', array('comp_id' => $comp_id)),
             'method' => 'POST',
+            'comparison' => $comp_id
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Create'));
+        $form->get('actions')->add('backToList', 'button', array(
+            'as_link' => true, 'attr' => array(
+                'href' => $this->generateUrl('compare_case', array('comp_id' => $comp_id))
+            )
+        ));
 
         return $form;
     }
@@ -169,9 +181,24 @@ class ComparisonCaseController extends Controller
             'action' => $this->generateUrl('compare_case_update', array('id' => $entity->getId(),
                 'comp_id' => $comp_id, )),
             'method' => 'PUT',
+            'comparison' => $comp_id
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Update'));
+        $form->get('actions')->add('delete', 'button', array(
+            'label' => 'Delete',
+            'button_class' => 'danger',
+            'attr' => array(
+                'id' => 'delete-button'
+            )));
+        $form->get('actions')->add('backToList', 'button', array(
+            'as_link' => true, 'attr' => array(
+                'href' => $this->generateUrl('compare_case', array(
+                        'comp_id' => $comp_id,)
+            )
+        )));
 
         return $form;
     }
@@ -248,7 +275,6 @@ class ComparisonCaseController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('compare_case_delete', array('id' => $id, 'comp_id' => $comp_id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
     }

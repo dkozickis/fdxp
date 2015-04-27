@@ -1,44 +1,35 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
 {% block body -%}
-    {{ knp_menu_render('comparison_menu', { 'style' : 'breadcrumb', 'template' : 'AppBundle:Menu:mybootstrap.html.twig'}) }}
     <div class="col-md-6">
-
-    <h1>Comparison cases</h1>
-
-    <table class="table">
-        <thead>
+        {{ knp_menu_render('comparison_menu',
+        { 'style' : 'breadcrumb', 'template' : 'AppBundle:Menu:mybootstrap.html.twig'}) }}
+        <h2>List of cases for "{{ name }}"</h2>
+        <table class="table">
+            <thead>
+            <tr>
                 <th>Name</th>
                 <th>Basic</th>
-                <th>Actions</th>
+                <th><span class="glyphicon glyphicon-th-list"></span> Show details</th>
+                <th>Edit / Delete</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.basic }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('comparison_case_calc', { 'case_id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('compare_case_edit', { 'id': entity.id, 'comp_id' : app.request.get('comp_id') }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-        <ul>
-        <li>
-            <a href="{{ path('compare_case_new', { 'comp_id': app.request.get('comp_id') }) }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
+            </thead>
+            <tbody>
+            {% for entity in entities %}
+                <tr>
+                    <td>{{ entity.name }}</td>
+                    <td>{{ entity.basic ? 'Yes' : 'No' }}</td>
+                    <td><a href="{{ path('comparison_case_calc', { 'case_id': entity.id }) }}">Show details</a></td>
+                    <td>
+                        <a href="{{ path('compare_case_edit',
+                        { 'id': entity.id, 'comp_id' : app.request.get('comp_id') }) }}">Edit / Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ path('compare_case_new', { 'comp_id': app.request.get('comp_id') }) }}" class="btn btn-primary btn">
+            Create new case
+        </a>
     </div>
-    {% endblock %}
+{% endblock %}

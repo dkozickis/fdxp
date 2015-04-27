@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 /**
  * Comparison.
+
  */
 class Comparison
 {
@@ -101,4 +102,5 @@ class Comparison
     {
         return $this->name;
     }
+
 }

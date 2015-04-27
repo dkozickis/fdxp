@@ -25,3 +25,5 @@ AppBundle\Entity\ComparisonCase:
       calcs:
         targetEntity: AppBundle\Entity\ComparisonCaseCalc
         mappedBy: case
+        orphanRemoval: true
+        cascade: ['remove']

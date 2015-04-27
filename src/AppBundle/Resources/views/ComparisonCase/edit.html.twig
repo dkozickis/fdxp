@@ -6,13 +6,23 @@
 
     {{ form(edit_form) }}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('compare_case', { 'id' : app.request.get('id'), 'comp_id' : app.request.get('comp_id') }) }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    {{ form(delete_form, { 'attr' : { 'id' : 'delete-form'}}) }}
+
     </div>
+    {% include 'AppBundle::modal_snippet.html.twig' %}
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function () {
+            $('.btn-danger').on('click', function (e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({backdrop: true, keyboard: true})
+                        .one('click', '#modal-delete-button', function (e) {
+                            $('#delete-form').trigger('submit');
+                        });
+            });
+        });
+    </script>
 {% endblock %}
