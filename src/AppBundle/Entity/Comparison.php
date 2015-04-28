@@ -4,7 +4,6 @@ namespace AppBundle\Entity;
 
 /**
  * Comparison.
-
  */
 class Comparison
 {

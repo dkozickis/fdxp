@@ -184,7 +184,7 @@ class ComparisonController extends Controller
             'button_class' => 'danger',
             'attr' => array(
                 'id' => 'delete-button',
-            ), ));
+            ),));
         $form->get('actions')->add('backToList', 'button', array(
             'as_link' => true, 'attr' => array(
                 'href' => $this->generateUrl('compare'),

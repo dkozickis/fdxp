@@ -17,7 +17,7 @@ class ShiftLogArchiveRepository extends EntityRepository
     {
         $em = $this->findBy(array(
             'archivedDate' => $archivedDate,
-            'archivedShift' => $archivedShift, ));
+            'archivedShift' => $archivedShift,));
 
         if (count($em) > 0) {
             return true;
@@ -38,14 +38,14 @@ class ShiftLogArchiveRepository extends EntityRepository
         foreach ($entities as $entity) {
             $archive['log'][] = array('info_type' => $entity['info_type'],
                                     'info_header' => $entity['info_header'],
-                                    'content' => $entity['content'], );
+                                    'content' => $entity['content'],);
         }
 
         $entities = $em->getRepository('AppBundle:ShiftLogFiles')->findAll();
 
         foreach ($entities as $entity) {
             $archive['files'][] = array('description' => $entity->getDescription(),
-                                        'file_name' => $entity->getFileName(), );
+                                        'file_name' => $entity->getFileName(),);
 
             $fs->copy($kernel_dir.'/../web/uploads/shiftlog/'.$entity->getFileName(),
                 $kernel_dir.'/../web/uploads/shiftlog/archive/'.$entity->getFileName());
