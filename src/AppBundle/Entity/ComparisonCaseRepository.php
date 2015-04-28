@@ -4,10 +4,10 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
-class ComparisonCaseRepository extends EntityRepository{
-
-    public function findCaseCalcs($comp_id){
-
+class ComparisonCaseRepository extends EntityRepository
+{
+    public function findCaseCalcs($comp_id)
+    {
         $qb = $this->createQueryBuilder('caser', 'calculations')
             ->select('caser', 'calculations')
             ->where('caser.comparison = :comp_id')
@@ -19,5 +19,4 @@ class ComparisonCaseRepository extends EntityRepository{
 
         return $qb->getArrayResult();
     }
-
 }

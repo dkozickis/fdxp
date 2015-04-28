@@ -73,21 +73,21 @@ class Builder extends ContainerAware
                 $menu->addChild($comp->getName(), array(
                     'route' => 'compare_case',
                     'routeParameters' => array(
-                        'comp_id' => $comp->getId()), ));
+                        'comp_id' => $comp->getId(), ), ));
                 break;
             case 'case':
                 $menu = $this->compareMenuBuildUp('comp_from_case_id', $menu, $em, $rs);
                 $case = $em
                     ->getRepository('AppBundle:ComparisonCase')
                     ->find($rs->getCurrentRequest('')->get('case_id'));
-                if($rs->getCurrentRequest()->get('_route') == 'comparison_case_calc_edit'){
+                if ($rs->getCurrentRequest()->get('_route') == 'comparison_case_calc_edit') {
                     $menu->addChild($case->getName(), array(
                         'route' => 'comparison_case_calc',
                         'routeParameters' => array(
-                            'case_id' => $rs->getCurrentRequest('')->get('case_id')
-                        )
+                            'case_id' => $rs->getCurrentRequest('')->get('case_id'),
+                        ),
                     ));
-                }else{
+                } else {
                     $menu->addChild($case->getName());
                     $menu->setCurrent(1);
                 }

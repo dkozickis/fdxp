@@ -2,14 +2,12 @@
 
 namespace AppBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\ComparisonCase;
-use AppBundle\Entity\ComparisonCaseCalc;
 use AppBundle\Form\Type\ComparisonCaseType;
 
 /**
@@ -82,23 +80,23 @@ class ComparisonCaseController extends Controller
                     'time' => $calc['time'],
                     'cost_diff' => $cost_diff,
                     'time_diff' => $time_diff,
-                    'dummy' => 0
+                    'dummy' => 0,
                 );
             }
             ++$i;
         }
 
-        foreach($allCalcs as $key => $value){
-            if(count($value) != $case_count){
-                for($i = 0; $i < $case_count; $i++ ){
-                    if(!isset($allCalcs[$key][$i])){
-                            $allCalcs[$key][$i] = array(
+        foreach ($allCalcs as $key => $value) {
+            if (count($value) != $case_count) {
+                for ($i = 0; $i < $case_count; $i++) {
+                    if (!isset($allCalcs[$key][$i])) {
+                        $allCalcs[$key][$i] = array(
                                 'basic' => ($i == 0 ? 1 : 0),
                                 'cost' => 0,
                                 'time' => 0,
                                 'cost_diff' => 0,
                                 'time_diff' => 0,
-                                'dummy' => 1
+                                'dummy' => 1,
                             );
                     }
                 }
@@ -109,9 +107,8 @@ class ComparisonCaseController extends Controller
         return array(
             'calc_info' => $allCalcs,
             'header' => $headerBuilder,
-            'counter' => $case_count
+            'counter' => $case_count,
         );
-
     }
 
     /**
@@ -134,7 +131,7 @@ class ComparisonCaseController extends Controller
             $em->flush();
 
             return $this->redirect($this->generateUrl('compare_case', array(
-                'comp_id' => $comp_id,)));
+                'comp_id' => $comp_id, )));
         }
 
         return array(
@@ -254,7 +251,7 @@ class ComparisonCaseController extends Controller
     {
         $form = $this->createForm(new ComparisonCaseType(), $entity, array(
             'action' => $this->generateUrl('compare_case_update', array('id' => $entity->getId(),
-                'comp_id' => $comp_id,)),
+                'comp_id' => $comp_id, )),
             'method' => 'PUT',
             'comparison' => $comp_id,
         ));
@@ -267,11 +264,11 @@ class ComparisonCaseController extends Controller
             'button_class' => 'danger',
             'attr' => array(
                 'id' => 'delete-button',
-            ),));
+            ), ));
         $form->get('actions')->add('backToList', 'button', array(
                 'as_link' => true, 'attr' => array(
                     'href' => $this->generateUrl('compare_case', array(
-                        'comp_id' => $comp_id,)),
+                        'comp_id' => $comp_id, )),
                 ),
             )
         );

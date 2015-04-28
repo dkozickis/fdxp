@@ -83,7 +83,7 @@ class ComparisonCaseCalcController extends Controller
         }
 
         return $this->redirectToRoute('comparison_case_calc', array(
-            'case_id' => $case_id
+            'case_id' => $case_id,
         ));
     }
 
@@ -116,7 +116,7 @@ class ComparisonCaseCalcController extends Controller
             $em->flush();
 
             return $this->redirect($this->generateUrl('comparison_case_calc', array(
-                'case_id' => $case_id
+                'case_id' => $case_id,
                 )
             ));
         }
@@ -231,7 +231,7 @@ class ComparisonCaseCalcController extends Controller
         $form = $this->createForm(new ComparisonCaseCalcType(), $entity, array(
             'action' => $this->generateUrl('comparison_case_calc_update', array(
                 'id' => $entity->getId(),
-                'case_id' => $case_id)),
+                'case_id' => $case_id, )),
             'method' => 'PUT',
         ));
 
@@ -251,7 +251,6 @@ class ComparisonCaseCalcController extends Controller
                 ),
             )
         );
-
 
         return $form;
     }
@@ -282,7 +281,7 @@ class ComparisonCaseCalcController extends Controller
 
             return $this->redirect($this->generateUrl('comparison_case_calc_edit', array(
                 'id' => $id,
-                'case_id' => $case_id)));
+                'case_id' => $case_id, )));
         }
 
         return array(
@@ -316,7 +315,7 @@ class ComparisonCaseCalcController extends Controller
         }
 
         return $this->redirect($this->generateUrl('comparison_case_calc', array(
-            'case_id' => $case_id
+            'case_id' => $case_id,
         )));
     }
 
@@ -332,7 +331,7 @@ class ComparisonCaseCalcController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('comparison_case_calc_delete', array(
                 'id' => $id,
-                'case_id' => $case_id)))
+                'case_id' => $case_id, )))
             ->setMethod('DELETE')
             ->getForm()
         ;
