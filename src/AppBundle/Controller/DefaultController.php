@@ -16,6 +16,8 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        return $this->redirectToRoute('shiftlog_index');
+        //return $this->redirectToRoute('shiftlog_index');
+
+        return $this->render('AppBundle::layout.html.twig');
     }
 }
