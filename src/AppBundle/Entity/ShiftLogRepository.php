@@ -36,7 +36,7 @@ class ShiftLogRepository extends EntityRepository
         foreach ($entities as $entity) {
             $info_result[] = array('content' => $entity['content'],
                 'info_header' => $entity['infoHeader'],
-                'info_type' => $entity['infoType'], );
+                'info_type' => $entity['infoType'],);
         }
 
         return $info_result;

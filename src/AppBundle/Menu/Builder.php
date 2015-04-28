@@ -57,6 +57,9 @@ class Builder extends ContainerAware
         return $menu;
     }
 
+    /**
+     * @param string $build
+     */
     private function compareMenuBuildUp($build = null, ItemInterface $menu, EntityManager $em, RequestStack $rs)
     {
         switch ($build) {
@@ -73,7 +76,7 @@ class Builder extends ContainerAware
                 $menu->addChild($comp->getName(), array(
                     'route' => 'compare_case',
                     'routeParameters' => array(
-                        'comp_id' => $comp->getId(), ), ));
+                        'comp_id' => $comp->getId(),),));
                 break;
             case 'case':
                 $menu = $this->compareMenuBuildUp('comp_from_case_id', $menu, $em, $rs);

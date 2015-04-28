@@ -131,7 +131,7 @@ class ComparisonCaseController extends Controller
             $em->flush();
 
             return $this->redirect($this->generateUrl('compare_case', array(
-                'comp_id' => $comp_id, )));
+                'comp_id' => $comp_id,)));
         }
 
         return array(
@@ -251,7 +251,7 @@ class ComparisonCaseController extends Controller
     {
         $form = $this->createForm(new ComparisonCaseType(), $entity, array(
             'action' => $this->generateUrl('compare_case_update', array('id' => $entity->getId(),
-                'comp_id' => $comp_id, )),
+                'comp_id' => $comp_id,)),
             'method' => 'PUT',
             'comparison' => $comp_id,
         ));
@@ -264,11 +264,11 @@ class ComparisonCaseController extends Controller
             'button_class' => 'danger',
             'attr' => array(
                 'id' => 'delete-button',
-            ), ));
+            ),));
         $form->get('actions')->add('backToList', 'button', array(
                 'as_link' => true, 'attr' => array(
                     'href' => $this->generateUrl('compare_case', array(
-                        'comp_id' => $comp_id, )),
+                        'comp_id' => $comp_id,)),
                 ),
             )
         );
