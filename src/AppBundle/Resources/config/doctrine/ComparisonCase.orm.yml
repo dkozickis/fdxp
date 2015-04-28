@@ -1,6 +1,7 @@
 AppBundle\Entity\ComparisonCase:
   type: entity
   table: comparison_case
+  repositoryClass: AppBundle\Entity\ComparisonCaseRepository
   id:
     id:
       type: integer

@@ -1,15 +1,10 @@
-{% extends '::base.html.twig' %}
+{% extends 'AppBundle::layout.html.twig' %}
 
-{% block body -%}
-    <h1>ComparisonCaseCalc creation</h1>
+{% block body %}
+    <div class="col-md-6">
+        <h1>Case calc creation</h1>
 
-    {{ form(form) }}
+        {{ form(form) }}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('comparison_case_calc') }}">
-            Back to the list
-        </a>
-    </li>
-</ul>
+    </div>
 {% endblock %}

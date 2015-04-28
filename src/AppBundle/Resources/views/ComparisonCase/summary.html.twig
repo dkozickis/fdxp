@@ -1,0 +1,40 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block body-%}
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+            <tr>
+                {% for value in header %}
+                    <th>{{ value }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            {% for key, calcs in calc_info %}
+                <tr>
+                    <td>{{ key }}</td>
+                    {% for key, calc in calcs %}
+                        <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                            {{ (calc.dummy) ? " " : calc.cost }}
+                        </td>
+                        {% if not calc.basic %}
+                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                {{ (calc.dummy) ? " " : calc.cost_diff }}
+                            </td>
+                        {% endif %}
+                        <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                            {{ (calc.dummy) ? " " : calc.time|date("h:i") }}
+                        </td>
+                        {% if not calc.basic %}
+                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                {% if not calc.dummy %}
+                                {{ not calc.time_diff  ? '00:00' : calc.time_diff|date("%r%H:%I") }}
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

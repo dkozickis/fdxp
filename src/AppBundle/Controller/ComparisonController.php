@@ -82,8 +82,8 @@ class ComparisonController extends Controller
         $form->get('actions')->add('submit', 'submit', array('label' => 'Create'));
         $form->get('actions')->add('backToList', 'button', array(
             'as_link' => true, 'attr' => array(
-                'href' => $this->generateUrl('compare')
-            )
+                'href' => $this->generateUrl('compare'),
+            ),
         ));
 
         return $form;
@@ -183,12 +183,12 @@ class ComparisonController extends Controller
             'label' => 'Delete',
             'button_class' => 'danger',
             'attr' => array(
-                'id' => 'delete-button'
-            )));
+                'id' => 'delete-button',
+            ), ));
         $form->get('actions')->add('backToList', 'button', array(
             'as_link' => true, 'attr' => array(
-                'href' => $this->generateUrl('compare')
-            )
+                'href' => $this->generateUrl('compare'),
+            ),
         ));
 
         return $form;

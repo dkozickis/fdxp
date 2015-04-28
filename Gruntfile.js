@@ -1,6 +1,16 @@
 module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        less: {
+            production: {
+                options: {
+                    paths: ["vendor/braincrafted/bootstrap-bundle/Braincrafted/Bundle/BootstrapBundle/Resources/less"]
+                },
+                files: {
+                    "web/css/bootstrap-braincrafted.css": "vendor/braincrafted/bootstrap-bundle/Braincrafted/Bundle/BootstrapBundle/Resources/less/form.less"
+                }
+            }
+        },
         bowercopy: {
             options: {
                 srcPrefix: 'bower_components'
@@ -34,6 +44,7 @@ module.exports = function (grunt) {
                 src: [
                     'web/css/bootstrap.css',
                     'web/css/bootstrap-fileinput.css',
+                    'web/css/bootstrap-braincrafted.css',
                     'src/AppBundle/Resources/public/css/*.css'
                 ],
                 dest: 'web/css/bundled.css'
@@ -62,11 +73,12 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-bowercopy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('default', ['bowercopy', 'concat', 'cssmin', 'uglify']);
+    grunt.registerTask('default', ['less', 'bowercopy', 'concat', 'cssmin', 'uglify']);
 };

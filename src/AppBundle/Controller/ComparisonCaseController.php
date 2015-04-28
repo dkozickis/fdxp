@@ -2,12 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\ComparisonCase;
+use AppBundle\Entity\ComparisonCaseCalc;
 use AppBundle\Form\Type\ComparisonCaseType;
 
 /**
@@ -35,9 +37,83 @@ class ComparisonCaseController extends Controller
 
         return array(
             'entities' => $entities,
-            'name' => $comp_name
+            'name' => $comp_name,
         );
     }
+
+    /**
+     * @Route("/summary", name="comparison_case_calc_summary")
+     *
+     * @Method("GET")
+     * @Template()
+     */
+    public function summaryAction($comp_id)
+    {
+        $allCalcs = [];
+        $headerBuilder[] = '';
+        $cost_diff = 0;
+        $time_diff = 0;
+        $i = 0;
+
+        $cases_calcs = $this->getDoctrine()->getRepository('AppBundle:ComparisonCase')->findCaseCalcs($comp_id);
+        $case_count = count($cases_calcs);
+
+        foreach ($cases_calcs as $case) {
+            if ($case['basic']) {
+                $headerBuilder[] = 'Basic cost';
+                $headerBuilder[] = 'Basic time';
+            } else {
+                $headerBuilder[] = $case['name'].' cost';
+                $headerBuilder[] = $case['name'].' cost difference';
+                $headerBuilder[] = $case['name'].' time';
+                $headerBuilder[] = $case['name'].' time difference';
+            }
+            foreach ($case['calcs'] as $calc) {
+                if (!$case['basic'] && isset($allCalcs[$calc['citypair']][0])) {
+                    $cost_diff = $calc['cost'] - $allCalcs[$calc['citypair']][0]['cost'];
+                    $time_diff = $allCalcs[$calc['citypair']][0]['time']->diff($calc['time']);
+                } else {
+                    $cost_diff = 0;
+                    $time_diff = 0;
+                }
+                $allCalcs[$calc['citypair']][$i] = array(
+                    'basic' => ($case['basic'] ? 1 : 0),
+                    'cost' => $calc['cost'],
+                    'time' => $calc['time'],
+                    'cost_diff' => $cost_diff,
+                    'time_diff' => $time_diff,
+                    'dummy' => 0
+                );
+            }
+            ++$i;
+        }
+
+        foreach($allCalcs as $key => $value){
+            if(count($value) != $case_count){
+                for($i = 0; $i < $case_count; $i++ ){
+                    if(!isset($allCalcs[$key][$i])){
+                            $allCalcs[$key][$i] = array(
+                                'basic' => ($i == 0 ? 1 : 0),
+                                'cost' => 0,
+                                'time' => 0,
+                                'cost_diff' => 0,
+                                'time_diff' => 0,
+                                'dummy' => 1
+                            );
+                    }
+                }
+            }
+            ksort($allCalcs[$key]);
+        }
+
+        return array(
+            'calc_info' => $allCalcs,
+            'header' => $headerBuilder,
+            'counter' => $case_count
+        );
+
+    }
+
     /**
      * Creates a new ComparisonCase entity.
      *
@@ -58,12 +134,12 @@ class ComparisonCaseController extends Controller
             $em->flush();
 
             return $this->redirect($this->generateUrl('compare_case', array(
-                'comp_id' => $comp_id, )));
+                'comp_id' => $comp_id,)));
         }
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -76,11 +152,10 @@ class ComparisonCaseController extends Controller
      */
     private function createCreateForm(ComparisonCase $entity, $comp_id)
     {
-
         $form = $this->createForm(new ComparisonCaseType(), $entity, array(
             'action' => $this->generateUrl('compare_case_create', array('comp_id' => $comp_id)),
             'method' => 'POST',
-            'comparison' => $comp_id
+            'comparison' => $comp_id,
         ));
 
         $form->add('actions', 'form_actions');
@@ -88,8 +163,8 @@ class ComparisonCaseController extends Controller
         $form->get('actions')->add('submit', 'submit', array('label' => 'Create'));
         $form->get('actions')->add('backToList', 'button', array(
             'as_link' => true, 'attr' => array(
-                'href' => $this->generateUrl('compare_case', array('comp_id' => $comp_id))
-            )
+                'href' => $this->generateUrl('compare_case', array('comp_id' => $comp_id)),
+            ),
         ));
 
         return $form;
@@ -106,11 +181,11 @@ class ComparisonCaseController extends Controller
     public function newAction($comp_id)
     {
         $entity = new ComparisonCase();
-        $form   = $this->createCreateForm($entity, $comp_id);
+        $form = $this->createCreateForm($entity, $comp_id);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -135,7 +210,7 @@ class ComparisonCaseController extends Controller
         $deleteForm = $this->createDeleteForm($id, $comp_id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -162,8 +237,8 @@ class ComparisonCaseController extends Controller
         $deleteForm = $this->createDeleteForm($id, $comp_id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -179,9 +254,9 @@ class ComparisonCaseController extends Controller
     {
         $form = $this->createForm(new ComparisonCaseType(), $entity, array(
             'action' => $this->generateUrl('compare_case_update', array('id' => $entity->getId(),
-                'comp_id' => $comp_id, )),
+                'comp_id' => $comp_id,)),
             'method' => 'PUT',
-            'comparison' => $comp_id
+            'comparison' => $comp_id,
         ));
 
         $form->add('actions', 'form_actions');
@@ -191,17 +266,19 @@ class ComparisonCaseController extends Controller
             'label' => 'Delete',
             'button_class' => 'danger',
             'attr' => array(
-                'id' => 'delete-button'
-            )));
+                'id' => 'delete-button',
+            ),));
         $form->get('actions')->add('backToList', 'button', array(
-            'as_link' => true, 'attr' => array(
-                'href' => $this->generateUrl('compare_case', array(
-                        'comp_id' => $comp_id,)
+                'as_link' => true, 'attr' => array(
+                    'href' => $this->generateUrl('compare_case', array(
+                        'comp_id' => $comp_id,)),
+                ),
             )
-        )));
+        );
 
         return $form;
     }
+
     /**
      * Edits an existing ComparisonCase entity.
      *
@@ -231,11 +308,12 @@ class ComparisonCaseController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a ComparisonCase entity.
      *
@@ -275,7 +353,6 @@ class ComparisonCaseController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('compare_case_delete', array('id' => $id, 'comp_id' => $comp_id)))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

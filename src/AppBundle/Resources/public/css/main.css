@@ -1,3 +1,6 @@
 body {
     padding-top: 65px;
 }
+.top-buffer{
+    margin-top: 10px;
+}

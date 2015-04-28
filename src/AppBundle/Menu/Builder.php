@@ -4,6 +4,7 @@ namespace AppBundle\Menu;
 
 use Doctrine\ORM\EntityManager;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\SecurityContext;
@@ -42,25 +43,60 @@ class Builder extends ContainerAware
 
         switch ($requestStack->getCurrentRequest()->get('_route')) {
             case 'compare_case':
-                $comp = $entityManager
+                $menu = $this->compareMenuBuildUp('comp', $menu, $entityManager, $requestStack);
+                break;
+            case 'comparison_case_calc':
+                $menu = $this->compareMenuBuildUp('case', $menu, $entityManager, $requestStack);
+                break;
+            case 'comparison_case_calc_edit':
+                $menu = $this->compareMenuBuildUp('calc', $menu, $entityManager, $requestStack);
+                break;
+
+        }
+
+        return $menu;
+    }
+
+    private function compareMenuBuildUp($build = null, ItemInterface $menu, EntityManager $em, RequestStack $rs)
+    {
+        switch ($build) {
+            case 'comp':
+                $comp = $em
                     ->getRepository('AppBundle:Comparison')
-                    ->find($requestStack->getCurrentRequest()->get('comp_id'));
+                    ->find($rs->getCurrentRequest()->get('comp_id'));
                 $menu->addChild($comp->getName());
                 $menu->setCurrent(1);
                 break;
-            case 'comparison_case_calc':
-                $case = $entityManager
+            case 'comp_from_case_id':
+                $comp = $em->getRepository('AppBundle:ComparisonCase')
+                    ->find($rs->getCurrentRequest('')->get('case_id'))->getComparison();
+                $menu->addChild($comp->getName(), array(
+                    'route' => 'compare_case',
+                    'routeParameters' => array(
+                        'comp_id' => $comp->getId()), ));
+                break;
+            case 'case':
+                $menu = $this->compareMenuBuildUp('comp_from_case_id', $menu, $em, $rs);
+                $case = $em
                     ->getRepository('AppBundle:ComparisonCase')
-                    ->find($requestStack->getCurrentRequest('')->get('case_id'));
-                $case_name = $case->getName();
-
-                $comp_name = $case->getComparison()->getName();
-                $comp_id = $case->getComparison()->getId();
-
-                $menu->addChild($comp_name, array('route' => 'compare_case',
-                    'routeParameters' => array('comp_id' => $comp_id), ));
-
-                $menu->addChild($case_name);
+                    ->find($rs->getCurrentRequest('')->get('case_id'));
+                if($rs->getCurrentRequest()->get('_route') == 'comparison_case_calc_edit'){
+                    $menu->addChild($case->getName(), array(
+                        'route' => 'comparison_case_calc',
+                        'routeParameters' => array(
+                            'case_id' => $rs->getCurrentRequest('')->get('case_id')
+                        )
+                    ));
+                }else{
+                    $menu->addChild($case->getName());
+                    $menu->setCurrent(1);
+                }
+                break;
+            case 'calc':
+                $menu = $this->compareMenuBuildUp('case', $menu, $em, $rs);
+                $calc = $em->getRepository('AppBundle:ComparisonCaseCalc')
+                    ->find($rs->getCurrentRequest('')->get('id'));
+                $menu->addChild($calc->getCitypair());
                 $menu->setCurrent(1);
                 break;
         }

@@ -102,5 +102,4 @@ class Comparison
     {
         return $this->name;
     }
-
 }

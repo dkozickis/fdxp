@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\ComparisonCaseCalc;
 use AppBundle\Form\Type\ComparisonCaseCalcType;
+use AppBundle\Entity\ComparisonCase;
 use AppBundle\Utils\ComparisonUtils;
 
 /**
@@ -54,11 +55,9 @@ class ComparisonCaseCalcController extends Controller
      * @Route("/plato", name="comparison_case_calc_plato")
      *
      * @Method("POST")
-     * @Template("AppBundle:ComparisonCaseCalc:new.html.twig")
      */
     public function platoAction(Request $request, $case_id)
     {
-        $platoArray = [];
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createPlatoForm($case_id);
@@ -83,9 +82,9 @@ class ComparisonCaseCalcController extends Controller
             $em->flush();
         }
 
-        dump($platoArray);
-
-        throw new \Exception('Yea');
+        return $this->redirectToRoute('comparison_case_calc', array(
+            'case_id' => $case_id
+        ));
     }
 
     private function createPlatoForm($case_id)
@@ -116,7 +115,10 @@ class ComparisonCaseCalcController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('comparison_case_calc_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('comparison_case_calc', array(
+                'case_id' => $case_id
+                )
+            ));
         }
 
         return array(
@@ -171,7 +173,7 @@ class ComparisonCaseCalcController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction($id, $case_id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -181,7 +183,7 @@ class ComparisonCaseCalcController extends Controller
             throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($id, $case_id);
 
         return array(
             'entity'      => $entity,
@@ -197,7 +199,7 @@ class ComparisonCaseCalcController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction($id, $case_id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -207,8 +209,8 @@ class ComparisonCaseCalcController extends Controller
             throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        $editForm = $this->createEditForm($entity, $case_id);
+        $deleteForm = $this->createDeleteForm($id, $case_id);
 
         return array(
             'entity'      => $entity,
@@ -224,14 +226,32 @@ class ComparisonCaseCalcController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createEditForm(ComparisonCaseCalc $entity)
+    private function createEditForm(ComparisonCaseCalc $entity, $case_id)
     {
         $form = $this->createForm(new ComparisonCaseCalcType(), $entity, array(
-            'action' => $this->generateUrl('comparison_case_calc_update', array('id' => $entity->getId())),
+            'action' => $this->generateUrl('comparison_case_calc_update', array(
+                'id' => $entity->getId(),
+                'case_id' => $case_id)),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Update'));
+        $form->get('actions')->add('delete', 'button', array(
+            'label' => 'Delete',
+            'button_class' => 'danger',
+            'attr' => array(
+                'id' => 'delete-button',
+            ), ));
+        $form->get('actions')->add('backToList', 'button', array(
+                'as_link' => true, 'attr' => array(
+                    'href' => $this->generateUrl('comparison_case_calc', array(
+                        'case_id' => $case_id, )),
+                ),
+            )
+        );
+
 
         return $form;
     }
@@ -243,7 +263,7 @@ class ComparisonCaseCalcController extends Controller
      * @Method("PUT")
      * @Template("AppBundle:ComparisonCaseCalc:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, $id, $case_id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -253,14 +273,16 @@ class ComparisonCaseCalcController extends Controller
             throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($id, $case_id);
+        $editForm = $this->createEditForm($entity, $case_id);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('comparison_case_calc_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('comparison_case_calc_edit', array(
+                'id' => $id,
+                'case_id' => $case_id)));
         }
 
         return array(
@@ -276,9 +298,9 @@ class ComparisonCaseCalcController extends Controller
      *
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, $id, $case_id)
     {
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($id, $case_id);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -293,7 +315,9 @@ class ComparisonCaseCalcController extends Controller
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('comparison_case_calc'));
+        return $this->redirect($this->generateUrl('comparison_case_calc', array(
+            'case_id' => $case_id
+        )));
     }
 
     /**
@@ -303,12 +327,13 @@ class ComparisonCaseCalcController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    private function createDeleteForm($id, $case_id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('comparison_case_calc_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('comparison_case_calc_delete', array(
+                'id' => $id,
+                'case_id' => $case_id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
     }
