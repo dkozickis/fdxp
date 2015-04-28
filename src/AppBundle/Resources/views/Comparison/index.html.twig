@@ -13,7 +13,8 @@
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th><span class="glyphicon glyphicon-th-list"></span> Show details</th>
+                    <th><span class="glyphicon glyphicon-edit"></span> Edit details</th>
+                    <th><span class="glyphicon glyphicon-th-list"></span> Show summary</th>
                     <th>Edit name / Delete</th>
                 </tr>
                 </thead>
@@ -21,9 +22,19 @@
                 {% for entity in entities %}
                     <tr>
                         <td>{{ entity.name }}</td>
-                        <td><a href="{{ path('compare_case', { 'comp_id': entity.id }) }}">Show details</a></td>
+                        <td><a href="{{ path('compare_case', { 'comp_id': entity.id }) }}">
+                                Edit details
+                            </a>
+                        </td>
                         <td>
-                                    <a href="{{ path('compare_edit', { 'id': entity.id }) }}">Edit name / Delete</a>
+                            <a href="{{ path('compare_summary', { 'comp_id': entity.id }) }}">
+                                Show summary
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ path('compare_edit', { 'id': entity.id }) }}">
+                                Edit name / Delete
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}

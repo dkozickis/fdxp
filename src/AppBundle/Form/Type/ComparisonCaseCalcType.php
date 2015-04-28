@@ -4,6 +4,7 @@ namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ComparisonCaseCalcType extends AbstractType
@@ -18,7 +19,15 @@ class ComparisonCaseCalcType extends AbstractType
             ->add('citypair')
             ->add('cost')
             ->add('time')
-            ->add('case')
+            ->add('case', 'entity', array(
+                'read_only' => true,
+                'class' => 'AppBundle:ComparisonCase',
+                'query_builder' => function(EntityRepository $entityRepository) use ($options) {
+                    return $entityRepository->createQueryBuilder('c')
+                        ->where('c.id = :id')
+                        ->setParameter('id', $options['case']);
+                },
+            ))
         ;
     }
 
@@ -29,6 +38,7 @@ class ComparisonCaseCalcType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\ComparisonCaseCalc',
+            'case' => null
         ));
     }
 

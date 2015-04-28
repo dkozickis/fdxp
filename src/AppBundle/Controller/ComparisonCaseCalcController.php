@@ -139,9 +139,17 @@ class ComparisonCaseCalcController extends Controller
         $form = $this->createForm(new ComparisonCaseCalcType(), $entity, array(
             'action' => $this->generateUrl('comparison_case_calc_create', array('case_id' => $case_id)),
             'method' => 'POST',
+            'case' => $case_id
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Create'));
+        $form->get('actions')->add('backToList', 'button', array(
+            'as_link' => true, 'attr' => array(
+                'href' => $this->generateUrl('comparison_case_calc', array('case_id' => $case_id)),
+            ),
+        ));
 
         return $form;
     }
@@ -233,6 +241,7 @@ class ComparisonCaseCalcController extends Controller
                 'id' => $entity->getId(),
                 'case_id' => $case_id,)),
             'method' => 'PUT',
+            'case' => $case_id
         ));
 
         $form->add('actions', 'form_actions');

@@ -2,6 +2,9 @@
 
 {% block body-%}
     <div class="col-md-12">
+        {{ knp_menu_render('comparison_menu',
+        { 'style' : 'breadcrumb', 'template' : 'AppBundle:Menu:mybootstrap.html.twig'}) }}
+        <h1 class="text-center">{{ comparison.name }} summary</h1>
         <table class="table">
             <thead>
             <tr>

@@ -25,7 +25,13 @@ class Builder extends ContainerAware
     {
         $menu = $this->factory->createItem('root');
 
-        $menu->addChild('Shift Log', array('route' => 'shiftlog_index'));
+        if ($securityContext->isGranted('ROLE_FD')) {
+            $menu->addChild('Shift Log', array('route' => 'shiftlog_index'));
+        }
+
+        if ($securityContext->isGranted('ROLE_TFD')) {
+            $menu->addChild('Route comparisons', array('route' => 'compare'));
+        }
 
         if (!$securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $menu->addChild('Login', array('route' => 'fos_user_security_login'));
@@ -39,7 +45,7 @@ class Builder extends ContainerAware
     public function createComparisonMenu(RequestStack $requestStack, EntityManager $entityManager)
     {
         $menu = $this->factory->createItem('root');
-        $menu->addChild('Comparison', array('route' => 'compare'));
+        $menu->addChild('Comparison list', array('route' => 'compare'));
 
         switch ($requestStack->getCurrentRequest()->get('_route')) {
             case 'compare_case':
