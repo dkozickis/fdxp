@@ -67,7 +67,8 @@ module.exports = function (grunt) {
         uglify : {
             js: {
                 files: {
-                    'web/js/bundled.min.js': ['web/js/bundled.js']
+                    'web/js/bundled.min.js': ['web/js/bundled.js'],
+                    'web/js/leaflet-ajax.js': ['src/AppBundle/Resources/public/js/leaflet-ajax.js']
                 }
             }
         }
@@ -79,6 +80,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-uncss');
 
     grunt.registerTask('default', ['less', 'bowercopy', 'concat', 'cssmin', 'uglify']);
 };

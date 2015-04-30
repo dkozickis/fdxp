@@ -13,6 +13,9 @@ AppBundle\Entity\ComparisonCaseCalc:
       type: integer
     time:
       type: time
+    route:
+      type: text
+      nullable: true
   manyToOne:
     case:
       targetEntity: AppBundle\Entity\ComparisonCase

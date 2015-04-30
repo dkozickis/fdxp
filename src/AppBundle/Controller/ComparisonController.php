@@ -2,13 +2,18 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Waypoints;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\Comparison;
+use AppBundle\Entity\ComparisonCase;
+use AppBundle\Entity\ComparisonCaseCalc;
 use AppBundle\Form\Type\ComparisonType;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Comparison controller.
@@ -60,10 +65,10 @@ class ComparisonController extends Controller
                 $headerBuilder[] = 'Basic cost';
                 $headerBuilder[] = 'Basic time';
             } else {
-                $headerBuilder[] = $case['name'].' cost';
-                $headerBuilder[] = $case['name'].' cost difference';
-                $headerBuilder[] = $case['name'].' time';
-                $headerBuilder[] = $case['name'].' time difference';
+                $headerBuilder[] = $case['name'] . ' cost';
+                $headerBuilder[] = $case['name'] . ' cost difference';
+                $headerBuilder[] = $case['name'] . ' time';
+                $headerBuilder[] = $case['name'] . ' time difference';
             }
             foreach ($case['calcs'] as $calc) {
                 if (!$case['basic'] && isset($allCalcs[$calc['citypair']][0])) {
@@ -112,6 +117,141 @@ class ComparisonController extends Controller
     }
 
     /**
+     * @Route("/wpt", name="compare_wpt")
+     * @Template("AppBundle:Comparison:waypoints.csv.twig")
+     */
+    public function waypointsAction()
+    {
+
+        $result = [];
+        set_time_limit(300);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $crawler = new Crawler();
+        $crawler->addXmlContent(file_get_contents($this->get('kernel')->getRootDir() . '/../xml_wpts/NW_WPTS.xml'));
+
+        $filter = $crawler->filterXPath("//codeType[contains(text(), 'ICAO')]/..");
+
+        $result = array();
+
+        $batchSize = 20;
+
+        if (iterator_count($filter) > 1) {
+
+            foreach ($filter as $i => $content) {
+                $crawler = new Crawler($content);
+                if($crawler->filterXPath('//codeType')->text() == 'ICAO'){
+
+                    $wpt_db = new Waypoints();
+
+                    $wpt_db->setWptId($crawler->filterXPath('//codeId')->text())
+                        ->setLat($crawler->filterXPath('//geoLat')->text())
+                        ->setLon($crawler->filterXPath('//geoLong')->text());
+
+                    $em->persist($wpt_db);
+
+                    if (($i % $batchSize) === 0) {
+                        $em->flush();
+                        $em->clear(); // Detaches all objects from Doctrine!
+                    }
+
+                }
+
+            }
+            $em->flush();
+            $em->clear();
+
+        } else {
+            throw new \Exception('Got empty result processing the dataset!');
+        }
+
+        return array('result' => $result);
+    }
+
+    /**
+     * @Route("/{comp_id}/route", name="compare_route")
+     */
+    public function jsonRouteAction($comp_id)
+    {
+
+        $features = [];
+        $rte_wpts = [];
+        $i = 0;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $cases = $em->getRepository('AppBundle:ComparisonCase')->findBy(array(
+            'comparison' => $comp_id
+        ));
+
+        foreach ($cases as $case){
+            /* @var $case ComparisonCase */
+            $calcs = $case->getCalcs();
+            foreach($calcs as $calc){
+                /* @var $calc ComparisonCaseCalc */
+                $route = $calc->getRoute();
+                if(trim($route) != ''){
+                    $coords = array();
+
+                    ++$i;
+                    preg_match_all('/[A-Z]{5}/', $route, $waypoints);
+                    $coordinates = $em->getRepository('AppBundle:Waypoints')->findBy(array(
+                        'wpt_id' => $waypoints[0]
+                    ));
+
+                    foreach($waypoints[0] as $wpt){
+                        $rte_wpts[$i][$wpt]['name'] = $wpt;
+                    }
+
+                    foreach($coordinates as $wpt_coords){
+                        /* @var $wpt_coords Waypoints */
+
+                        $lat = $wpt_coords->getLat();
+                        $lon = $wpt_coords->getLon();
+
+                        $lat = (substr($lat, -1) == 'N') ? rtrim($lat, "N") : "-".rtrim($lat, "S");
+                        $lon = (substr($lon, -1) == 'E') ? ltrim(rtrim($lon, "E"), '0') : "-".ltrim(rtrim($lon, "W"), 0);
+
+                        $rte_wpts[$i][$wpt_coords->getWptId()]['lat'] = (float)$lat;
+                        $rte_wpts[$i][$wpt_coords->getWptId()]['lon'] = (float)$lon;
+
+                    }
+
+                    foreach($rte_wpts[$i] as $key => $wpt){
+                        array_push($coords, array($wpt['lon'], $wpt['lat']));
+                    }
+
+                    $feature = array(
+                        'type' => 'Feature',
+                        'geometry' => array(
+                            'type' => 'LineString',
+                            'coordinates' => $coords
+                        ),
+                        'properties' => array(
+                            'name' => 'test'
+                        )
+                    );
+                    array_push($features, $feature);
+
+                    dump($coordinates);
+                    dump($rte_wpts);
+                }
+            }
+        }
+
+        $geojson = array(
+            'type'      => 'FeatureCollection',
+            'features'  => $features
+        );
+
+        $response = new Response(json_encode($geojson));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
      * Creates a new Comparison entity.
      *
      * @Route("/", name="compare_create")
@@ -135,7 +275,7 @@ class ComparisonController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -176,11 +316,11 @@ class ComparisonController extends Controller
     public function newAction()
     {
         $entity = new Comparison();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -205,7 +345,7 @@ class ComparisonController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -232,8 +372,8 @@ class ComparisonController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -269,6 +409,7 @@ class ComparisonController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Comparison entity.
      *
@@ -298,11 +439,12 @@ class ComparisonController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Comparison entity.
      *
@@ -343,7 +485,6 @@ class ComparisonController extends Controller
             ->setAction($this->generateUrl('compare_delete', array('id' => $id)))
             ->setMethod('DELETE')
             //->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

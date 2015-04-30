@@ -1,43 +1,74 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
-{% block body-%}
-    <div class="col-md-12">
-        {{ knp_menu_render('comparison_menu',
-        { 'style' : 'breadcrumb', 'template' : 'AppBundle:Menu:mybootstrap.html.twig'}) }}
-        <h1 class="text-center">{{ comparison.name }} summary</h1>
-        <table class="table">
-            <thead>
-            <tr>
-                {% for value in header %}
-                    <th>{{ value }}</th>
-                {% endfor %}
-            </tr>
-            </thead>
-            {% for key, calcs in calc_info %}
+{% block stylesheet %}
+    {{ parent() }}
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+{% endblock %}
+
+{% block body -%}
+    <div class="row">
+        <div class="col-md-12">
+            {{ knp_menu_render('comparison_menu',
+            { 'style' : 'breadcrumb', 'template' : 'AppBundle:Menu:mybootstrap.html.twig'}) }}
+            <h1 class="text-center">{{ comparison.name }} summary</h1>
+            <table class="table">
+                <thead>
                 <tr>
-                    <td>{{ key }}</td>
-                    {% for key, calc in calcs %}
-                        <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
-                            {{ (calc.dummy) ? " " : calc.cost }}
-                        </td>
-                        {% if not calc.basic %}
-                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
-                                {{ (calc.dummy) ? " " : calc.cost_diff }}
-                            </td>
-                        {% endif %}
-                        <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
-                            {{ (calc.dummy) ? " " : calc.time|date("h:i") }}
-                        </td>
-                        {% if not calc.basic %}
-                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
-                                {% if not calc.dummy %}
-                                {{ not calc.time_diff  ? '00:00' : calc.time_diff|date("%r%H:%I") }}
-                                {% endif %}
-                            </td>
-                        {% endif %}
+                    {% for value in header %}
+                        <th>{{ value }}</th>
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        </table>
+                </thead>
+                {% for key, calcs in calc_info %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        {% for key, calc in calcs %}
+                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                {{ (calc.dummy) ? " " : calc.cost }}
+                            </td>
+                            {% if not calc.basic %}
+                                <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                    {{ (calc.dummy) ? " " : calc.cost_diff }}
+                                </td>
+                            {% endif %}
+                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                {{ (calc.dummy) ? " " : calc.time|date("h:i") }}
+                            </td>
+                            {% if not calc.basic %}
+                                <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                    {% if not calc.dummy %}
+                                        {{ not calc.time_diff  ? '00:00' : calc.time_diff|date("%r%H:%I") }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-md-12" style="height: 700px;">
+            <div id="map"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="{{ asset('js/leaflet-ajax.js') }}"></script>
+    <script>
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18
+        }).addTo(map);
+        var geojsonLayer = new L.GeoJSON.AJAX("{{ path('compare_route', { 'comp_id' : app.request.get(('comp_id'))}) }}");
+        geojsonLayer.addTo(map);
+
+        setTimeout(function(){
+            map.fitBounds(geojsonLayer.getBounds());
+        }, 3000);
+
+    </script>
 {% endblock %}

@@ -137,4 +137,32 @@ class ComparisonCaseCalc
     {
         return $this->case;
     }
+    /**
+     * @var string
+     */
+    private $route;
+
+
+    /**
+     * Set route
+     *
+     * @param string $route
+     * @return ComparisonCaseCalc
+     */
+    public function setRoute($route)
+    {
+        $this->route = $route;
+
+        return $this;
+    }
+
+    /**
+     * Get route
+     *
+     * @return string 
+     */
+    public function getRoute()
+    {
+        return $this->route;
+    }
 }

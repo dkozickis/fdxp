@@ -1,0 +1,16 @@
+AppBundle\Entity\Waypoints:
+  type: entity
+  table: waypoints
+  repositoryClass: WaypointsRepository
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    wpt_id:
+      type: string
+      length: 50
+    lat:
+      type: text
+    lon:
+      type: text
