@@ -234,8 +234,6 @@ class ComparisonController extends Controller
                     );
                     array_push($features, $feature);
 
-                    dump($coordinates);
-                    dump($rte_wpts);
                 }
             }
         }
