@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Waypoints;
+use AppBundle\Utils\ComparisonUtils;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,25 +50,18 @@ class ComparisonController extends Controller
      */
     public function summaryAction($comp_id)
     {
+        $utils = new ComparisonUtils();
         $allCalcs = [];
-        $headerBuilder[] = '';
+        $header = [''];
         $i = 0;
 
         $comparison = $this->getDoctrine()->getRepository('AppBundle:Comparison')->find($comp_id);
+        $casesCalcs = $this->getDoctrine()->getRepository('AppBundle:ComparisonCase')->findCaseCalcs($comp_id);
+        $caseCount = count($casesCalcs);
 
-        $cases_calcs = $this->getDoctrine()->getRepository('AppBundle:ComparisonCase')->findCaseCalcs($comp_id);
-        $case_count = count($cases_calcs);
+        foreach ($casesCalcs as $case) {
+            $header = $utils->summaryHeaderBuilder($header, $case);
 
-        foreach ($cases_calcs as $case) {
-            if ($case['basic']) {
-                $headerBuilder[] = 'Basic cost';
-                $headerBuilder[] = 'Basic time';
-            } else {
-                $headerBuilder[] = $case['name'] . ' cost';
-                $headerBuilder[] = $case['name'] . ' cost difference';
-                $headerBuilder[] = $case['name'] . ' time';
-                $headerBuilder[] = $case['name'] . ' time difference';
-            }
             foreach ($case['calcs'] as $calc) {
                 if (!$case['basic'] && isset($allCalcs[$calc['citypair']][0])) {
                     $cost_diff = $calc['cost'] - $allCalcs[$calc['citypair']][0]['cost'];
@@ -89,8 +83,8 @@ class ComparisonController extends Controller
         }
 
         foreach ($allCalcs as $key => $value) {
-            if (count($value) != $case_count) {
-                for ($i = 0; $i < $case_count; $i++) {
+            if (count($value) != $caseCount) {
+                for ($i = 0; $i < $caseCount; $i++) {
                     if (!isset($allCalcs[$key][$i])) {
                         $allCalcs[$key][$i] = array(
                             'basic' => ($i == 0 ? 1 : 0),
@@ -108,8 +102,8 @@ class ComparisonController extends Controller
 
         return array(
             'calc_info' => $allCalcs,
-            'header' => $headerBuilder,
-            'counter' => $case_count,
+            'header' => $header,
+            'counter' => $caseCount,
             'comparison' => $comparison
         );
     }
