@@ -19,8 +19,6 @@ class ComparisonCaseType extends AbstractType
             ->add('name')
             ->add('basic')
             ->add('comparison', 'entity', array(
-                //'attr' => array('class' => 'hidden'),
-                //'label_attr' => array('class' => 'hidden'),
                 'read_only' => true,
                 'class' => 'AppBundle:Comparison',
                 'query_builder' => function(EntityRepository $entityRepository) use ($options) {

@@ -33,12 +33,6 @@ class ComparisonCaseCalcController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $data = $form->getData();
-            $utils = new ComparisonUtils();
-            $platoArray = $utils->platoToArray($data['plato']);
-        }
-
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('AppBundle:ComparisonCase')->find($case_id)->getCalcs();

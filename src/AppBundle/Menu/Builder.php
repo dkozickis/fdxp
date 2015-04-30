@@ -63,9 +63,7 @@ class Builder extends ContainerAware
         return $menu;
     }
 
-    /**
-     * @param string $build
-     */
+
     private function compareMenuBuildUp($build = null, ItemInterface $menu, EntityManager $em, RequestStack $rs)
     {
         switch ($build) {
@@ -78,7 +76,7 @@ class Builder extends ContainerAware
                 break;
             case 'comp_from_case_id':
                 $comp = $em->getRepository('AppBundle:ComparisonCase')
-                    ->find($rs->getCurrentRequest('')->get('case_id'))->getComparison();
+                    ->find($rs->getCurrentRequest()->get('case_id'))->getComparison();
                 $menu->addChild($comp->getName(), array(
                     'route' => 'compare_case',
                     'routeParameters' => array(
@@ -88,12 +86,12 @@ class Builder extends ContainerAware
                 $menu = $this->compareMenuBuildUp('comp_from_case_id', $menu, $em, $rs);
                 $case = $em
                     ->getRepository('AppBundle:ComparisonCase')
-                    ->find($rs->getCurrentRequest('')->get('case_id'));
+                    ->find($rs->getCurrentRequest()->get('case_id'));
                 if ($rs->getCurrentRequest()->get('_route') == 'comparison_case_calc_edit') {
                     $menu->addChild($case->getName(), array(
                         'route' => 'comparison_case_calc',
                         'routeParameters' => array(
-                            'case_id' => $rs->getCurrentRequest('')->get('case_id'),
+                            'case_id' => $rs->getCurrentRequest()->get('case_id'),
                         ),
                     ));
                 } else {
@@ -104,7 +102,7 @@ class Builder extends ContainerAware
             case 'calc':
                 $menu = $this->compareMenuBuildUp('case', $menu, $em, $rs);
                 $calc = $em->getRepository('AppBundle:ComparisonCaseCalc')
-                    ->find($rs->getCurrentRequest('')->get('id'));
+                    ->find($rs->getCurrentRequest()->get('id'));
                 $menu->addChild($calc->getCitypair());
                 $menu->setCurrent(1);
                 break;

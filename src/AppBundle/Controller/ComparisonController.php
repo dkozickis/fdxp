@@ -51,8 +51,6 @@ class ComparisonController extends Controller
     {
         $allCalcs = [];
         $headerBuilder[] = '';
-        $cost_diff = 0;
-        $time_diff = 0;
         $i = 0;
 
         $comparison = $this->getDoctrine()->getRepository('AppBundle:Comparison')->find($comp_id);
@@ -132,8 +130,6 @@ class ComparisonController extends Controller
         $crawler->addXmlContent(file_get_contents($this->get('kernel')->getRootDir() . '/../xml_wpts/NW_WPTS.xml'));
 
         $filter = $crawler->filterXPath("//codeType[contains(text(), 'ICAO')]/..");
-
-        $result = array();
 
         $batchSize = 20;
 
@@ -482,7 +478,6 @@ class ComparisonController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('compare_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            //->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm();
     }
 }
