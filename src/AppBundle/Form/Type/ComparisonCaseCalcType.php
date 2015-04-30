@@ -19,6 +19,7 @@ class ComparisonCaseCalcType extends AbstractType
             ->add('citypair')
             ->add('cost')
             ->add('time')
+            ->add('route')
             ->add('case', 'entity', array(
                 'read_only' => true,
                 'class' => 'AppBundle:ComparisonCase',
