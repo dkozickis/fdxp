@@ -5,6 +5,8 @@ namespace AppBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ComparisonCaseCalcType extends AbstractType
@@ -29,6 +31,13 @@ class ComparisonCaseCalcType extends AbstractType
                         ->setParameter('id', $options['case']);
                 },
             ))
+            ->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event){
+                $data = $event->getData();
+                if(isset($data['route'])){
+                    $data['route'] =trim(preg_replace('/\s+/', ' ', $data['route']));
+                }
+                $event->setData($data);
+            })
         ;
     }
 

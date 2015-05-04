@@ -1,0 +1,47 @@
+AppBundle\Entity\Flightwatch:
+    type: entity
+    table: flightwatch
+    repositoryClass: AppBundle\Entity\FlightwatchRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        flightNumber:
+            type: string
+            length: 255
+            column: flight_number
+        dep:
+            type: string
+        dest:
+            type: string
+        flightDate:
+            type: date
+            column: flight_date
+        std:
+            type: time
+        takeOffTime:
+            type: time
+            column: takeoff_time
+            nullable: true
+        altn:
+          type: string
+        erd:
+          type: string
+          nullable: true
+        erda:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
+          nullable: true
+          options:
+            default: 0
+    oneToMany:
+          info:
+            targetEntity: AppBundle\Entity\FlightwatchInfo
+            mappedBy: flight
+            orphanRemoval: true
+            cascade: ['remove']

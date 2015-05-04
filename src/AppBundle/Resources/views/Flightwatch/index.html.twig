@@ -1,0 +1,67 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block title %}
+    <title>FDXP - Flight Watch</title>
+{% endblock %}
+{% block body %}
+
+    {# {{ dump(flights) }} #}
+    <div class="row col-md-12">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>No.</th>
+                <th>T/O</th>
+                <th>Altn</th>
+                <th>ERD</th>
+                <th>ERDA</th>
+                <th>FW Info</th>
+            </tr>
+        </thead>
+        {% for flight in flights %}
+            <tr>
+                <td>
+                    {{ flight.flightDate|date('dM')|upper }}
+                </td>
+                <td>
+                    {{ flight.flightNumber }}
+                </td>
+                <td>
+                    {{ flight.takeOffTime ? flight.takeOffTime|date('H:i') : 'N/A' }}
+                    <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </td>
+                <td>
+                    {{ flight.altn }}
+                </td>
+                <td>
+                    {{ flight.erd ? flight.erd : 'N/A' }}
+                </td>
+                <td>
+                    {{ flight.erda ? flight.erda : 'N/A' }}
+                </td>
+                <td>
+                    {% for info in flight.info %}
+                        <div>
+                            {# {{ info.pointName }} +{{ info.eto|date('H:i') }} {{ info.ebo ? info.ebo~'T' : '' }} #}
+                            {{ info.pointName }}
+                            {{ flight.takeOffTime ? info.eto_time|date('H:i') : '+'~info.eto|date('H:i') }}
+                            {{ info.ebo ? info.ebo~'T' : '' }}
+                            {% for airport in info.airports %}
+                                {{ airport }}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+
+    <div class="row col-md-12">
+        {{ form(form) }}
+    </div>
+{% endblock %}
+

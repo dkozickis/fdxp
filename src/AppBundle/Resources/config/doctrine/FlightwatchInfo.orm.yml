@@ -1,0 +1,40 @@
+AppBundle\Entity\FlightwatchInfo:
+    type: entity
+    table: flightwatch_info
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        pointType:
+          type: string
+          column: point_type
+        pointName:
+          type: string
+          column: point_name
+          nullable: true
+        eto:
+          type: time
+        ebo:
+          type: float
+          nullable: true
+        airports:
+          type: array
+          nullable: true
+        completed:
+          type: boolean
+          nullable: true
+          options:
+            default: 0
+        completed_on:
+          type: datetime
+          nullable: true
+    manyToOne:
+          flight:
+            targetEntity: AppBundle\Entity\Flightwatch
+            inversedBy: info
+            joinColumn:
+                    name: flight_id
+                    referencedColumnName: id

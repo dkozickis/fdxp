@@ -29,5 +29,5 @@ security:
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/shiftlog/archive, role: ROLE_SHIFT_MANAGER_FD}
         - { path: ^/shiftlog/update, role: ROLE_SHIFT_MANAGER_FD}
-        - { path: ^/shiftlog/, role: IS_AUTHENTICATED_REMEMBERED}
+        - { path: ^/shiftlog/, role: ROLE_FD}
         - { path: ^/compare/, role: ROLE_TFD}

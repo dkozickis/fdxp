@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 
 
 /**
@@ -14,13 +15,17 @@ use Doctrine\ORM\EntityRepository;
 class WaypointsRepository extends EntityRepository
 {
 
-    public function findByArray($wpts){
+    public function findAndOrderByArray($wpts){
 
-        return $this->createQueryBuilder('w')
-            ->where('w.wpt_id IN (:wpts)')
+        $qb = $this->createQueryBuilder("w");
+
+        return $qb->where('w.wpt_id IN (:wpts)')
             ->setParameter('wpts', $wpts)
             ->getQuery()
             ->getArrayResult();
+
     }
+
+
 
 }
