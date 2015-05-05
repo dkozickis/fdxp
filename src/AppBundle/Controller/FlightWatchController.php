@@ -32,7 +32,7 @@ class FlightWatchController extends Controller
         $form = $this->createOFPForm();
 
         foreach ($flights as $fKey => $flight) {
-            if (isset($flight['takeOffTime'])) {
+
                 foreach ($flight['info'] as $key => $info) {
 
                     $flights[$fKey]['info'][$key]['eto_info'] = 'info';
@@ -46,22 +46,24 @@ class FlightWatchController extends Controller
 
                     $flights[$fKey]['info'][$key]['airportsString'] = trim($airportString);
 
-                    $takeOffTime = clone $flight['takeOffTime'];
-                    $addInterval = new \DateInterval('P0000-00-00T' . $info['eto']->format('H:i:s'));
+                    if (isset($flight['takeOffTime'])) {
+                        $takeOffTime = clone $flight['takeOffTime'];
+                        $addInterval = new \DateInterval('P0000-00-00T' . $info['eto']->format('H:i:s'));
 
-                    $eto_time = $takeOffTime->add($addInterval);
-                    $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
+                        $eto_time = $takeOffTime->add($addInterval);
+                        $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
 
-                    $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
+                        $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
 
-                    if($interval < 30){
-                        $flights[$fKey]['info'][$key]['eto_info'] = 'danger';
-                    }elseif($interval < 60){
-                        $flights[$fKey]['info'][$key]['eto_info'] = 'warning';
+                        if ($interval < 30) {
+                            $flights[$fKey]['info'][$key]['eto_info'] = 'danger';
+                        } elseif ($interval < 60) {
+                            $flights[$fKey]['info'][$key]['eto_info'] = 'warning';
+                        }
                     }
 
                 }
-            }
+
         }
 
         return array(
