@@ -38,8 +38,6 @@ class FlightWatchController extends Controller
                     $flights[$fKey]['info'][$key]['eto_info'] = 'info';
                     $airportString = '';
 
-                    dump($info);
-
                     if($info['airports']) {
                         foreach ($info['airports'] as $airport) {
                             $airportString .= $airport . " ";
