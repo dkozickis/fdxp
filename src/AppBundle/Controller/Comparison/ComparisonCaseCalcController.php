@@ -1,12 +1,11 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Comparison;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\ComparisonCaseCalc;
 use AppBundle\Form\Type\ComparisonCaseCalcType;
 use AppBundle\Entity\ComparisonCase;
@@ -25,7 +24,6 @@ class ComparisonCaseCalcController extends Controller
      * @Route("/", name="comparison_case_calc")
      *
      * @Method("GET")
-     * @Template()
      */
     public function indexAction(Request $request, $case_id)
     {
@@ -37,10 +35,10 @@ class ComparisonCaseCalcController extends Controller
 
         $entities = $em->getRepository('AppBundle:ComparisonCase')->find($case_id)->getCalcs();
 
-        return array(
+        return $this->render('AppBundle:ComparisonCaseCalc:index.html.twig', array(
             'entities' => $entities,
             'plato_form' => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -96,7 +94,6 @@ class ComparisonCaseCalcController extends Controller
      * @Route("/", name="comparison_case_calc_create")
      *
      * @Method("POST")
-     * @Template("AppBundle:ComparisonCaseCalc:new.html.twig")
      */
     public function createAction(Request $request, $case_id)
     {
@@ -115,10 +112,10 @@ class ComparisonCaseCalcController extends Controller
             ));
         }
 
-        return array(
+        return $this->render('AppBundle:ComparisonCaseCalc:new.html.twig', array(
             'entity' => $entity,
             'form'   => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -154,17 +151,16 @@ class ComparisonCaseCalcController extends Controller
      * @Route("/new", name="comparison_case_calc_new")
      *
      * @Method("GET")
-     * @Template()
      */
     public function newAction($case_id)
     {
         $entity = new ComparisonCaseCalc();
         $form   = $this->createCreateForm($entity, $case_id);
 
-        return array(
+        return $this->render('AppBundle:ComparisonCaseCalc:new.html.twig', array(
             'entity' => $entity,
             'form'   => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -173,7 +169,6 @@ class ComparisonCaseCalcController extends Controller
      * @Route("/{id}", name="comparison_case_calc_show")
      *
      * @Method("GET")
-     * @Template()
      */
     public function showAction($id, $case_id)
     {
@@ -187,10 +182,10 @@ class ComparisonCaseCalcController extends Controller
 
         $deleteForm = $this->createDeleteForm($id, $case_id);
 
-        return array(
+        return $this->render('AppBundle:ComparisonCaseCalc:show.html.twig', array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -199,7 +194,6 @@ class ComparisonCaseCalcController extends Controller
      * @Route("/{id}/edit", name="comparison_case_calc_edit")
      *
      * @Method("GET")
-     * @Template()
      */
     public function editAction($id, $case_id)
     {
@@ -214,11 +208,11 @@ class ComparisonCaseCalcController extends Controller
         $editForm = $this->createEditForm($entity, $case_id);
         $deleteForm = $this->createDeleteForm($id, $case_id);
 
-        return array(
+        return $this->render('AppBundle:ComparisonCaseCalc:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -263,7 +257,6 @@ class ComparisonCaseCalcController extends Controller
      * @Route("/{id}", name="comparison_case_calc_update")
      *
      * @Method("PUT")
-     * @Template("AppBundle:ComparisonCaseCalc:edit.html.twig")
      */
     public function updateAction(Request $request, $id, $case_id)
     {
@@ -287,11 +280,11 @@ class ComparisonCaseCalcController extends Controller
                 'case_id' => $case_id,)));
         }
 
-        return array(
+        return $this->render('AppBundle:ComparisonCaseCalc:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
     /**
      * Deletes a ComparisonCaseCalc entity.

@@ -1,12 +1,11 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Comparison;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\ComparisonCase;
 use AppBundle\Form\Type\ComparisonCaseType;
 
@@ -23,7 +22,6 @@ class ComparisonCaseController extends Controller
      * @Route("/", name="compare_case")
      *
      * @Method("GET")
-     * @Template()
      */
     public function indexAction($comp_id)
     {
@@ -33,10 +31,10 @@ class ComparisonCaseController extends Controller
         $comp_name = $comparison->getName();
         $entities = $comparison->getCases();
 
-        return array(
+        return $this->render('AppBundle:ComparisonCase:index.html.twig', array(
             'entities' => $entities,
             'name' => $comp_name,
-        );
+        ));
     }
 
 
@@ -46,7 +44,6 @@ class ComparisonCaseController extends Controller
      * @Route("/", name="compare_case_create")
      *
      * @Method("POST")
-     * @Template("AppBundle:ComparisonCase:new.html.twig")
      */
     public function createAction(Request $request, $comp_id)
     {
@@ -63,10 +60,10 @@ class ComparisonCaseController extends Controller
                 'comp_id' => $comp_id,)));
         }
 
-        return array(
+        return $this->render('AppBundle:ComparisonCase:new.html.twig', array(
             'entity' => $entity,
             'form' => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -102,17 +99,16 @@ class ComparisonCaseController extends Controller
      * @Route("/new", name="compare_case_new")
      *
      * @Method("GET")
-     * @Template()
      */
     public function newAction($comp_id)
     {
         $entity = new ComparisonCase();
         $form = $this->createCreateForm($entity, $comp_id);
 
-        return array(
+        return $this->render('AppBundle:ComparisonCase:new.html.twig', array(
             'entity' => $entity,
             'form' => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -121,7 +117,6 @@ class ComparisonCaseController extends Controller
      * @Route("/{id}", name="compare_case_show")
      *
      * @Method("GET")
-     * @Template()
      */
     public function showAction($id, $comp_id)
     {
@@ -135,10 +130,10 @@ class ComparisonCaseController extends Controller
 
         $deleteForm = $this->createDeleteForm($id, $comp_id);
 
-        return array(
+        return $this->render('AppBundle:Comparison:show.html.twig', array(
             'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -147,7 +142,6 @@ class ComparisonCaseController extends Controller
      * @Route("/{id}/edit", name="compare_case_edit")
      *
      * @Method("GET")
-     * @Template()
      */
     public function editAction($id, $comp_id)
     {
@@ -162,11 +156,11 @@ class ComparisonCaseController extends Controller
         $editForm = $this->createEditForm($entity, $comp_id);
         $deleteForm = $this->createDeleteForm($id, $comp_id);
 
-        return array(
+        return $this->render('AppBundle:Comparison:edit.html.twig', array(
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -211,7 +205,6 @@ class ComparisonCaseController extends Controller
      * @Route("/{id}", name="compare_case_update")
      *
      * @Method("PUT")
-     * @Template("AppBundle:ComparisonCase:edit.html.twig")
      */
     public function updateAction(Request $request, $id, $comp_id)
     {
@@ -233,11 +226,11 @@ class ComparisonCaseController extends Controller
             return $this->redirect($this->generateUrl('compare_case_edit', array('id' => $id, 'comp_id' => $comp_id)));
         }
 
-        return array(
+        return $this->render('AppBundle:ComparisonCase:edit.html.twig', array(
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Comparison;
 
 use AppBundle\Entity\Waypoints;
 use AppBundle\Utils\ComparisonUtils;
@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\Comparison;
 use AppBundle\Entity\ComparisonCase;
 use AppBundle\Entity\ComparisonCaseCalc;
@@ -29,7 +28,6 @@ class ComparisonController extends Controller
      * @Route("/", name="compare")
      *
      * @Method("GET")
-     * @Template()
      */
     public function indexAction()
     {
@@ -37,16 +35,16 @@ class ComparisonController extends Controller
 
         $entities = $em->getRepository('AppBundle:Comparison')->findAll();
 
-        return array(
+        return $this->render('AppBundle:Comparison:index.html.twig', array(
             'entities' => $entities,
-        );
+        ));
+
     }
 
     /**
      * @Route("/{comp_id}/summary", name="compare_summary")
      *
      * @Method("GET")
-     * @Template()
      */
     public function summaryAction($comp_id)
     {
@@ -100,17 +98,17 @@ class ComparisonController extends Controller
             ksort($allCalcs[$key]);
         }
 
-        return array(
+
+        return $this->render('AppBundle:Comparison:summary.html.twig', array(
             'calc_info' => $allCalcs,
             'header' => $header,
             'counter' => $caseCount,
             'comparison' => $comparison
-        );
+        ));
     }
 
     /**
      * @Route("/wpt", name="compare_wpt")
-     * @Template("AppBundle:Comparison:waypoints.csv.twig")
      */
     public function waypointsAction()
     {
@@ -156,7 +154,9 @@ class ComparisonController extends Controller
             throw new \Exception('Got empty result processing the dataset!');
         }
 
-        return array('result' => $result);
+        return $this->render('AppBundle:Comparison:waypoints.csv.twig', array(
+            'result' => $result
+        ));
     }
 
     /**
@@ -245,7 +245,6 @@ class ComparisonController extends Controller
      * @Route("/", name="compare_create")
      *
      * @Method("POST")
-     * @Template("AppBundle:Comparison:new.html.twig")
      */
     public function createAction(Request $request)
     {
@@ -261,10 +260,10 @@ class ComparisonController extends Controller
             return $this->redirect($this->generateUrl('compare'));
         }
 
-        return array(
+        return $this->render('AppBundle:Comparison:new.html.twig', array(
             'entity' => $entity,
             'form' => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -299,17 +298,16 @@ class ComparisonController extends Controller
      * @Route("/new", name="compare_new")
      *
      * @Method("GET")
-     * @Template()
      */
     public function newAction()
     {
         $entity = new Comparison();
         $form = $this->createCreateForm($entity);
 
-        return array(
+        return $this->render('AppBundle:Comparison:new.html.twig', array(
             'entity' => $entity,
             'form' => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -318,7 +316,6 @@ class ComparisonController extends Controller
      * @Route("/{id}", name="compare_show")
      *
      * @Method("GET")
-     * @Template()
      */
     public function showAction($id)
     {
@@ -332,10 +329,11 @@ class ComparisonController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
+        return $this->render('AppBundle:Comparison:show.html.twig', array(
+
             'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -344,7 +342,6 @@ class ComparisonController extends Controller
      * @Route("/{id}/edit", name="compare_edit")
      *
      * @Method("GET")
-     * @Template()
      */
     public function editAction($id)
     {
@@ -359,11 +356,12 @@ class ComparisonController extends Controller
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
+
+        return $this->render('AppBundle:Comparison:edit.html.twig',array(
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -404,7 +402,6 @@ class ComparisonController extends Controller
      * @Route("/{id}", name="compare_update")
      *
      * @Method("PUT")
-     * @Template("AppBundle:Comparison:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
@@ -426,11 +423,11 @@ class ComparisonController extends Controller
             return $this->redirect($this->generateUrl('compare_edit', array('id' => $id)));
         }
 
-        return array(
+        return $this->render('AppBundle:Comparison:edit.html.twig', array(
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
