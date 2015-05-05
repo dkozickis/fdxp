@@ -11,7 +11,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class FlightWatchController extends Controller
 {
@@ -21,21 +23,45 @@ class FlightWatchController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(){
+    public function indexAction()
+    {
 
         $em = $this->getDoctrine()->getManager();
 
         $flights = $em->getRepository('AppBundle:Flightwatch')->findAllWithInfo();
         $form = $this->createOFPForm();
 
-        foreach($flights as $fKey => $flight){
-            foreach($flight['info'] as $key => $info){
-                if(isset($flight['takeOffTime'])){
-                    /* @var $info['eto'] \DateTime */
-                    $addTimeString = $flight['takeOffTime']->format('H:i:s');
-                    $addInterval = new \DateInterval('P0000-00-00T'.$addTimeString);
-                    $eto_time = $info['eto']->add($addInterval);
+        foreach ($flights as $fKey => $flight) {
+            if (isset($flight['takeOffTime'])) {
+                foreach ($flight['info'] as $key => $info) {
+
+                    $flights[$fKey]['info'][$key]['eto_info'] = 'info';
+                    $airportString = '';
+
+                    dump($info);
+
+                    if($info['airports']) {
+                        foreach ($info['airports'] as $airport) {
+                            $airportString .= $airport . " ";
+                        }
+                    }
+
+                    $flights[$fKey]['info'][$key]['airportsString'] = trim($airportString);
+
+                    $takeOffTime = clone $flight['takeOffTime'];
+                    $addInterval = new \DateInterval('P0000-00-00T' . $info['eto']->format('H:i:s'));
+
+                    $eto_time = $takeOffTime->add($addInterval);
                     $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
+
+                    $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
+
+                    if($interval < 30){
+                        $flights[$fKey]['info'][$key]['eto_info'] = 'danger';
+                    }elseif($interval < 60){
+                        $flights[$fKey]['info'][$key]['eto_info'] = 'warning';
+                    }
+
                 }
             }
         }
@@ -50,7 +76,8 @@ class FlightWatchController extends Controller
      * @Route("/fw/insertOfp", name="fw_insert_ofp")
      * @Method("POST")
      */
-    public function insertAction(Request $request){
+    public function insertAction(Request $request)
+    {
         $flash = $this->get('braincrafted_bootstrap.flash');
         $em = $this->getDoctrine()->getManager();
         $form = $this->createOFPForm();
@@ -75,7 +102,7 @@ class FlightWatchController extends Controller
 
             $em->persist($fw);
 
-            foreach($pointInfo as $value){
+            foreach ($pointInfo as $value) {
                 $fwInfo = new FlightwatchInfo();
                 $fwInfo->setFlight($fw);
                 $fwInfo->setEto(new \DateTime($value['time']));
@@ -85,7 +112,7 @@ class FlightWatchController extends Controller
                 $em->persist($fwInfo);
             }
 
-            if($dpInfo){
+            if ($dpInfo) {
                 $erdErda = $utils->getErdErda($ofp);
                 $fw->setErd($erdErda['erd']);
                 $fw->setErda($erdErda['erda']);
@@ -102,7 +129,7 @@ class FlightWatchController extends Controller
             $em->clear();
 
             return $this->redirectToRoute('fw_index');
-        }else{
+        } else {
 
             $flash->alert('Something wrong with the form.');
             return $this->redirectToRoute('fw_index');
@@ -123,18 +150,23 @@ class FlightWatchController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /* @var $entity FlightWatch */
         $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Flightwatch entity.');
         }
 
+        if(!$entity->getTakeOffTime()){
+            $entity->setTakeOffTime(new \DateTime('today'));
+        }
+
         $editForm = $this->createEditForm($entity);
         //$deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             //'delete_form' => $deleteForm->createView(),
         );
     }
@@ -145,7 +177,8 @@ class FlightWatchController extends Controller
      * @Method("PUT")
      * @Template("AppBundle:Flightwatch:edit.html.twig")
      */
-    public function updateAction(Request $request, $id){
+    public function updateAction(Request $request, $id)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -165,12 +198,54 @@ class FlightWatchController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
         );
     }
 
-    private function createEditForm(Flightwatch $entity){
+    /**
+     * @Route("/fw/wx", name="fw_wx")
+     * @Method("GET")
+     */
+    public function wxAction(Request $request){
+
+        $airports = $request->query->get('airports');
+
+        $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
+            'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
+            'hoursBeforeNow=3&stationString='.urlencode($airports));
+
+        $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
+            'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
+            'hoursBeforeNow=3&stationString='.urlencode($airports));
+
+        $crawler = new Crawler($metarXML);
+
+        $metars = $crawler->filter('raw_text')->extract(array(
+            '_text'
+        ));
+
+        $crawler = new Crawler($tafXML);
+
+        $tafs = $crawler->filter('raw_text')->extract(array(
+            '_text'
+        ));
+
+
+        $response = new Response();
+        $response->setContent(json_encode(array(
+            'metars' => $metars,
+            'tafs' => $tafs
+        )));
+
+        //$response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+    }
+
+    private function createEditForm(Flightwatch $entity)
+    {
 
         $form = $this->createForm(new FlightWatchType(), $entity, array(
             'action' => $this->generateUrl('fw_update', array(

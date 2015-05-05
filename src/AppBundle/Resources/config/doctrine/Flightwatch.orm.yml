@@ -23,7 +23,7 @@ AppBundle\Entity\Flightwatch:
         std:
             type: time
         takeOffTime:
-            type: time
+            type: datetime
             column: takeoff_time
             nullable: true
         altn:

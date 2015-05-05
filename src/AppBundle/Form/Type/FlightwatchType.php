@@ -28,7 +28,10 @@ class FlightWatchType extends AbstractType
             ->add('dest', null, array(
                 'read_only' => true
             ))
-            ->add('takeOffTime')
+            ->add('takeOffTime', null, array(
+                'date_format' => 'yyyy-MMM-dd'
+                //'data' => new \DateTime('today')
+            ))
         ;
     }
 
