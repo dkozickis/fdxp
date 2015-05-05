@@ -7,8 +7,8 @@
 
     {# {{ dump(flights) }} #}
     <div class="row col-md-12">
-    <table class="table table-condensed">
-        <thead>
+        <table class="table table-condensed">
+            <thead>
             <tr>
                 <th>Date</th>
                 <th>No.</th>
@@ -20,57 +20,55 @@
                 <th>FW Info</th>
                 <th>Finalize</th>
             </tr>
-        </thead>
-        {% for flight in flights %}
-            <tr>
-                <td>
-                    {{ flight.flightDate|date('dM')|upper }}
-                </td>
-                <td>
-                    {{ flight.flightNumber }}
-                </td>
-                <td>
-                    {{ flight.std|date('H:i') }}Z
-                </td>
-                <td>
-                    {{ flight.takeOffTime ? flight.takeOffTime|date('H:i')~'Z' : 'N/A' }}
-                    <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </a>
-                </td>
-                <td>
-                    {{ flight.altn }}
-                </td>
-                <td>
-                    {{ flight.erd ? flight.erd : 'N/A' }}
-                </td>
-                <td>
-                    {{ flight.erda ? flight.erda : 'N/A' }}
-                </td>
-                <td>
-                    {% for info in flight.info %}
-                        <p class="bg-{{ info.eto_info }} eto">
-                            {# {{ info.pointName }} +{{ info.eto|date('H:i') }} {{ info.ebo ? info.ebo~'T' : '' }} #}
-                            {{ info.pointName }}
-                            {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
-                            {{ info.ebo ? info.ebo~'T' : '' }}
-                            {#{% for airport in info.airports %}
-                                {{ airport }}
-                            {% endfor %}#}
-                            <a href="#wxModal" data-toggle="modal" data-airports="{{ info.airportsString }}">
-                                {{ info.airportsString }}
-                            </a>
-                        </p>
-                    {% endfor %}
-                </td>
-                <td>
-                    <button type="button" class="btn btn-default btn-lg">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    </button>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+            </thead>
+            {% for flight in flights %}
+                <tr>
+                    <td>
+                        {{ flight.flightDate|date('dM')|upper }}
+                    </td>
+                    <td>
+                        {{ flight.flightNumber }}
+                    </td>
+                    <td>
+                        {{ flight.std|date('H:i') }}Z
+                    </td>
+                    <td>
+                        {{ flight.takeOffTime ? flight.takeOffTime|date('H:i')~'Z' : 'N/A' }}
+                        <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                    <td>
+                        {{ flight.altn }}
+                    </td>
+                    <td>
+                        {{ flight.erd ? flight.erd : 'N/A' }}
+                    </td>
+                    <td>
+                        {{ flight.erda ? flight.erda : 'N/A' }}
+                    </td>
+                    <td>
+                        {% for info in flight.info %}
+                            <p class="bg-{{ info.eto_info }} eto">
+                                {{ info.pointName }}
+                                {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                {{ info.ebo ? info.ebo~'T' : '' }}
+                                <a href="#wxModal" data-toggle="modal" data-airports="{{ info.airportsString }}">
+                                    {{ info.airportsString }}
+                                </a>
+                            </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default btn-lg finalize-form"
+                                data-form-id="{{ flight.id }}">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        </button>
+                        {{ form(flight.form, { 'attr' : { 'id' : 'finalize-form-'~flight.id } }) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     </div>
 
     <div class="row col-md-12">
@@ -78,28 +76,39 @@
     </div>
 
     {% include 'AppBundle:FlightWatch:wxModal.html.twig' %}
+    {% include 'AppBundle:FlightWatch:finalizeModal.html.twig' %}
+
 {% endblock %}
 {% block javascript %}
     {{ parent() }}
-<script>
-    $('#wxModal').on('show.bs.modal', function (e) {
-        var airports = e.relatedTarget.getAttribute('data-airports');
-        $('.modal-body').html('<p> Please wait... Loading WX info... </p>');
-        $.getJSON( "{{ path('fw_wx') }}", { 'airports' : airports}, function(data){
+    <script>
+        $('#wxModal').on('show.bs.modal', function (e) {
+            var airports = e.relatedTarget.getAttribute('data-airports');
+            var modalBody = $('.modal-body');
+            modalBody.html('<p> Please wait... Loading WX info... </p>');
+            $.getJSON("{{ path('fw_wx') }}", {'airports': airports}, function (data) {
 
-            $('.modal-body').html('');
-            $('.modal-body').append('<h4>METARs</h4>');
-            $.each(data['metars'], function(index, element) {
-                $('.modal-body').append('<div>' + element + '</div>');
-            });
-            $('.modal-body').append('<h4>TAFs</h4>');
-            $.each(data['tafs'], function(index, element) {
-                $('.modal-body').append('<div>' + element + '</div>');
-            });
+                modalBody.html('');
+                modalBody.append('<h4>METARs</h4>');
+                $.each(data['metars'], function (index, element) {
+                    $('.modal-body').append('<div>' + element + '</div>');
+                });
+                modalBody.append('<h4>TAFs</h4>');
+                $.each(data['tafs'], function (index, element) {
+                    $('.modal-body').append('<div>' + element + '</div>');
+                });
 
+            });
         });
-    })
-</script>
+        $('.finalize-form').on('click', function (e) {
+            e.preventDefault();
+            var formID = $(this).attr('data-form-id');
+            $('#modal-finalize').modal({backdrop: true, keyboard: true})
+                    .one('click', '#modal-delete-button', function (e) {
+                        $('#finalize-form-' + formID).trigger('submit');
+                    });
+        });
+    </script>
 {% endblock %}
 
 

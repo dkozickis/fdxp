@@ -39,6 +39,12 @@ AppBundle\Entity\Flightwatch:
           nullable: true
           options:
             default: 0
+        completed_at:
+          type: datetime
+          nullable: true
+        completed_by:
+          type: string
+          nullable: true
     oneToMany:
           info:
             targetEntity: AppBundle\Entity\FlightwatchInfo

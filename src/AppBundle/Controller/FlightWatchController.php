@@ -64,6 +64,8 @@ class FlightWatchController extends Controller
 
                 }
 
+            $flights[$fKey]['form'] = $this->createFinalizeForm($flight['id'])->createView();
+
         }
 
         return array(
@@ -150,7 +152,6 @@ class FlightWatchController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        /* @var $entity FlightWatch */
         $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
 
         if (!$entity) {
@@ -162,12 +163,10 @@ class FlightWatchController extends Controller
         }
 
         $editForm = $this->createEditForm($entity);
-        //$deleteForm = $this->createDeleteForm($id);
 
         return array(
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
-            //'delete_form' => $deleteForm->createView(),
         );
     }
 
@@ -201,6 +200,34 @@ class FlightWatchController extends Controller
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
         );
+    }
+
+    /**
+     * @Route("/fw/finalize/{id}", name="fw_finalize_flight")
+     *
+     * @Method("POST")
+     */
+    public function finalizeFlightAction($id){
+
+        $flash = $this->get('braincrafted_bootstrap.flash');
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+
+        if (!$entity) {
+            $flash->alert('Flight was not finalized');
+            return $this->redirectToRoute('fw_index');
+        }
+
+        $entity->setCompleted(1);
+        $entity->setCompletedAt(new \DateTime('now'));
+        $entity->setCompletedBy($this->get('security.token_storage')->getToken()->getUsername());
+
+        $em->persist($entity);
+        $em->flush();
+
+        $flash->success('Flight finalized');
+        return $this->redirectToRoute('fw_index');
     }
 
     /**
@@ -280,6 +307,16 @@ class FlightWatchController extends Controller
                 'label' => 'OFP'
             ))
             ->add('Parse', 'submit')
+            ->getForm();
+    }
+
+    private function createFinalizeForm($id)
+    {
+
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('fw_finalize_flight', array(
+                'id' => $id
+            )))
             ->getForm();
     }
 

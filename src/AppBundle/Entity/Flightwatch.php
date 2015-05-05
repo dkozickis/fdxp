@@ -349,4 +349,60 @@ class Flightwatch
     {
         return $this->completed;
     }
+    /**
+     * @var \DateTime
+     */
+    private $completed_at;
+
+    /**
+     * @var string
+     */
+    private $completed_by;
+
+
+    /**
+     * Set completed_at
+     *
+     * @param \DateTime $completedAt
+     * @return Flightwatch
+     */
+    public function setCompletedAt($completedAt)
+    {
+        $this->completed_at = $completedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get completed_at
+     *
+     * @return \DateTime 
+     */
+    public function getCompletedAt()
+    {
+        return $this->completed_at;
+    }
+
+    /**
+     * Set completed_by
+     *
+     * @param string $completedBy
+     * @return Flightwatch
+     */
+    public function setCompletedBy($completedBy)
+    {
+        $this->completed_by = $completedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get completed_by
+     *
+     * @return string 
+     */
+    public function getCompletedBy()
+    {
+        return $this->completed_by;
+    }
 }
