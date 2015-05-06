@@ -279,11 +279,11 @@ class FlightWatchController extends Controller
 
         $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
             'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
-            'hoursBeforeNow=3&stationString='.urlencode($airports));
+            'hoursBeforeNow=6&stationString='.urlencode($airports));
 
         $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
             'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
-            'hoursBeforeNow=3&stationString='.urlencode($airports));
+            'hoursBeforeNow=6&stationString='.urlencode($airports));
 
         $crawler = new Crawler($metarXML);
 
