@@ -226,7 +226,7 @@ class FlightWatchController extends Controller
             return $this->redirectToRoute('fw_index');
         }
 
-        $entity->setCompleted(1);
+        $entity->setCompleted(true);
         $entity->setCompletedAt(new \DateTime('now'));
         $entity->setCompletedBy($this->get('security.token_storage')->getToken()->getUsername());
 
@@ -257,7 +257,7 @@ class FlightWatchController extends Controller
             return $this->redirectToRoute('fw_index');
         }
 
-        $entity->setCompleted(1);
+        $entity->setCompleted(true);
         $entity->setCompletedAt(new \DateTime('now'));
         $entity->setCompletedBy($this->get('security.token_storage')->getToken()->getUsername());
 

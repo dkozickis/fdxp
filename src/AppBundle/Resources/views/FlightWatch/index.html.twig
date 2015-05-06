@@ -100,18 +100,18 @@
     <script>
         $('#wxModal').on('show.bs.modal', function (e) {
             var airports = e.relatedTarget.getAttribute('data-airports');
-            var modalBody = $('.modal-body');
+            var modalBody = $('#wx-modal-body');
             modalBody.html('<p> Please wait... Loading WX info... </p>');
             $.getJSON("{{ path('fw_wx') }}", {'airports': airports}, function (data) {
 
                 modalBody.html('');
                 modalBody.append('<h4>METARs</h4>');
                 $.each(data['metars'], function (index, element) {
-                    $('.modal-body').append('<div>' + element + '</div>');
+                    modalBody.append('<div>' + element + '</div>');
                 });
                 modalBody.append('<h4>TAFs</h4>');
                 $.each(data['tafs'], function (index, element) {
-                    $('.modal-body').append('<div>' + element + '</div>');
+                    modalBody.append('<div>' + element + '</div>');
                 });
 
             });

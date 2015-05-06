@@ -27,7 +27,7 @@ AppBundle\Entity\FlightwatchInfo:
           type: boolean
           nullable: true
           options:
-            default: 0
+            default: false
         completed_at:
           type: datetime
           nullable: true
