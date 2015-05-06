@@ -18,7 +18,7 @@
                 <th>ERD</th>
                 <th>ERDA</th>
                 <th>FW Info</th>
-                <th>Finalize</th>
+                <th>Finalize flight</th>
             </tr>
             </thead>
             {% for flight in flights %}
@@ -49,20 +49,36 @@
                     </td>
                     <td>
                         {% for info in flight.info %}
-                            <p class="bg-{{ info.eto_info }} eto">
-                                {{ info.pointName }}
-                                {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
-                                {{ info.ebo ? info.ebo~'T' : '' }}
-                                <a href="#wxModal" data-toggle="modal" data-airports="{{ info.airportsString }}">
-                                    {{ info.airportsString }}
-                                </a>
-                            </p>
+                            <div class="row bg-{{ info.eto_info }} eto fw-row">
+                                <div class="col-md-6 no-gutter ">
+                                    {{ info.pointName }}
+                                    {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                    {{ info.ebo ? info.ebo~'T' : '' }}
+                                    <a href="#wxModal" data-toggle="modal" data-airports="{{ info.airportsString }}">
+                                        {{ info.airportsString }}
+                                    </a>
+                                </div>
+                                <div class="col-md-6 no-gutter text-right">
+                                    {% if info.form is defined%}
+                                        <span class="text-right">
+                                            <button type="button"
+                                                    class="btn btn-link btn-xs finalize-point-form"
+                                                    data-form-id="{{ info.id }}">
+                                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Finalize
+                                                </button>
+                                            {{ form(info.form, { 'attr' : { 'id' : 'finalize-point-form-'~info.id } } ) }}
+                                        </span>
+                                    {% elseif info.completed %}
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Finalized
+                                    {% endif %}
+                                </div>
+                            </div>
                         {% endfor %}
                     </td>
                     <td>
-                        <button type="button" class="btn btn-default btn-lg finalize-form"
+                        <button type="button" class="btn btn-default btn-lg btn-block finalize-flight-form"
                                 data-form-id="{{ flight.id }}">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
                         </button>
                         {{ form(flight.form, { 'attr' : { 'id' : 'finalize-form-'~flight.id } }) }}
                     </td>
@@ -100,12 +116,22 @@
 
             });
         });
-        $('.finalize-form').on('click', function (e) {
+        $('.finalize-flight-form').on('click', function (e) {
             e.preventDefault();
             var formID = $(this).attr('data-form-id');
+            $('.finalize-modal-text').text('Do you really want to finalize this flight?');
             $('#modal-finalize').modal({backdrop: true, keyboard: true})
                     .one('click', '#modal-delete-button', function (e) {
                         $('#finalize-form-' + formID).trigger('submit');
+                    });
+        });
+        $('.finalize-point-form').on('click', function (e) {
+            e.preventDefault();
+            var formID = $(this).attr('data-form-id');
+            $('.finalize-modal-text').text('Do you really want to finalize this point?');
+            $('#modal-finalize').modal({backdrop: true, keyboard: true})
+                    .one('click', '#modal-delete-button', function (e) {
+                        $('#finalize-point-form-' + formID).trigger('submit');
                     });
         });
     </script>

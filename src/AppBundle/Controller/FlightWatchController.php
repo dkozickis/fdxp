@@ -60,11 +60,18 @@ class FlightWatchController extends Controller
                         } elseif ($interval < 60) {
                             $flights[$fKey]['info'][$key]['eto_info'] = 'warning';
                         }
+
+                        if($info['completed']){
+                            $flights[$fKey]['info'][$key]['eto_info'] = 'success';
+                        }else{
+                            $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView();
+                        }
+
                     }
 
                 }
 
-            $flights[$fKey]['form'] = $this->createFinalizeForm($flight['id'])->createView();
+            $flights[$fKey]['form'] = $this->createFinalizeFlightForm($flight['id'])->createView();
 
         }
 
@@ -231,6 +238,38 @@ class FlightWatchController extends Controller
     }
 
     /**
+     * @param $id
+     * @Route("/fw/finalize/point/{id}", name="fw_finalize_point")
+     *
+     * @Method("POST")
+     */
+    public function finalizePointAction($id){
+
+        $flash = $this->get('braincrafted_bootstrap.flash');
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var  $entity FlightwatchInfo */
+
+        $entity = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
+
+        if (!$entity) {
+            $flash->alert('Point was not finalized');
+            return $this->redirectToRoute('fw_index');
+        }
+
+        $entity->setCompleted(1);
+        $entity->setCompletedAt(new \DateTime('now'));
+        $entity->setCompletedBy($this->get('security.token_storage')->getToken()->getUsername());
+
+        $em->persist($entity);
+        $em->flush();
+
+        $flash->success('Point finalized');
+        return $this->redirectToRoute('fw_index');
+
+    }
+
+    /**
      * @Route("/fw/wx", name="fw_wx")
      * @Method("GET")
      */
@@ -265,7 +304,7 @@ class FlightWatchController extends Controller
             'tafs' => $tafs
         )));
 
-        //$response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'application/json');
 
         return $response;
 
@@ -310,11 +349,20 @@ class FlightWatchController extends Controller
             ->getForm();
     }
 
-    private function createFinalizeForm($id)
+    private function createFinalizeFlightForm($id)
     {
 
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('fw_finalize_flight', array(
+                'id' => $id
+            )))
+            ->getForm();
+    }
+
+    private function createFinalizePointForm($id)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('fw_finalize_point', array(
                 'id' => $id
             )))
             ->getForm();
