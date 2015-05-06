@@ -12,6 +12,7 @@
             <tr>
                 <th>Date</th>
                 <th>No.</th>
+                <th>Dep-Dest</th>
                 <th>STD</th>
                 <th>T/O</th>
                 <th>ALTN</th>
@@ -28,6 +29,9 @@
                     </td>
                     <td>
                         {{ flight.flightNumber }}
+                    </td>
+                    <td>
+                        {{ flight.dep }}-{{ flight.dest }}
                     </td>
                     <td>
                         {{ flight.std|date('H:i') }}Z
