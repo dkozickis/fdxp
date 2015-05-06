@@ -20,6 +20,8 @@ class FlightwatchRepository extends EntityRepository
             ->where('f.completed is null')
             ->andWhere('i.pointName not like :pointName')
             ->setParameter('pointName', 'EXP%')
+            ->orderBy('f.flightDate', 'ASC')
+            ->addOrderBy('f.std', 'ASC')
             ->getQuery()
             ->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true)
             ->getArrayResult();
