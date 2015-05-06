@@ -54,7 +54,7 @@
                     <td>
                         {% for info in flight.info %}
                             <div class="row bg-{{ info.eto_info }} eto fw-row">
-                                <div class="col-md-6 no-gutter ">
+                                <div class="col-md-8 no-gutter ">
                                     {{ info.pointName }}
                                     {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
                                     {{ info.ebo ? info.ebo~'T' : '' }}
@@ -62,7 +62,7 @@
                                         {{ info.airportsString }}
                                     </a>
                                 </div>
-                                <div class="col-md-6 no-gutter text-right">
+                                <div class="col-md-4 no-gutter text-right">
                                     {% if info.form is defined%}
                                         <span class="text-right">
                                             <button type="button"
