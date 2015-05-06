@@ -1,0 +1,1 @@
+fos.Router.setData({"base_url":"","routes":{"fw_wx":{"tokens":[["variable","\/","[^\/]++","force"],["variable","\/","[^\/]++","id"],["text","\/fw\/wx"]],"defaults":{"force":0},"requirements":{"_method":"GET|POST"},"hosttokens":[]}},"prefix":"","host":"localhost","scheme":"http"});

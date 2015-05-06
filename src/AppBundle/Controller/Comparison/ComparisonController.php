@@ -219,7 +219,8 @@ class ComparisonController extends Controller
                             'coordinates' => $coords
                         ),
                         'properties' => array(
-                            'name' => 'test'
+                            'name' => 'test',
+                            'color' => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
                         )
                     );
                     array_push($features, $feature);

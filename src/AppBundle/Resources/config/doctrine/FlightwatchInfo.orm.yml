@@ -23,6 +23,12 @@ AppBundle\Entity\FlightwatchInfo:
         airports:
           type: array
           nullable: true
+        wxInfo:
+          type: array
+          nullable: true
+        wxTime:
+          type: datetime
+          nullable: true
         completed:
           type: boolean
           nullable: true

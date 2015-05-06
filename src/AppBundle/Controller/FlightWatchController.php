@@ -33,43 +33,43 @@ class FlightWatchController extends Controller
 
         foreach ($flights as $fKey => $flight) {
 
-                foreach ($flight['info'] as $key => $info) {
+            foreach ($flight['info'] as $key => $info) {
 
-                    $flights[$fKey]['info'][$key]['eto_info'] = 'info';
-                    $airportString = '';
+                $flights[$fKey]['info'][$key]['eto_info'] = 'info';
+                $airportString = '';
 
-                    if($info['airports']) {
-                        foreach ($info['airports'] as $airport) {
-                            $airportString .= $airport . " ";
-                        }
+                if ($info['airports']) {
+                    foreach ($info['airports'] as $airport) {
+                        $airportString .= $airport . " ";
+                    }
+                }
+
+                $flights[$fKey]['info'][$key]['airportsString'] = trim($airportString);
+
+                if (isset($flight['takeOffTime'])) {
+                    $takeOffTime = clone $flight['takeOffTime'];
+                    $addInterval = new \DateInterval('P0000-00-00T' . $info['eto']->format('H:i:s'));
+
+                    $eto_time = $takeOffTime->add($addInterval);
+                    $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
+
+                    $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
+
+                    if ($interval < 30) {
+                        $flights[$fKey]['info'][$key]['eto_info'] = 'danger';
+                    } elseif ($interval < 60) {
+                        $flights[$fKey]['info'][$key]['eto_info'] = 'warning';
                     }
 
-                    $flights[$fKey]['info'][$key]['airportsString'] = trim($airportString);
-
-                    if (isset($flight['takeOffTime'])) {
-                        $takeOffTime = clone $flight['takeOffTime'];
-                        $addInterval = new \DateInterval('P0000-00-00T' . $info['eto']->format('H:i:s'));
-
-                        $eto_time = $takeOffTime->add($addInterval);
-                        $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
-
-                        $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
-
-                        if ($interval < 30) {
-                            $flights[$fKey]['info'][$key]['eto_info'] = 'danger';
-                        } elseif ($interval < 60) {
-                            $flights[$fKey]['info'][$key]['eto_info'] = 'warning';
-                        }
-
-                        if($info['completed']){
-                            $flights[$fKey]['info'][$key]['eto_info'] = 'success';
-                        }else{
-                            $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView();
-                        }
-
+                    if ($info['completed']) {
+                        $flights[$fKey]['info'][$key]['eto_info'] = 'success';
+                    } else {
+                        $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView();
                     }
 
                 }
+
+            }
 
             $flights[$fKey]['form'] = $this->createFinalizeFlightForm($flight['id'])->createView();
 
@@ -165,7 +165,7 @@ class FlightWatchController extends Controller
             throw $this->createNotFoundException('Unable to find Flightwatch entity.');
         }
 
-        if(!$entity->getTakeOffTime()){
+        if (!$entity->getTakeOffTime()) {
             $entity->setTakeOffTime(new \DateTime('today'));
         }
 
@@ -214,7 +214,8 @@ class FlightWatchController extends Controller
      *
      * @Method("POST")
      */
-    public function finalizeFlightAction($id){
+    public function finalizeFlightAction($id)
+    {
 
         $flash = $this->get('braincrafted_bootstrap.flash');
         $em = $this->getDoctrine()->getManager();
@@ -243,7 +244,8 @@ class FlightWatchController extends Controller
      *
      * @Method("POST")
      */
-    public function finalizePointAction($id){
+    public function finalizePointAction($id)
+    {
 
         $flash = $this->get('braincrafted_bootstrap.flash');
         $em = $this->getDoctrine()->getManager();
@@ -270,41 +272,63 @@ class FlightWatchController extends Controller
     }
 
     /**
-     * @Route("/fw/wx", name="fw_wx")
-     * @Method("GET")
+     * @Route("/fw/wx/{id}/{force}", name="fw_wx", defaults={"force": 0}, options={"expose"=true})
+     * @Method({"GET","POST"})
      */
-    public function wxAction(Request $request){
+    public function wxAction($id, $force)
+    {
+        $airportString = '';
+        $em = $this->getDoctrine()->getManager();
 
-        $airports = $request->query->get('airports');
+        /** @var FlightwatchInfo $entity */
 
-        $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
-            'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
-            'hoursBeforeNow=6&stationString='.urlencode($airports));
+        $entity = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
+        $airports = $entity->getAirports();
+        $wxInfoDB = $entity->getWxInfo();
 
-        $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
-            'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
-            'hoursBeforeNow=6&stationString='.urlencode($airports));
+        if(empty($wxInfoDB) || $force == 1){
 
-        $crawler = new Crawler($metarXML);
+            foreach ($airports as $airport) {
+                $airportString .= $airport . " ";
+            }
 
-        $metars = $crawler->filter('raw_text')->extract(array(
-            '_text'
-        ));
+            $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?' .
+                'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&' .
+                'hoursBeforeNow=6&stationString=' . urlencode($airportString));
 
-        $crawler = new Crawler($tafXML);
+            $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?' .
+                'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=postfilter&' .
+                '&startTime='.(time() - 21600).'&endTime='.time().'&stationString=' . urlencode($airportString));
 
-        $tafs = $crawler->filter('raw_text')->extract(array(
-            '_text'
-        ));
+            $crawler = new Crawler($metarXML);
+            $metars = $crawler->filter('raw_text')->extract(array(
+                '_text'
+            ));
+            $crawler = new Crawler($tafXML);
+            $tafs = $crawler->filter('raw_text')->extract(array(
+                '_text'
+            ));
 
+            $wxInfo = array(
+                'metars' => $metars,
+                'tafs' => $tafs,
+                'time' => strtoupper((new \DateTime('now'))->format('dM H:i\Z'))
+            );
+
+            $entity->setWxInfo($wxInfo);
+            $entity->setWxTime(new \DateTime('now'));
+            $em->persist($entity);
+            $em->flush();
+
+        }else{
+
+            $wxInfo = $wxInfoDB;
+
+        }
 
         $response = new Response();
-        $response->setContent(json_encode(array(
-            'metars' => $metars,
-            'tafs' => $tafs
-        )));
-
-        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($wxInfo));
+        //$response->headers->set('Content-Type', 'application/json');
 
         return $response;
 

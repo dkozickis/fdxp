@@ -58,7 +58,7 @@
                                     {{ info.pointName }}
                                     {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
                                     {{ info.ebo ? info.ebo~'T' : '' }}
-                                    <a href="#wxModal" data-toggle="modal" data-airports="{{ info.airportsString }}">
+                                    <a href="#wxModal" data-toggle="modal" data-airports="{{ info.id }}">
                                         {{ info.airportsString }}
                                     </a>
                                 </div>
@@ -101,12 +101,19 @@
 {% endblock %}
 {% block javascript %}
     {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    {% if app.debug %}
+        <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+    {% else %}
+        <script src="/js/fos_js_routes.js"></script>
+    {% endif %}
     <script>
-        $('#wxModal').on('show.bs.modal', function (e) {
-            var airports = e.relatedTarget.getAttribute('data-airports');
+        function updateWxModal(airportsID, force){
+            force = typeof force !== 'undefined' ? force : 0;
+            $('.wx-update-button').attr('data-airports', airportsID);
             var modalBody = $('#wx-modal-body');
             modalBody.html('<p> Please wait... Loading WX info... </p>');
-            $.getJSON("{{ path('fw_wx') }}", {'airports': airports}, function (data) {
+            $.getJSON(Routing.generate('fw_wx', { id : airportsID, force: force}), function (data) {
 
                 modalBody.html('');
                 modalBody.append('<h4>METARs</h4>');
@@ -117,9 +124,19 @@
                 $.each(data['tafs'], function (index, element) {
                     modalBody.append('<div>' + element + '</div>');
                 });
-
+                $('.wx-update-time').html(data['time']);
             });
+        }
+
+        $('#wxModal').on('show.bs.modal', function (e) {
+            var airportsID = e.relatedTarget.getAttribute('data-airports');
+            updateWxModal(airportsID);
         });
+        $('.wx-update-button').on('click', function (e){
+            var airportsID = $(this).attr('data-airports');
+            updateWxModal(airportsID, 1);
+        });
+
         $('.finalize-flight-form').on('click', function (e) {
             e.preventDefault();
             var formID = $(this).attr('data-form-id');

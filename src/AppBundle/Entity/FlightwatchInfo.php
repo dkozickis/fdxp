@@ -35,9 +35,24 @@ class FlightwatchInfo
     private $ebo;
 
     /**
-     * @var string
+     * @var array
      */
     private $airports;
+
+    /**
+     * @var boolean
+     */
+    private $completed;
+
+    /**
+     * @var \DateTime
+     */
+    private $completed_at;
+
+    /**
+     * @var string
+     */
+    private $completed_by;
 
     /**
      * @var \AppBundle\Entity\Flightwatch
@@ -150,7 +165,7 @@ class FlightwatchInfo
     /**
      * Set airports
      *
-     * @param string $airports
+     * @param array $airports
      * @return FlightwatchInfo
      */
     public function setAirports($airports)
@@ -163,40 +178,12 @@ class FlightwatchInfo
     /**
      * Get airports
      *
-     * @return string 
+     * @return array 
      */
     public function getAirports()
     {
         return $this->airports;
     }
-
-    /**
-     * Set flight
-     *
-     * @param \AppBundle\Entity\Flightwatch $flight
-     * @return FlightwatchInfo
-     */
-    public function setFlight(\AppBundle\Entity\Flightwatch $flight = null)
-    {
-        $this->flight = $flight;
-
-        return $this;
-    }
-
-    /**
-     * Get flight
-     *
-     * @return \AppBundle\Entity\Flightwatch 
-     */
-    public function getFlight()
-    {
-        return $this->flight;
-    }
-    /**
-     * @var boolean
-     */
-    private $completed;
-
 
     /**
      * Set completed
@@ -220,44 +207,6 @@ class FlightwatchInfo
     {
         return $this->completed;
     }
-    /**
-     * @var \DateTime
-     */
-    private $completed_on;
-
-
-    /**
-     * Set completed_on
-     *
-     * @param \DateTime $completedOn
-     * @return FlightwatchInfo
-     */
-    public function setCompletedOn($completedOn)
-    {
-        $this->completed_on = $completedOn;
-
-        return $this;
-    }
-
-    /**
-     * Get completed_on
-     *
-     * @return \DateTime 
-     */
-    public function getCompletedOn()
-    {
-        return $this->completed_on;
-    }
-    /**
-     * @var \DateTime
-     */
-    private $completed_at;
-
-    /**
-     * @var string
-     */
-    private $completed_by;
-
 
     /**
      * Set completed_at
@@ -303,5 +252,84 @@ class FlightwatchInfo
     public function getCompletedBy()
     {
         return $this->completed_by;
+    }
+
+    /**
+     * Set flight
+     *
+     * @param \AppBundle\Entity\Flightwatch $flight
+     * @return FlightwatchInfo
+     */
+    public function setFlight(\AppBundle\Entity\Flightwatch $flight = null)
+    {
+        $this->flight = $flight;
+
+        return $this;
+    }
+
+    /**
+     * Get flight
+     *
+     * @return \AppBundle\Entity\Flightwatch 
+     */
+    public function getFlight()
+    {
+        return $this->flight;
+    }
+    /**
+     * @var array
+     */
+    private $wxInfo;
+
+    /**
+     * @var \DateTime
+     */
+    private $wxTime;
+
+
+    /**
+     * Set wxInfo
+     *
+     * @param array $wxInfo
+     * @return FlightwatchInfo
+     */
+    public function setWxInfo($wxInfo)
+    {
+        $this->wxInfo = $wxInfo;
+
+        return $this;
+    }
+
+    /**
+     * Get wxInfo
+     *
+     * @return array 
+     */
+    public function getWxInfo()
+    {
+        return $this->wxInfo;
+    }
+
+    /**
+     * Set wxTime
+     *
+     * @param \DateTime $wxTime
+     * @return FlightwatchInfo
+     */
+    public function setWxTime($wxTime)
+    {
+        $this->wxTime = $wxTime;
+
+        return $this;
+    }
+
+    /**
+     * Get wxTime
+     *
+     * @return \DateTime 
+     */
+    public function getWxTime()
+    {
+        return $this->wxTime;
     }
 }

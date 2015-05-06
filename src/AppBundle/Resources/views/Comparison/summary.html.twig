@@ -1,5 +1,9 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
+{% block title %}
+    <title>FDXP - Case summary</title>
+{% endblock %}
+
 {% block stylesheet %}
     {{ parent() }}
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
@@ -59,14 +63,22 @@
     <script src="{{ asset('js/leaflet-ajax.js') }}"></script>
     <script>
         var map = L.map('map').setView([51.505, -0.09], 13);
+
         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             maxZoom: 18
         }).addTo(map);
-        var geojsonLayer = new L.GeoJSON.AJAX("{{ path('compare_route', { 'comp_id' : app.request.get(('comp_id'))}) }}");
+
+        var geojsonLayer =
+                new L.GeoJSON.AJAX("{{ path('compare_route',
+                { 'comp_id' : app.request.get(('comp_id'))}) }}", {
+                    style: function (feature) {
+                        return {color: feature.properties.color};
+                    }
+                });
+
         geojsonLayer.addTo(map);
 
-        setTimeout(function(){
+        setTimeout(function () {
             map.fitBounds(geojsonLayer.getBounds());
         }, 3000);
 
