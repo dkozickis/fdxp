@@ -64,6 +64,9 @@ class Builder extends ContainerAware
     }
 
 
+    /**
+     * @param string $build
+     */
     private function compareMenuBuildUp($build = null, ItemInterface $menu, EntityManager $em, RequestStack $rs)
     {
         switch ($build) {

@@ -15,7 +15,7 @@ use Doctrine\ORM\Query\Expr;
 class WaypointsRepository extends EntityRepository
 {
 
-    public function findAndOrderByArray($wpts){
+    public function findAndOrderByArray($wpts) {
 
         $qb = $this->createQueryBuilder("w");
 

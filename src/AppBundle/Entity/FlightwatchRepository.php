@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class FlightwatchRepository extends EntityRepository
 {
-    public function findAllWithInfo(){
+    public function findAllWithInfo() {
 
         return $this->createQueryBuilder('f')
             ->addSelect('i')

@@ -33,9 +33,9 @@ class ComparisonCaseCalcType extends AbstractType
                         ->setParameter('id', $options['case']);
                 },
             ))
-            ->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event){
+            ->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
                 $data = $event->getData();
-                if(isset($data['route'])){
+                if (isset($data['route'])) {
                     $data['route'] = trim(preg_replace('/\s+/', ' ', $data['route']));
                 }
                 $event->setData($data);
