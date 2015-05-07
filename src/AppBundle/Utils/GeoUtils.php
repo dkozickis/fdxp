@@ -24,10 +24,9 @@ class GeoUtils
         return $flightIDS;
     }
 
-    public function DMStoDD($dms)
+    public function convertDMStoDD($dms)
     {
         preg_match_all('~([0-9]{6,7})([N|S|W|E]{1})~', $dms, $dmsMatch, PREG_SET_ORDER);
-
 
         switch (strlen($dmsMatch[0][1])) {
             case 6:
@@ -38,7 +37,7 @@ class GeoUtils
                 break;
         }
 
-        return $this->separateDMStoDD($dmsArray['deg'], $dmsArray['min'], $dmsArray['sec'], $dmsMatch[0][2]);
+        return $this->convertSeparateDMStoDD($dmsArray['deg'], $dmsArray['min'], $dmsArray['sec'], $dmsMatch[0][2]);
     }
 
     /**
@@ -46,7 +45,7 @@ class GeoUtils
      * @param string $sec
      * @param string $direction
      */
-    public function separateDMStoDD($deg, $min, $sec, $direction)
+    public function convertSeparateDMStoDD($deg, $min, $sec, $direction)
     {
         $dd = $deg + ((($min * 60) + ($sec)) / 3600);
 
@@ -57,7 +56,7 @@ class GeoUtils
         return $dd;
     }
 
-    public function DDtoDMS($dec)
+    public function convertDDtoDMS($dec)
     {
         $vars = explode(".", $dec);
         $deg = $vars[0];

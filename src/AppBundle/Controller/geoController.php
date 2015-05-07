@@ -55,8 +55,8 @@ class GeoController extends Controller
         foreach ($areaDMSCoordinates as $DMSCoordinates) {
             preg_match('~(?<lat>\w+)\s+(?<lon>\w+)~', $DMSCoordinates, $DMSArray);
             $coordinates[] = [
-                $geoUtils->DMStoDD($DMSArray['lon']),
-                $geoUtils->DMStoDD($DMSArray['lat'])];
+                $geoUtils->convertDMStoDD($DMSArray['lon']),
+                $geoUtils->convertDMStoDD($DMSArray['lat'])];
         }
 
 
