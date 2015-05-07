@@ -328,7 +328,7 @@ class FlightWatchController extends Controller
 
         $response = new Response();
         $response->setContent(json_encode($wxInfo));
-        //$response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'application/json');
 
         return $response;
 
@@ -346,12 +346,6 @@ class FlightWatchController extends Controller
         $form->add('actions', 'form_actions');
 
         $form->get('actions')->add('submit', 'submit', array('label' => 'Update'));
-        /*$form->get('actions')->add('delete', 'button', array(
-            'label' => 'Delete',
-            'button_class' => 'danger',
-            'attr' => array(
-                'id' => 'delete-button',
-            ),));*/
         $form->get('actions')->add('backToList', 'button', array(
                 'as_link' => true, 'attr' => array(
                     'href' => $this->generateUrl('fw_index'),

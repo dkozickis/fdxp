@@ -68,7 +68,7 @@ class ComparisonController extends Controller
                     $time_diff = $allCalcs[$calc['citypair']][0]['time']->diff($calc['time']);
                 } else {
                     $cost_diff = 0;
-                    $time_diff = 0;
+                    $time_diff = new \DateInterval('P0M');
                 }
                 $allCalcs[$calc['citypair']][$i] = array(
                     'basic' => ($case['basic'] ? 1 : 0),
@@ -91,7 +91,7 @@ class ComparisonController extends Controller
                             'cost' => 0,
                             'time' => 0,
                             'cost_diff' => 0,
-                            'time_diff' => 0,
+                            'time_diff' => new \DateInterval('P0M'),
                             'dummy' => 1,
                         );
                     }
@@ -111,6 +111,8 @@ class ComparisonController extends Controller
 
     /**
      * @Route("/{comp_id}/route", name="compare_route")
+     *
+     * @Method("GET")
      */
     public function jsonRouteAction($comp_id)
     {
