@@ -40,7 +40,7 @@ class FlightWatchController extends Controller
 
                 if ($info['airports']) {
                     foreach ($info['airports'] as $airport) {
-                        $airportString .= $airport . " ";
+                        $airportString .= $airport." ";
                     }
                 }
 
@@ -48,7 +48,7 @@ class FlightWatchController extends Controller
 
                 if (isset($flight['takeOffTime'])) {
                     $takeOffTime = clone $flight['takeOffTime'];
-                    $addInterval = new \DateInterval('P0000-00-00T' . $info['eto']->format('H:i:s'));
+                    $addInterval = new \DateInterval('P0000-00-00T'.$info['eto']->format('H:i:s'));
 
                     $eto_time = $takeOffTime->add($addInterval);
                     $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
@@ -286,19 +286,19 @@ class FlightWatchController extends Controller
         $airports = $entity->getAirports();
         $wxInfoDB = $entity->getWxInfo();
 
-        if(empty($wxInfoDB) || $force == 1){
+        if (empty($wxInfoDB) || $force == 1) {
 
             foreach ($airports as $airport) {
-                $airportString .= $airport . " ";
+                $airportString .= $airport." ";
             }
 
-            $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?' .
-                'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&' .
-                'hoursBeforeNow=6&stationString=' . urlencode($airportString));
+            $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
+                'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
+                'hoursBeforeNow=6&stationString='.urlencode($airportString));
 
-            $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?' .
-                'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=postfilter&' .
-                '&startTime='.(time() - 21600).'&endTime='.time().'&stationString=' . urlencode($airportString));
+            $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
+                'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=postfilter&'.
+                '&startTime='.(time() - 21600).'&endTime='.time().'&stationString='.urlencode($airportString));
 
             $crawler = new Crawler($metarXML);
             $metars = $crawler->filter('raw_text')->extract(array(
@@ -320,7 +320,7 @@ class FlightWatchController extends Controller
             $em->persist($entity);
             $em->flush();
 
-        }else{
+        } else {
 
             $wxInfo = $wxInfoDB;
 

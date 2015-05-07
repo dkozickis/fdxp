@@ -34,7 +34,7 @@ class WaypointImportCommand extends ContainerAwareCommand
         $em = $this->getContainer()->get('doctrine')->getManager();
 
         $crawler = new Crawler();
-        $crawler->addXmlContent(file_get_contents($this->getContainer()->get('kernel')->getRootDir() . '/../' . $file));
+        $crawler->addXmlContent(file_get_contents($this->getContainer()->get('kernel')->getRootDir().'/../'.$file));
 
         $filter = $crawler->filterXPath("//codeType[contains(text(), 'ICAO')]/..");
         $progress = new ProgressBar($output, ceil(count($filter) / 20));
@@ -53,12 +53,12 @@ class WaypointImportCommand extends ContainerAwareCommand
                     $lat = $crawler->filterXPath('//geoLat')->text();
                     $lon = $crawler->filterXPath('//geoLong')->text();
 
-                    $lat = (substr($lat, -1) == 'N') ? rtrim($lat, "N") : "-" . rtrim($lat, "S");
-                    $lon = (substr($lon, -1) == 'E') ? ltrim(rtrim($lon, "E"), '0') : "-" . ltrim(rtrim($lon, "W"), 0);
+                    $lat = (substr($lat, -1) == 'N') ? rtrim($lat, "N") : "-".rtrim($lat, "S");
+                    $lon = (substr($lon, -1) == 'E') ? ltrim(rtrim($lon, "E"), '0') : "-".ltrim(rtrim($lon, "W"), 0);
 
                     $wpt_db->setWptId($crawler->filterXPath('//codeId')->text())
-                        ->setLat((float)$lat)
-                        ->setLon((float)$lon);
+                        ->setLat((float) $lat)
+                        ->setLon((float) $lon);
 
                     $em->persist($wpt_db);
 
