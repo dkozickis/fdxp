@@ -67,13 +67,12 @@ class GeoController extends Controller
         ));
 
 
-        $json = json_encode($polygon);
+        $geoJSON = json_encode($polygon);
 
-        dump($json);
+        $response = new Response(json_encode($geoJSON));
+        $response->headers->set('Content-Type', 'application/json');
 
-        throw new \Exception('');
-
-        return new Response();
+        return $response;
     }
 
     /**
