@@ -7,7 +7,6 @@ use AppBundle\Utils\ComparisonUtils;
 use GeoJson\Feature\Feature;
 use GeoJson\Feature\FeatureCollection;
 use GeoJson\Geometry\LineString;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -126,13 +125,13 @@ class ComparisonController extends Controller
             'comparison' => $comp_id
         ));
 
-        foreach ($cases as $case){
+        foreach ($cases as $case) {
             /* @var $case ComparisonCase */
             $calcs = $case->getCalcs();
-            foreach($calcs as $calc){
+            foreach ($calcs as $calc) {
                 /* @var $calc ComparisonCaseCalc */
                 $route = $calc->getRoute();
-                if(trim($route) != ''){
+                if (trim($route) != '') {
                     $coords = array();
 
                     ++$i;
@@ -141,11 +140,11 @@ class ComparisonController extends Controller
                         'wpt_id' => $waypoints[0]
                     ));
 
-                    foreach($waypoints[0] as $wpt){
+                    foreach ($waypoints[0] as $wpt) {
                         $rte_wpts[$i][$wpt]['name'] = $wpt;
                     }
 
-                    foreach($coordinates as $wpt_coords){
+                    foreach ($coordinates as $wpt_coords) {
                         /* @var $wpt_coords Waypoints */
 
                         $lat = $wpt_coords->getLat();
@@ -156,7 +155,7 @@ class ComparisonController extends Controller
 
                     }
 
-                    foreach($rte_wpts[$i] as $key => $wpt){
+                    foreach ($rte_wpts[$i] as $key => $wpt) {
                         array_push($coords, array($wpt['lon'], $wpt['lat']));
                     }
 
@@ -295,7 +294,7 @@ class ComparisonController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
 
-        return $this->render('AppBundle:Comparison:edit.html.twig',array(
+        return $this->render('AppBundle:Comparison:edit.html.twig', array(
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),

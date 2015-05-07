@@ -33,7 +33,7 @@ class AppExtension extends \Twig_Extension {
         return $doc->saveHTML();
     }
 
-    public function getName(){
+    public function getName() {
         return 'app_extension';
     }
 

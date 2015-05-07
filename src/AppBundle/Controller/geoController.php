@@ -2,12 +2,10 @@
 
 namespace AppBundle\Controller;
 
-use SebastianBergmann\Diff\Line;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use GeoJson\GeoJson;
 use GeoJson\Geometry\LinearRing;
 use GeoJson\Geometry\Polygon;
 
@@ -54,7 +52,7 @@ class GeoController extends Controller
 
         $areaDMSCoordinates = explode("\n", $areaText);
 
-        foreach($areaDMSCoordinates as $DMSCoordinates){
+        foreach ($areaDMSCoordinates as $DMSCoordinates) {
             preg_match('~(?<lat>\w+)\s+(?<lon>\w+)~', $DMSCoordinates, $DMSArray);
             $coordinates[] = [
                 $geoUtils->DMStoDD($DMSArray['lon']),

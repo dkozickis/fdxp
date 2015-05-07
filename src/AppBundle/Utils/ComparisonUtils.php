@@ -41,10 +41,10 @@ class ComparisonUtils
             $header[] = 'Basic cost';
             $header[] = 'Basic time';
         } else {
-            $header[] = $case['name'] . ' cost';
-            $header[] = $case['name'] . ' cost difference';
-            $header[] = $case['name'] . ' time';
-            $header[] = $case['name'] . ' time difference';
+            $header[] = $case['name'].' cost';
+            $header[] = $case['name'].' cost difference';
+            $header[] = $case['name'].' time';
+            $header[] = $case['name'].' time difference';
         }
 
         return $header;
