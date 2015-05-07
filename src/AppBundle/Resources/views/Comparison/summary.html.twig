@@ -27,19 +27,20 @@
                     <tr>
                         <td>{{ key }}</td>
                         {% for key, calc in calcs %}
-                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                            {% set tdClass = (calc.dummy) ? "bg-warning" : "bg-default" %}
+                            <td class="{{ tdClass }}">
                                 {{ (calc.dummy) ? " " : calc.cost }}
                             </td>
                             {% if not calc.basic %}
-                                <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                <td class="{{ tdClass }}">
                                     {{ (calc.dummy) ? " " : calc.cost_diff }}
                                 </td>
                             {% endif %}
-                            <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                            <td class="{{ tdClass }}">
                                 {{ (calc.dummy) ? " " : calc.time|date("h:i") }}
                             </td>
                             {% if not calc.basic %}
-                                <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
+                                <td class="{{ tdClass }}">
                                     {% if not calc.dummy %}
                                         {{ calc.time_diff|date("%r%H:%I") }}
                                     {% endif %}
