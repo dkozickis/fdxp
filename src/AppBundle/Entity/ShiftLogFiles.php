@@ -30,6 +30,24 @@ class ShiftLogFiles
      */
     protected $file;
 
+    private $fileDeleteForm;
+
+    /**
+     * @return mixed
+     */
+    public function getFileDeleteForm()
+    {
+        return $this->fileDeleteForm;
+    }
+
+    /**
+     * @param mixed $fileDeleteForm
+     */
+    public function setFileDeleteForm($fileDeleteForm)
+    {
+        $this->fileDeleteForm = $fileDeleteForm;
+    }
+
     /**
      * Set file_name.
      *

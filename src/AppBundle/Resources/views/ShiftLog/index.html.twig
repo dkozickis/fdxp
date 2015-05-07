@@ -50,11 +50,11 @@
                             {% for file in files %}
                                 <tr>
                                     <td class="col-md-1">{{ loop.index }}</td>
-                                    <td class="col-md-9">
+                                    <td class="col-md-10">
                                         <a href="{{ vich_uploader_asset(file, 'file') }}">{{ file.description }}</a>
                                     </td>
-                                    <td>
-                                        <a href="{{ path('shiftlog_filedelete', {'id': file.id}) }}">Delete</a>
+                                    <td class="col-md-1">
+                                        {{ form(file.fileDeleteForm, { 'style' : 'inline', 'col_size' : 'md' }) }}
                                     </td>
                                 </tr>
                             {% endfor %}

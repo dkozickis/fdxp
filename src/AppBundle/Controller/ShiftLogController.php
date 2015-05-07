@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ShiftLogFiles;
 use AppBundle\Form\Type\ShiftLogFileType;
+use Doctrine\ORM\Query;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,12 +28,20 @@ class ShiftLogController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $shift_info = $this->get('app.app_utils')->mainePageInit();
-        $shift_files = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
+        $shiftInfo = $this->get('app.app_utils')->mainePageInit();
+        $shiftFiles = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
+
+        foreach($shiftFiles as $file){
+            /** @var ShiftLogFiles $file */
+            $file->setFileDeleteForm($this->createDeleteFileForm($file->getId())->createView());
+        }
+
+        dump($shiftFiles);
 
         $file = new ShiftLogFiles();
         $form = $this->createForm(new ShiftLogFileType(), $file);
         $form->handleRequest($request);
+
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($file);
@@ -45,9 +54,9 @@ class ShiftLogController extends Controller
 
         return $this->render('AppBundle:ShiftLog:index.html.twig', array(
             'information' => $info_result,
-            'shift_info' => $shift_info,
+            'shift_info' => $shiftInfo,
             'form' => $form->createView(),
-            'files' => $shift_files,
+            'files' => $shiftFiles,
         ));
     }
 
@@ -131,23 +140,39 @@ class ShiftLogController extends Controller
     /**
      * @Route("/filedelete/{id}", name="shiftlog_filedelete")
      *
-     * @Method({"GET"})
+     * @Method({"DELETE"})
      */
-    public function deleteFileAction($id)
+    public function deleteFileAction(Request $request, $id)
     {
+        $form = $this->createDeleteFileForm($id);
+        $form->handleRequest($request);
         $flash = $this->get('braincrafted_bootstrap.flash');
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('AppBundle:ShiftLogFiles')->findOneBy(array('id' => $id));
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find this file record.');
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('AppBundle:ShiftLogFiles')->findOneBy(array('id' => $id));
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find this file record.');
+            }
+
+            $em->remove($entity);
+            $em->flush();
+
+            $flash->success('File removed');
         }
 
-        $em->remove($entity);
-        $em->flush();
-
-        $flash->success('File removed');
-
         return $this->redirectToRoute('shiftlog_index');
+    }
+
+    private function createDeleteFileForm($id)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('shiftlog_filedelete', array('id' => $id)))
+            ->setMethod('DELETE')
+            ->add('delete', 'submit', array(
+                'button_class' => 'danger btn-xs'
+            ))
+            ->getForm();
     }
 }
