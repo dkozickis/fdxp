@@ -41,7 +41,6 @@
                             {% if not calc.basic %}
                                 <td{{ (calc.dummy) ? ' class="bg-warning"' : "" }}>
                                     {% if not calc.dummy %}
-                                    {# {{ not calc.time_diff  ? '00:00' : calc.time_diff|date("%r%H:%I") }} #}
                                         {{ calc.time_diff|date("%r%H:%I") }}
                                     {% endif %}
                                 </td>
