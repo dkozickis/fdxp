@@ -7,10 +7,7 @@ class OFPUtils
 
     public function getOFPLines($ofp)
     {
-
-        $ofp_lines = explode("\n", $ofp);
-
-        return $ofp_lines;
+        return explode("\n", $ofp);
     }
 
     public function getAvgFF($ofp)
@@ -24,6 +21,7 @@ class OFPUtils
 
     public function getDPInfo($ofp)
     {
+        $dp_array = [];
         if(preg_match('~DECISION POINT:\s+([A-Z0-9]{2,5}|[0-9]{4}[S,N,W,E]{1})~', $ofp, $dp_matches)) {
             $ofp_lines = $this->getOFPLines($ofp);
             $dp = trim($dp_matches[1]);

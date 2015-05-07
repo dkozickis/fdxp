@@ -16,5 +16,5 @@
 /node_modules
 /web/phpinfo.php
 /web/config.php
-/xml_wpts
 npm-debug.log
+

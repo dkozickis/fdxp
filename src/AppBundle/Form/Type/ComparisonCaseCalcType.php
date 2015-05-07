@@ -11,6 +11,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ComparisonCaseCalcType extends AbstractType
 {
+
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -34,7 +36,7 @@ class ComparisonCaseCalcType extends AbstractType
             ->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event){
                 $data = $event->getData();
                 if(isset($data['route'])){
-                    $data['route'] =trim(preg_replace('/\s+/', ' ', $data['route']));
+                    $data['route'] = trim(preg_replace('/\s+/', ' ', $data['route']));
                 }
                 $event->setData($data);
             })

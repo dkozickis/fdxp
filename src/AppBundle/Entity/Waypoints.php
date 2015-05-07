@@ -20,12 +20,12 @@ class Waypoints
     private $wpt_id;
 
     /**
-     * @var string
+     * @var float
      */
     private $lat;
 
     /**
-     * @var string
+     * @var float
      */
     private $lon;
 
@@ -66,7 +66,7 @@ class Waypoints
     /**
      * Set lat
      *
-     * @param string $lat
+     * @param float $lat
      * @return Waypoints
      */
     public function setLat($lat)
@@ -79,7 +79,7 @@ class Waypoints
     /**
      * Get lat
      *
-     * @return string 
+     * @return float 
      */
     public function getLat()
     {
@@ -89,7 +89,7 @@ class Waypoints
     /**
      * Set lon
      *
-     * @param string $lon
+     * @param float $lon
      * @return Waypoints
      */
     public function setLon($lon)
@@ -102,7 +102,7 @@ class Waypoints
     /**
      * Get lon
      *
-     * @return string 
+     * @return float 
      */
     public function getLon()
     {

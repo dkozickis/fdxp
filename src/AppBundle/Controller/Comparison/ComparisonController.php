@@ -4,6 +4,9 @@ namespace AppBundle\Controller\Comparison;
 
 use AppBundle\Entity\Waypoints;
 use AppBundle\Utils\ComparisonUtils;
+use GeoJson\Feature\Feature;
+use GeoJson\Feature\FeatureCollection;
+use GeoJson\Geometry\LineString;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -108,58 +111,6 @@ class ComparisonController extends Controller
     }
 
     /**
-     * @Route("/wpt", name="compare_wpt")
-     */
-    public function waypointsAction()
-    {
-
-        $result = [];
-        set_time_limit(300);
-
-        $em = $this->getDoctrine()->getManager();
-
-        $crawler = new Crawler();
-        $crawler->addXmlContent(file_get_contents($this->get('kernel')->getRootDir() . '/../xml_wpts/NW_WPTS.xml'));
-
-        $filter = $crawler->filterXPath("//codeType[contains(text(), 'ICAO')]/..");
-
-        $batchSize = 20;
-
-        if (iterator_count($filter) > 1) {
-
-            foreach ($filter as $i => $content) {
-                $crawler = new Crawler($content);
-                if($crawler->filterXPath('//codeType')->text() == 'ICAO'){
-
-                    $wpt_db = new Waypoints();
-
-                    $wpt_db->setWptId($crawler->filterXPath('//codeId')->text())
-                        ->setLat($crawler->filterXPath('//geoLat')->text())
-                        ->setLon($crawler->filterXPath('//geoLong')->text());
-
-                    $em->persist($wpt_db);
-
-                    if (($i % $batchSize) === 0) {
-                        $em->flush();
-                        $em->clear(); // Detaches all objects from Doctrine!
-                    }
-
-                }
-
-            }
-            $em->flush();
-            $em->clear();
-
-        } else {
-            throw new \Exception('Got empty result processing the dataset!');
-        }
-
-        return $this->render('AppBundle:Comparison:waypoints.csv.twig', array(
-            'result' => $result
-        ));
-    }
-
-    /**
      * @Route("/{comp_id}/route", name="compare_route")
      */
     public function jsonRouteAction($comp_id)
@@ -200,11 +151,8 @@ class ComparisonController extends Controller
                         $lat = $wpt_coords->getLat();
                         $lon = $wpt_coords->getLon();
 
-                        $lat = (substr($lat, -1) == 'N') ? rtrim($lat, "N") : "-".rtrim($lat, "S");
-                        $lon = (substr($lon, -1) == 'E') ? ltrim(rtrim($lon, "E"), '0') : "-".ltrim(rtrim($lon, "W"), 0);
-
-                        $rte_wpts[$i][$wpt_coords->getWptId()]['lat'] = (float)$lat;
-                        $rte_wpts[$i][$wpt_coords->getWptId()]['lon'] = (float)$lon;
+                        $rte_wpts[$i][$wpt_coords->getWptId()]['lat'] = $lat;
+                        $rte_wpts[$i][$wpt_coords->getWptId()]['lon'] = $lon;
 
                     }
 
@@ -212,29 +160,18 @@ class ComparisonController extends Controller
                         array_push($coords, array($wpt['lon'], $wpt['lat']));
                     }
 
-                    $feature = array(
-                        'type' => 'Feature',
-                        'geometry' => array(
-                            'type' => 'LineString',
-                            'coordinates' => $coords
-                        ),
-                        'properties' => array(
-                            'name' => 'test',
-                            'color' => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
-                        )
-                    );
-                    array_push($features, $feature);
+                    $line = new LineString($coords);
+                    $features[] = new Feature($line, array(
+                        'color'=> sprintf('#%06X', mt_rand(0, 0xFFFFFF))
+                    ));
 
                 }
             }
         }
 
-        $geojson = array(
-            'type'      => 'FeatureCollection',
-            'features'  => $features
-        );
+        $geoJSON = new FeatureCollection($features);
 
-        $response = new Response(json_encode($geojson));
+        $response = new Response(json_encode($geoJSON));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

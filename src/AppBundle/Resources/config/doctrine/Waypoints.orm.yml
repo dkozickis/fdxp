@@ -11,6 +11,6 @@ AppBundle\Entity\Waypoints:
       type: string
       length: 50
     lat:
-      type: text
+      type: float
     lon:
-      type: text
+      type: float

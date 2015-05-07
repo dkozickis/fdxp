@@ -2,10 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use SebastianBergmann\Diff\Line;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use GeoJson\GeoJson;
+use GeoJson\Geometry\LinearRing;
+use GeoJson\Geometry\Polygon;
 
 /**
  * Class geoController.
@@ -22,6 +26,53 @@ class GeoController extends Controller
      */
     public function indexAction()
     {
+        return new Response();
+    }
+
+    /**
+     * @return Response
+     * @Route("/coordinates/to-area", name="geo_coordinates_to_area")
+     *
+     * @Method({"GET"})
+     */
+    public function coordinatesToAreaAction()
+    {
+
+        $geoUtils = $this->get('app.geo_utils');
+        $coordinates = [];
+
+        $areaText = "090118N   0922702E
+        092259N   0930324E
+        085117N   0941745E
+        081409N   0942605E
+        073112N   0940132E
+        071344N   0931632E
+        080431N  0933811E
+        083203N   0933831E
+        084514N   0932219E
+        090118N   0922702E";
+
+        $areaDMSCoordinates = explode("\n", $areaText);
+
+        foreach($areaDMSCoordinates as $DMSCoordinates){
+            preg_match('~(?<lat>\w+)\s+(?<lon>\w+)~', $DMSCoordinates, $DMSArray);
+            $coordinates[] = [
+                $geoUtils->DMStoDD($DMSArray['lon']),
+                $geoUtils->DMStoDD($DMSArray['lat'])];
+        }
+
+
+        $polygon = new Polygon(array(
+            new LinearRing($coordinates)
+        ));
+
+
+        $json = json_encode($polygon);
+
+        dump($json);
+
+        throw new \Exception('');
+
         return new Response();
     }
 
