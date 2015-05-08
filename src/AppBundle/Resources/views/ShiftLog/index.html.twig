@@ -78,6 +78,12 @@
     {{ parent() }}
     {% if app.user and is_granted('ROLE_SHIFT_MANAGER_FD') %}
         <script src="//cdn.ckeditor.com/4.4.7/basic/ckeditor.js"></script>
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        {% if app.debug %}
+            <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+        {% else %}
+            <script src="/js/fos_js_routes.js"></script>
+        {% endif %}
         <script>
             $('.edit_button').click(function(){
                 var info_type = $(this).data('id');
@@ -87,19 +93,27 @@
                     CKEDITOR.replace(info_type);
                     $('#'+ info_type +'_save').removeClass('invisible');
                 }
-            })
+            });
             $('#shiftlogfile_file').fileinput({'showPreview' : false});
             $('.save_button').click(function(){
                 var info_type = $(this).data('id');
                 var editor = CKEDITOR.instances[info_type];
                 if (editor)
                 {
-                    $.post( "{{ path('shiftlog_update') }}/"+ info_type,
-                            { content: CKEDITOR.instances[info_type].getData() } );
+                    $.ajax({
+                        method: "PUT",
+                        url: Routing.generate('shiftlog_update', { type : info_type }),
+                        data: { content : CKEDITOR.instances[info_type].getData() }
+
+                    });
+
+                   // $.post( "{{ path('shiftlog_update') }}/"+ info_type,
+                   //         { content: CKEDITOR.instances[info_type].getData() } );
+
                     CKEDITOR.instances[info_type].destroy();
                     $('#'+ info_type +'_save').addClass('invisible');
                 }
-            })
+            });
             function checkTimer(){
                 $.getJSON("{{ path('shiftlog_timecheck') }}", function(json){
                     if(json.activate === 0){

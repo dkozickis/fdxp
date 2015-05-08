@@ -273,7 +273,7 @@ class FlightWatchController extends Controller
 
     /**
      * @Route("/fw/wx/{id}/{force}", name="fw_wx", defaults={"force": 0}, options={"expose"=true})
-     * @Method({"GET","POST"})
+     * @Method({"GET"})
      */
     public function wxAction($id, $force)
     {

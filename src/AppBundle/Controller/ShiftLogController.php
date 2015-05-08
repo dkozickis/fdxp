@@ -60,9 +60,9 @@ class ShiftLogController extends Controller
     /**
      * Edits an existing ShiftLog entity.
      *
-     * @Route("/update/{type}", name="shiftlog_update", defaults={"type" = ""})
+     * @Route("/update/{type}", name="shiftlog_update", defaults={"type" = ""}, options={"expose"=true})
      *
-     * @Method({"POST","PUT"})
+     * @Method({"PUT"})
      */
     public function updateAction(Request $request, $type)
     {
