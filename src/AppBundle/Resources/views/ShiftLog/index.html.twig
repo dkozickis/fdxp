@@ -43,9 +43,11 @@
                             <tr>
                                 <th class="col-md-1">#</th>
                                 <th class="col-md-9">Description</th>
+                                {% if is_granted('ROLE_SHIFT_MANAGER_FD') %}
                                 <th class="col-md-2">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                 </th>
+                                {% endif %}
                             </tr>
                             {% for file in files %}
                                 <tr>
@@ -53,9 +55,11 @@
                                     <td class="col-md-10">
                                         <a href="{{ vich_uploader_asset(file, 'file') }}">{{ file.description }}</a>
                                     </td>
+                                    {% if is_granted('ROLE_SHIFT_MANAGER_FD') %}
                                     <td class="col-md-1">
                                         {{ form(file.fileDeleteForm, { 'style' : 'inline', 'col_size' : 'md' }) }}
                                     </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </table>
