@@ -52,7 +52,7 @@ class ShiftLogArchiveRepository extends EntityRepository
         }
 
         $shiftLogArchive = new ShiftLogArchive();
-        $shiftLogArchive->setContent(serialize($archive));
+        $shiftLogArchive->setContent($archive);
         $shiftLogArchive->setArchivedDate($date);
         $shiftLogArchive->setArchivedBy($user);
         $shiftLogArchive->setArchivedShift($shift);

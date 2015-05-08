@@ -22,7 +22,9 @@ module.exports = function (grunt) {
                 files: {
                     'jquery.js': 'jquery/dist/jquery.js',
                     'bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
-                    'boostrap-fileinput.js': 'bootstrap-fileinput/js/fileinput.js'
+                    'boostrap-fileinput.js': 'bootstrap-fileinput/js/fileinput.js',
+                    'bootstrap-datepicker.js': 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+                    'moment.js': 'moment/min/moment.min.js'
                 }
             },
             stylesheets: {
@@ -31,7 +33,8 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'bootstrap.css': 'bootstrap/dist/css/bootstrap.css',
-                    'bootstrap-fileinput.css': 'bootstrap-fileinput/css/fileinput.css'
+                    'bootstrap-fileinput.css': 'bootstrap-fileinput/css/fileinput.css',
+                    'bootstrap-datepicker.css': 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
 
                 }
             }

@@ -58,6 +58,57 @@ class ShiftLogController extends Controller
     }
 
     /**
+     * @Route("/archive", name="shiftlog_archive_select")
+     *
+     * @Method("GET")
+     */
+    public function archiveSelectAction(){
+
+        return $this->render('AppBundle:ShiftLog:archive.html.twig');
+
+    }
+
+    /**
+     * @Route("/archive/view/{date}/{shiftName}", name="shiftlog_archive_view", options={"expose"=true})
+     *
+     * @Method("GET")
+     */
+    public function archiveViewAction($date, $shiftName){
+
+        $em = $this->getDoctrine()->getManager();
+
+        if($date === 0){
+            $date = new \DateTime('now');
+        }else{
+            $date = new \DateTime($date);
+        }
+
+        $entity = $em->getRepository('AppBundle:ShiftLogArchive')->findOneBy(array(
+            'archivedDate' => $date,
+            'archivedShift' => $shiftName
+        ));
+
+        if(!$entity){
+            return $this->render('AppBundle:ShiftLog:archive.html.twig', array(
+                'date' => $date,
+                'shift' => $shiftName
+            ));
+        }else{
+
+            return $this->render('AppBundle:ShiftLog:archive.html.twig', array(
+                'information' => $entity->getContent()['log'],
+                'files' => $entity->getContent()['files'],
+                'date' => $date,
+                'shift' => $shiftName
+            ));
+        }
+
+
+
+    }
+
+
+    /**
      * Edits an existing ShiftLog entity.
      *
      * @Route("/update/{type}", name="shiftlog_update", defaults={"type" = ""}, options={"expose"=true})
@@ -82,7 +133,7 @@ class ShiftLogController extends Controller
 
     /**
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @Route("/archive", name="shiftlog_archive")
+     * @Route("/archive/do", name="shiftlog_archive")
      *
      * @Method({"GET", "POST"})
      */

@@ -27,6 +27,8 @@ class Builder extends ContainerAware
 
         if ($securityContext->isGranted('ROLE_FD')) {
             $menu->addChild('Shift Log', array('route' => 'shiftlog_index'));
+            $menu['Shift Log']->addChild('Current', array('route' => 'shiftlog_index'));
+            $menu['Shift Log']->addChild('Archive', array('route' => 'shiftlog_archive_select'));
         }
 
         if ($securityContext->isGranted('ROLE_TFD')) {

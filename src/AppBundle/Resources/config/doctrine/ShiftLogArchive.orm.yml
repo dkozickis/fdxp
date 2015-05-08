@@ -10,7 +10,7 @@ AppBundle\Entity\ShiftLogArchive:
                 strategy: AUTO
     fields:
         content:
-            type: text
+            type: array
             nullable: true
         archivedDate:
             type: date
