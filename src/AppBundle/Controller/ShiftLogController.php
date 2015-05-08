@@ -35,8 +35,6 @@ class ShiftLogController extends Controller
             $file->setFileDeleteForm($this->createDeleteFileForm($file->getId())->createView());
         }
 
-        dump($shiftFiles);
-
         $file = new ShiftLogFiles();
         $form = $this->createForm(new ShiftLogFileType(), $file);
         $form->handleRequest($request);
