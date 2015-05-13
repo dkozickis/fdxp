@@ -18,6 +18,4 @@
 /web/config.php
 npm-debug.log
 deploy.php
-/recipe/
-/recipe/*
-
+recipe
