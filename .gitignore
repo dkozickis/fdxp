@@ -17,4 +17,7 @@
 /web/phpinfo.php
 /web/config.php
 npm-debug.log
+deploy.php
+/recipe/
+/recipe/*
 

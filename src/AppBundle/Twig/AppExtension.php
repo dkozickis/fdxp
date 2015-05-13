@@ -16,21 +16,24 @@ class AppExtension extends \Twig_Extension {
 
     public function scriptFilter($html)
     {
-        $doc = new \DOMDocument();
-        $doc->loadHTML($html);
-        # remove <!DOCTYPE
-        $doc->removeChild($doc->doctype);
-        $doc->replaceChild($doc->firstChild->firstChild, $doc->firstChild);
+        if(!empty($html)) {
+            $doc = new \DOMDocument();
+            $doc->loadHTML($html);
+            $doc->removeChild($doc->doctype);
+            $doc->replaceChild($doc->firstChild->firstChild, $doc->firstChild);
 
-        $script_tags = $doc->getElementsByTagName('script');
+            $script_tags = $doc->getElementsByTagName('script');
 
-        $length = $script_tags->length;
+            $length = $script_tags->length;
 
-        for ($i = 0; $i < $length; $i++) {
-            $script_tags->item($i)->parentNode->removeChild($script_tags->item($i));
+            for ($i = 0; $i < $length; $i++) {
+                $script_tags->item($i)->parentNode->removeChild($script_tags->item($i));
+            }
+
+            return $doc->saveHTML();
+        }else{
+            return $html;
         }
-
-        return $doc->saveHTML();
     }
 
     public function getName() {
