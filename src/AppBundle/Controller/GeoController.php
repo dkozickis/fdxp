@@ -64,10 +64,9 @@ class GeoController extends Controller
             new LinearRing($coordinates)
         ));
 
-
         $geoJSON = json_encode($polygon);
 
-        $response = new Response(json_encode($geoJSON));
+        $response = new Response($geoJSON);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
