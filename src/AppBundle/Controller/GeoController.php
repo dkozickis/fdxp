@@ -10,7 +10,7 @@ use GeoJson\Geometry\LinearRing;
 use GeoJson\Geometry\Polygon;
 
 /**
- * Class geoController.
+ * Class GeoController.
  *
  * @Route("/geo")
  */
