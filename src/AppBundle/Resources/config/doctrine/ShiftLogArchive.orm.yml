@@ -25,4 +25,8 @@ AppBundle\Entity\ShiftLogArchive:
             type: string
             column: archived_by
             nullable: true
+        onShift:
+            type: array
+            column: on_shift
+            nullable: true
     lifecycleCallbacks: {  }

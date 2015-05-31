@@ -263,4 +263,32 @@ class ShiftLogArchive
 
         return $this;
     }
+    /**
+     * @var array
+     */
+    private $onShift;
+
+
+    /**
+     * Set onShift
+     *
+     * @param array $onShift
+     * @return ShiftLogArchive
+     */
+    public function setOnShift($onShift)
+    {
+        $this->onShift = $onShift;
+
+        return $this;
+    }
+
+    /**
+     * Get onShift
+     *
+     * @return array 
+     */
+    public function getOnShift()
+    {
+        return $this->onShift;
+    }
 }

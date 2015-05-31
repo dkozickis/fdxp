@@ -95,11 +95,23 @@ class ShiftLogController extends Controller
             ));
         }else{
 
+            if($entity->getOnShift() === NULL){
+                $info = file_get_contents("http://ey.lidousers.com/roster/index.php/roster/on_shift/"
+                        .$date->format('Y')
+                        ."/".$date->format('m')
+                        ."/".$date->format('j')
+                        ."/".$shiftName);
+                $entity->setOnShift(json_decode($info, TRUE));
+                $em->persist($entity);
+                $em->flush();
+            }
+
             return $this->render('AppBundle:ShiftLog:archive.html.twig', array(
                 'information' => $entity->getContent()['log'],
                 'files' => $entity->getContent()['files'],
                 'date' => $date,
-                'shift' => $shiftName
+                'shift' => $shiftName,
+                'onShift' => $entity->getOnShift()
             ));
         }
 
