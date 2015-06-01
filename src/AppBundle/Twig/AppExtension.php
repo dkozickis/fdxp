@@ -16,7 +16,7 @@ class AppExtension extends \Twig_Extension {
 
     public function scriptFilter($html)
     {
-        if(!empty($html)) {
+        if (!empty($html)) {
             $doc = new \DOMDocument();
             $doc->loadHTML($html);
             $doc->removeChild($doc->doctype);
@@ -31,7 +31,7 @@ class AppExtension extends \Twig_Extension {
             }
 
             return $doc->saveHTML();
-        }else{
+        } else {
             return $html;
         }
     }

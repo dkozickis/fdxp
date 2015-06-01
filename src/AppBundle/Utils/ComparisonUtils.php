@@ -14,8 +14,8 @@ class ComparisonUtils
             $row = array_filter(array_map('trim', $row), 'strlen');
             if (count($row) > 0) {
                 $counter = count($row);
-                for($i = 1; $i < $counter; $i++){
-                    switch($row[0]){
+                for ($i = 1; $i < $counter; $i++) {
+                    switch ($row[0]) {
                         case 'Dep-Dest':
                             $parsed_info[$i - 1] = array('airport_pair' => $row[$i]);
                             break;
