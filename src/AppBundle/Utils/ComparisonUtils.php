@@ -14,19 +14,17 @@ class ComparisonUtils
             $row = array_filter(array_map('trim', $row), 'strlen');
             if (count($row) > 0) {
                 $counter = count($row);
-                if ($row[0] == 'Dep-Dest') {
-                    for ($i = 1; $i < $counter; $i++) {
-                        $parsed_info[$i - 1] = array('airport_pair' => $row[$i]);
-                    }
-                }
-                if ($row[0] == 'Total Costs') {
-                    for ($i = 1; $i < $counter; $i++) {
-                        $parsed_info[$i - 1]['t_costs'] = $row[$i];
-                    }
-                }
-                if ($row[0] == 'Trip Time') {
-                    for ($i = 1; $i < $counter; $i++) {
-                        $parsed_info[$i - 1]['t_time'] = $row[$i];
+                for($i = 1; $i < $counter; $i++){
+                    switch($row[0]){
+                        case 'Dep-Dest':
+                            $parsed_info[$i - 1] = array('airport_pair' => $row[$i]);
+                            break;
+                        case 'Total Costs':
+                            $parsed_info[$i - 1]['t_costs'] = $row[$i];
+                            break;
+                        case 'Trip Time':
+                            $parsed_info[$i - 1]['t_time'] = $row[$i];
+                            break;
                     }
                 }
             }

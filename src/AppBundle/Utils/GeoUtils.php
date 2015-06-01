@@ -27,6 +27,7 @@ class GeoUtils
     public function convertDMStoDD($dms)
     {
         preg_match_all('~([0-9]{6,7})([N|S|W|E]{1})~', $dms, $dmsMatch, PREG_SET_ORDER);
+        $dmsArray = [];
 
         switch (strlen($dmsMatch[0][1])) {
             case 6:

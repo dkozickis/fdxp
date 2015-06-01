@@ -26,7 +26,6 @@ class FlightWatchType extends AbstractType
             ))
             ->add('takeOffTime', null, array(
                 'date_format' => 'yyyy-MMM-dd'
-                //'data' => new \DateTime('today')
             ))
         ;
     }
