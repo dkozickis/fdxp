@@ -77,7 +77,7 @@ class Builder extends ContainerAware
                     ->getRepository('AppBundle:Comparison')
                     ->find($rs->getCurrentRequest()->get('comp_id'));
                 $menu->addChild($comp->getName());
-                $menu->setCurrent(1);
+                $menu->setCurrent(true);
                 break;
             case 'comp_from_case_id':
                 $comp = $em->getRepository('AppBundle:ComparisonCase')
@@ -101,7 +101,7 @@ class Builder extends ContainerAware
                     ));
                 } else {
                     $menu->addChild($case->getName());
-                    $menu->setCurrent(1);
+                    $menu->setCurrent(true);
                 }
                 break;
             case 'calc':
@@ -109,7 +109,7 @@ class Builder extends ContainerAware
                 $calc = $em->getRepository('AppBundle:ComparisonCaseCalc')
                     ->find($rs->getCurrentRequest()->get('id'));
                 $menu->addChild($calc->getCitypair());
-                $menu->setCurrent(1);
+                $menu->setCurrent(true);
                 break;
         }
 

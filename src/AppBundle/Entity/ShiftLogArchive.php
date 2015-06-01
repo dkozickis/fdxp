@@ -74,7 +74,7 @@ class ShiftLogArchive
     /**
      * Set content.
      *
-     * @param string $content
+     * @param array $content
      *
      * @return ShiftLogArchive
      */

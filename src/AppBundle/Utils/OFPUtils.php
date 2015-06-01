@@ -49,6 +49,8 @@ class OFPUtils
 
     public function getErdErda($ofp) {
 
+        $dp_info = [];
+
         if (preg_match('~ENROUTE DEST:\s+([A-Z]{4})/~', $ofp, $matches)) {
             $dp_info['erd'] = $matches[1];
             preg_match('~ENROUTE DEST ALTN:\s+([A-Z]{4})/~', $ofp, $matches);
