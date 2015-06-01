@@ -30,7 +30,7 @@ class ShiftLogController extends Controller
         $shiftInfo = $this->get('app.app_utils')->mainePageInit();
         $shiftFiles = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
 
-        foreach($shiftFiles as $file){
+        foreach ($shiftFiles as $file) {
             /** @var ShiftLogFiles $file */
             $file->setFileDeleteForm($this->createDeleteFileForm($file->getId())->createView());
         }
@@ -62,7 +62,7 @@ class ShiftLogController extends Controller
      *
      * @Method("GET")
      */
-    public function archiveSelectAction(){
+    public function archiveSelectAction() {
 
         return $this->render('AppBundle:ShiftLog:archive.html.twig');
 
@@ -73,13 +73,13 @@ class ShiftLogController extends Controller
      *
      * @Method("GET")
      */
-    public function archiveViewAction($date, $shiftName){
+    public function archiveViewAction($date, $shiftName) {
 
         $em = $this->getDoctrine()->getManager();
 
-        if($date === 0){
+        if ($date === 0) {
             $date = new \DateTime('now');
-        }else{
+        } else {
             $date = new \DateTime($date);
         }
 
@@ -88,14 +88,14 @@ class ShiftLogController extends Controller
             'archivedShift' => $shiftName
         ));
 
-        if(!$entity){
+        if (!$entity) {
             return $this->render('AppBundle:ShiftLog:archive.html.twig', array(
                 'date' => $date,
                 'shift' => $shiftName
             ));
-        }else{
+        } else {
 
-            if($entity->getOnShift() === NULL){
+            if ($entity->getOnShift() === NULL) {
                 $info = file_get_contents("http://ey.lidousers.com/roster/index.php/roster/on_shift/"
                         .$date->format('Y')
                         ."/".$date->format('m')
