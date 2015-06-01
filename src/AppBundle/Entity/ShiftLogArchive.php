@@ -18,7 +18,7 @@ class ShiftLogArchive
     private $infoType;
 
     /**
-     * @var string
+     * @var array
      */
     private $content;
 
@@ -88,7 +88,7 @@ class ShiftLogArchive
     /**
      * Get content.
      *
-     * @return string
+     * @return array
      */
     public function getContent()
     {
