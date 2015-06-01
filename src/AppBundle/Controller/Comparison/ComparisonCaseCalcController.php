@@ -164,31 +164,6 @@ class ComparisonCaseCalcController extends Controller
     }
 
     /**
-     * Finds and displays a ComparisonCaseCalc entity.
-     *
-     * @Route("/{id}", name="comparison_case_calc_show")
-     *
-     * @Method("GET")
-     */
-    public function showAction($id, $case_id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('AppBundle:ComparisonCaseCalc')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id, $case_id);
-
-        return $this->render('AppBundle:ComparisonCaseCalc:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-
-    /**
      * Displays a form to edit an existing ComparisonCaseCalc entity.
      *
      * @Route("/{id}/edit", name="comparison_case_calc_edit")
