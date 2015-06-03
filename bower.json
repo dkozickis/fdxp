@@ -3,6 +3,7 @@
   "dependencies": {
     "jquery": "1.11.*",
     "bootstrap": "3.1.*",
-    "eonasdan-bootstrap-datetimepicker": "~4.7.14"
+    "eonasdan-bootstrap-datetimepicker": "~4.7.14",
+    "bootstrap-fileinput": "~4.2.0"
   }
 }

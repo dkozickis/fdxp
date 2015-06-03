@@ -106,9 +106,15 @@ class ShiftLogController extends Controller
                 $em->flush();
             }
 
+            if(!isset($entity->getContent()['files'])){
+                $files = [];
+            }else{
+                $files = $entity->getContent()['files'];
+            }
+
             return $this->render('AppBundle:ShiftLog:archive.html.twig', array(
                 'information' => $entity->getContent()['log'],
-                'files' => $entity->getContent()['files'],
+                'files' => $files,
                 'date' => $date,
                 'shift' => $shiftName,
                 'onShift' => $entity->getOnShift()

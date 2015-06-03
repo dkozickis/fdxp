@@ -19,3 +19,5 @@
 npm-debug.log
 deploy.php
 recipe
+/public/
+.vagrant
