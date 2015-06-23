@@ -77,7 +77,7 @@
 {% block javascript %}
     {{ parent() }}
     {% if app.user and is_granted('ROLE_SHIFT_MANAGER_FD') %}
-        <script src="//cdn.ckeditor.com/4.4.7/basic/ckeditor.js"></script>
+        <script src="//cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
         <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
         {% if app.debug %}
             <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
@@ -90,7 +90,19 @@
                 var editor = CKEDITOR.instances[info_type];
                 if (!editor)
                 {
-                    CKEDITOR.replace(info_type);
+                    CKEDITOR.replace(info_type, {
+                        // Define the toolbar groups as it is a more accessible solution.
+                        toolbarGroups: [
+                            {"name":"basicstyles","groups":["basicstyles"]},
+                            {"name":"links","groups":["links"]},
+                            {"name":"paragraph","groups":["list"]},
+                            { "name": "colors", "groups" : [ 'TextColor','BGColor' ] },
+                            //{"name":"insert","groups":["insert"]},
+                            //{"name":"about","groups":["about"]}
+                        ],
+                        // Remove the redundant buttons from toolbar groups defined above.
+                        removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar',
+                    } );
                     $('#'+ info_type +'_save').removeClass('invisible');
                 }
             });
@@ -106,9 +118,6 @@
                         data: { content : CKEDITOR.instances[info_type].getData() }
 
                     });
-
-                   // $.post( "{{ path('shiftlog_update') }}/"+ info_type,
-                   //         { content: CKEDITOR.instances[info_type].getData() } );
 
                     CKEDITOR.instances[info_type].destroy();
                     $('#'+ info_type +'_save').addClass('invisible');

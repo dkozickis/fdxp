@@ -13,6 +13,7 @@ To start development:
 7. npm install
 8. bower install
 9. grunt
+10. php app/console doctrine:schema:update --force
 
 To rollout on server:
 
