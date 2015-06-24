@@ -11,6 +11,27 @@
             <a class="btn btn-warning" href="{{ path('shiftlog_archive') }}">Archive {{ shift_info.text }} shift</a>
         </p>
     </div>
+
+    <div class="row">
+        <div class="col-md-3 col-md-offset-9 text-right">
+            <a href="#" id="onShiftToggle"><span class="badge">{{ onShift|length }}</span> people on shift</a>
+            <ul class="list-group hidden" id="onShiftInfo">
+                {% for dxp in onShift %}
+                    <li class="list-group-item onShiftList">{{ dxp['2lc'] }} @ LIDO desk
+                        <select class="onShiftSelect" data-who="{{ dxp['2lc'] }}">
+                            <option value="1" {{ dxp.desk|default('1') == '1' ? 'selected' }}>1</option>
+                            <option value="2" {{ dxp.desk|default('1') == '2' ? 'selected' }}>2</option>
+                            <option value="3" {{ dxp.desk|default('1') == '3' ? 'selected' }}>3</option>
+                            <option value="4" {{ dxp.desk|default('1') == '4' ? 'selected' }}>4</option>
+                            <option value="5" {{ dxp.desk|default('1') == '5' ? 'selected' }}>5</option>
+                            <option value="6" {{ dxp.desk|default('1') == '6' ? 'selected' }}>6</option>
+                        </select>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
     {% endif %}
 
     {% for info in information %}
@@ -85,22 +106,37 @@
             <script src="/js/fos_js_routes.js"></script>
         {% endif %}
         <script>
+            $('a#onShiftToggle').click(function(){
+                info = $('#onShiftInfo');
+                if(!info.hasClass('hidden')){
+                    info.addClass('hidden');
+                }else{
+                    info.removeClass('hidden');
+                }
+            });
+            $('.onShiftSelect').change(function(){
+                var onShift = new Array();
+                $('.onShiftSelect').each(function(){
+                    onShift.push({"2lc":$(this).attr('data-who'), desk:$(this).val()});
+                })
+                $.ajax({
+                    method: "PUT",
+                    url: Routing.generate('shiftlog_update_onshift'),
+                    data: { newOnShift : $.toJSON(onShift) }
+                });
+            });
             $('.edit_button').click(function(){
                 var info_type = $(this).data('id');
                 var editor = CKEDITOR.instances[info_type];
                 if (!editor)
                 {
                     CKEDITOR.replace(info_type, {
-                        // Define the toolbar groups as it is a more accessible solution.
                         toolbarGroups: [
                             {"name":"basicstyles","groups":["basicstyles"]},
                             {"name":"links","groups":["links"]},
                             {"name":"paragraph","groups":["list"]},
                             { "name": "colors", "groups" : [ 'TextColor','BGColor' ] },
-                            //{"name":"insert","groups":["insert"]},
-                            //{"name":"about","groups":["about"]}
                         ],
-                        // Remove the redundant buttons from toolbar groups defined above.
                         removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar',
                         extraPlugins: 'autogrow',
                         autoGrow_minHeight: 200,
@@ -121,9 +157,7 @@
                         method: "PUT",
                         url: Routing.generate('shiftlog_update', { type : info_type }),
                         data: { content : CKEDITOR.instances[info_type].getData() }
-
                     });
-
                     CKEDITOR.instances[info_type].destroy();
                     $('#'+ info_type +'_save').addClass('invisible');
                 }

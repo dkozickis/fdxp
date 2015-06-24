@@ -26,6 +26,7 @@ security:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/shiftlog/timecheck, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/shiftlog/archive, role: ROLE_SHIFT_MANAGER_FD}
         - { path: ^/shiftlog/update, role: ROLE_SHIFT_MANAGER_FD}

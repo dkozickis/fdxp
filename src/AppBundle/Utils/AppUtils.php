@@ -2,6 +2,7 @@
 
 namespace AppBundle\Utils;
 
+use AppBundle\Entity\ShiftLogOnShift;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class AppUtils
@@ -35,20 +36,25 @@ class AppUtils
         return $currentShift;
     }
 
-    public function personnelOnShift()
+    public function getPersonnelOnShift($date = NULL, $shift = NULL)
     {
-        $currentShift = $this->currentShift();
-        $todayRoster = json_decode(file_get_contents('http://ey.lidousers.com/roster/index.php/roster/on_shift'));
+        $date = isset($date) ? $date : new \DateTime('now');
+        $shift = isset($shift) ? $shift : $this->currentShift();
+        $em = $this->managerRegistry->getManager();
 
-        $onShift = [];
+        $info = file_get_contents("http://ey.lidousers.com/roster/index.php/roster/on_shift/"
+            .$date->format('Y')
+            ."/".$date->format('m')
+            ."/".$date->format('j')
+            ."/".$shift);
+        $newOnShift = new ShiftLogOnShift();
+        $newOnShift->setShiftDate($date);
+        $newOnShift->setShiftPeriod($shift);
+        $newOnShift->setOnShift(json_decode($info, TRUE));
+        $em->persist($newOnShift);
+        $em->flush();
 
-        foreach ($todayRoster as $shift_info) {
-            if (strpos($shift_info->planned, $currentShift) !== false) {
-                $onShift[] = $shift_info->f_name.' '.substr($shift_info->s_name, 0, 1);
-            }
-        }
-
-        return $onShift;
+        return $newOnShift;
     }
 
     public function archiveDateShiftProposal($hours_now = null)

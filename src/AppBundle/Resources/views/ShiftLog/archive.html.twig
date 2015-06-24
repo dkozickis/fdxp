@@ -35,9 +35,11 @@
         </div>
         <div class="col-md-6">
             On shift:
-            {% for dxp in onShift %}
-                {{ dxp.f_name|first }}{{ dxp.s_name|first }}
-            {% endfor %}
+            {% if onShift is defined %}
+                {% for dxp in onShift %}
+                    {{ dxp['2lc'] }}/{{ dxp.desk|default('NA') }}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 
@@ -82,7 +84,7 @@
                             </table>
                         {% else %}
                             <p class="text-center">
-                                No files yet.
+                                No files on this shift.
                             </p>
                         {% endif %}
                     </div>
@@ -108,7 +110,6 @@
         $(function () {
             $('#datetimepicker1').datetimepicker({
                 format: "YYYY-MM-DD",
-
             });
             $('#showButton').on('click', function (e) {
                 e.preventDefault();
@@ -117,7 +118,6 @@
                     date: $('#datetimepicker1').data("DateTimePicker").date().format("YYYY-MM-DD"),
                     shiftName: $("#shift").val()
                 }));
-                //console.log(e.date.format("YYYY-MM-DD"));
             });
         });
     </script>

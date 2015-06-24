@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ShiftLogFiles;
+use AppBundle\Entity\ShiftLogOnShift;
 use AppBundle\Form\Type\ShiftLogFileType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,8 +28,19 @@ class ShiftLogController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        $currentShift = $this->get('app.app_utils')->currentShift();
+
         $shiftInfo = $this->get('app.app_utils')->mainePageInit();
         $shiftFiles = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
+        $onShift = $em->getRepository('AppBundle:ShiftLogOnShift')->findOneBy(array(
+            'shiftDate' => new \DateTime('now'),
+            'shiftPeriod' => $currentShift
+        ));
+
+        if(!$onShift){
+            $onShift = $this->get('app.app_utils')->getPersonnelOnShift();
+        }
 
         foreach ($shiftFiles as $file) {
             /** @var ShiftLogFiles $file */
@@ -40,7 +52,6 @@ class ShiftLogController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($file);
             $em->flush();
 
@@ -54,6 +65,7 @@ class ShiftLogController extends Controller
             'shift_info' => $shiftInfo,
             'form' => $form->createView(),
             'files' => $shiftFiles,
+            'onShift' => $onShift->getOnShift()
         ));
     }
 
@@ -77,47 +89,40 @@ class ShiftLogController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        if ($date === 0) {
-            $date = new \DateTime('now');
-        } else {
-            $date = new \DateTime($date);
-        }
+        $date = new \DateTime($date);
 
-        $entity = $em->getRepository('AppBundle:ShiftLogArchive')->findOneBy(array(
+        $archiveInfo = $em->getRepository('AppBundle:ShiftLogArchive')->findOneBy(array(
             'archivedDate' => $date,
             'archivedShift' => $shiftName
         ));
+        $onShift = $em->getRepository('AppBundle:ShiftLogOnShift')->findOneBy(array(
+            'shiftPeriod' => $shiftName,
+            'shiftDate' => $date
+        ));
 
-        if (!$entity) {
+        if (!$archiveInfo) {
             return $this->render('AppBundle:ShiftLog:archive.html.twig', array(
                 'date' => $date,
                 'shift' => $shiftName
             ));
         } else {
 
-            if ($entity->getOnShift() === NULL) {
-                $info = file_get_contents("http://ey.lidousers.com/roster/index.php/roster/on_shift/"
-                        .$date->format('Y')
-                        ."/".$date->format('m')
-                        ."/".$date->format('j')
-                        ."/".$shiftName);
-                $entity->setOnShift(json_decode($info, TRUE));
-                $em->persist($entity);
-                $em->flush();
+            if (!$onShift) {
+                $onShift = $this->get('app.app_utils')->getPersonnelOnShift($date, $shiftName);
             }
 
-            if(!isset($entity->getContent()['files'])){
+            if(!isset($archiveInfo->getContent()['files'])){
                 $files = [];
             }else{
-                $files = $entity->getContent()['files'];
+                $files = $archiveInfo->getContent()['files'];
             }
 
             return $this->render('AppBundle:ShiftLog:archive.html.twig', array(
-                'information' => $entity->getContent()['log'],
+                'information' => $archiveInfo->getContent()['log'],
                 'files' => $files,
                 'date' => $date,
                 'shift' => $shiftName,
-                'onShift' => $entity->getOnShift()
+                'onShift' => $onShift->getOnShift()
             ));
         }
 
@@ -144,6 +149,33 @@ class ShiftLogController extends Controller
         }
 
         $entity->setContent($request->request->get('content'));
+        $em->flush();
+
+        return new Response();
+    }
+
+    /**
+     * Edits an existing ShiftLog entity.
+     *
+     * @Route("/updateOnShift/{type}", name="shiftlog_update_onshift", defaults={"type" = ""}, options={"expose"=true})
+     *
+     * @Method({"PUT"})
+     */
+    public function updateOnShiftAction(Request $request, $type)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $currentShift = $this->get('app.app_utils')->currentShift();
+
+        $onShift = $em->getRepository('AppBundle:ShiftLogOnShift')->findOneBy(array(
+            'shiftDate' => new \DateTime('now'),
+            'shiftPeriod' => $currentShift
+        ));
+
+        if (!$onShift) {
+            throw $this->createNotFoundException('Unable to find ShiftLog entity.');
+        }
+
+        $onShift->setOnShift(json_decode($request->request->get('newOnShift'), TRUE));
         $em->flush();
 
         return new Response();

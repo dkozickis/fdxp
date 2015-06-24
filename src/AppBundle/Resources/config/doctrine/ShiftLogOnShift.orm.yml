@@ -1,0 +1,24 @@
+AppBundle\Entity\ShiftLogOnShift:
+    type: entity
+    table: shift_log_on_shift
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        shiftDate:
+            type: date
+            column: shift_date
+            nullable: true
+        shiftPeriod:
+            type: string
+            column: shift_period
+            length: 1
+            nullable: true
+        onShift:
+            type: array
+            column: on_shift
+            nullable: true
+    lifecycleCallbacks: {  }

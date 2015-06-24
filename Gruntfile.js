@@ -21,6 +21,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'jquery.js': 'jquery/dist/jquery.js',
+                    'jquery-json.js': 'jquery-json/src/jquery.json.js',
                     'bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
                     'boostrap-fileinput.js': 'bootstrap-fileinput/js/fileinput.js',
                     'bootstrap-datepicker.js': 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
@@ -55,6 +56,7 @@ module.exports = function (grunt) {
             js : {
                 src : [
                     'web/js/jquery.js',
+                    'web/js/jquery-json.js',
                     'web/js/bootstrap.js',
                     'web/js/boostrap-fileinput.js'
                 ],
