@@ -8,6 +8,7 @@ use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\SecurityContext;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class Builder extends ContainerAware
 {
@@ -16,9 +17,11 @@ class Builder extends ContainerAware
     /**
      * @param FactoryInterface $factory
      */
-    public function __construct(FactoryInterface $factory)
+    public function __construct(FactoryInterface $factory, ManagerRegistry $managerRegistry, RequestStack $requestStack)
     {
         $this->factory = $factory;
+        $this->managerRegistry = $managerRegistry;
+        $this->requestStack = $requestStack;
     }
 
     public function createMainMenu(SecurityContext $securityContext)
@@ -44,20 +47,20 @@ class Builder extends ContainerAware
         return $menu;
     }
 
-    public function createComparisonMenu(RequestStack $requestStack, EntityManager $entityManager)
+    public function createComparisonMenu()
     {
         $menu = $this->factory->createItem('root');
         $menu->addChild('Comparison list', array('route' => 'compare'));
 
-        switch ($requestStack->getCurrentRequest()->get('_route')) {
+        switch ($this->requestStack->getCurrentRequest()->get('_route')) {
             case 'compare_case':
-                $menu = $this->compareMenuBuildUp('comp', $menu, $entityManager, $requestStack);
+                $menu = $this->compareMenuBuildUp('comp', $menu);
                 break;
             case 'comparison_case_calc':
-                $menu = $this->compareMenuBuildUp('case', $menu, $entityManager, $requestStack);
+                $menu = $this->compareMenuBuildUp('case', $menu);
                 break;
             case 'comparison_case_calc_edit':
-                $menu = $this->compareMenuBuildUp('calc', $menu, $entityManager, $requestStack);
+                $menu = $this->compareMenuBuildUp('calc', $menu);
                 break;
 
         }
@@ -69,8 +72,11 @@ class Builder extends ContainerAware
     /**
      * @param string $build
      */
-    private function compareMenuBuildUp($build = null, ItemInterface $menu, EntityManager $em, RequestStack $rs)
+    private function compareMenuBuildUp($build = null, ItemInterface $menu)
     {
+        $em = $this->managerRegistry->getManager();
+        $rs = $this->requestStack;
+
         switch ($build) {
             case 'comp':
                 $comp = $em

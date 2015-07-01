@@ -6,7 +6,7 @@ parameters:
 services:
     app.menu_builder:
         class: AppBundle\Menu\Builder
-        arguments: ["@knp_menu.factory"]
+        arguments: ["@knp_menu.factory", @doctrine, @request_stack]
 
     app.app_utils:
         class: AppBundle\Utils\AppUtils
@@ -18,9 +18,6 @@ services:
 
     app.wx_utils:
         class: AppBundle\Utils\WXUtils
-
-    app.fw_utils:
-        class: AppBundle\Utils\FWUtils
 
     app.geo_utils:
         class: AppBundle\Utils\GeoUtils
@@ -37,7 +34,7 @@ services:
             class: Knp\Menu\MenuItem
             factory_service: app.menu_builder
             factory_method: createComparisonMenu
-            arguments: [@request_stack, @doctrine.orm.entity_manager]
+            arguments: []
             tags:
                 - { name: knp_menu.menu, alias: comparison_menu }
 
