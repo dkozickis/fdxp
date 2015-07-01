@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use GeoJson\Geometry\LineString;
+use GeoJson\Geometry\MultiPolygon;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -39,32 +41,60 @@ class GeoController extends Controller
         $geoUtils = $this->get('app.geo_utils');
         $coordinates = [];
 
-        $areaText = "090118N   0922702E
-        092259N   0930324E
-        085117N   0941745E
-        081409N   0942605E
-        073112N   0940132E
-        071344N   0931632E
-        080431N  0933811E
-        083203N   0933831E
-        084514N   0932219E
-        090118N   0922702E";
+        $areaText[] = "101000N   0823500E
+        103500N 0830000E
+        095500N 0833000E
+        093000N 0830500E
+        101000N   0823500E";
 
-        $areaDMSCoordinates = explode("\n", $areaText);
+        $areaText[] = "082500N 0832000E
+        082500N 0835000E
+        073500N 0835000E
+        073500N 0832000E
+        082500N 0832000E";
+
+        $areaText[] = "054000S 0820000E
+        054000S 0831000E
+        073000S 0830000E
+        073000S 0815000E
+        054000S 0820000E";
+
+        $areaText[] = "404500S 0765500E
+        404500S 0791500E
+        464500S 0782500E
+        464500S 0760500E
+        404500S 0765500E";
+
+        foreach($areaText as $key => $area){
+            $coordinates = array();
+            $areaDMSCoordinates = explode("\n", $area);
+            foreach ($areaDMSCoordinates as $DMSCoordinates) {
+                preg_match('~(?<lat>\w+)\s+(?<lon>\w+)~', $DMSCoordinates, $DMSArray);
+                $coordinates[] = [
+                    $geoUtils->convertDMStoDD($DMSArray['lon']),
+                    $geoUtils->convertDMStoDD($DMSArray['lat'])];
+            }
+            $notamPolygons[] = new Polygon(array(
+                new LinearRing($coordinates)
+            ));
+        }
+
+        /*$areaDMSCoordinates = explode("\n", $areaText);
 
         foreach ($areaDMSCoordinates as $DMSCoordinates) {
             preg_match('~(?<lat>\w+)\s+(?<lon>\w+)~', $DMSCoordinates, $DMSArray);
             $coordinates[] = [
                 $geoUtils->convertDMStoDD($DMSArray['lon']),
                 $geoUtils->convertDMStoDD($DMSArray['lat'])];
-        }
+        }*/
 
-
-        $polygon = new Polygon(array(
+        /*$polygon = new Polygon(array(
             new LinearRing($coordinates)
-        ));
+        ));*/
 
-        $geoJSON = json_encode($polygon);
+        $final = new MultiPolygon($notamPolygons);
+
+        $geoJSON = json_encode($final);
 
         $response = new Response($geoJSON);
         $response->headers->set('Content-Type', 'application/json');
