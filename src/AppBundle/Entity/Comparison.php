@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\ComparisonCase;
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Comparison.
  */
@@ -60,17 +63,17 @@ class Comparison
      */
     public function __construct()
     {
-        $this->cases = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->cases = new ArrayCollection();
     }
 
     /**
      * Add cases.
      *
-     * @param \AppBundle\Entity\ComparisonCase $cases
+     * @param ComparisonCase $cases
      *
      * @return Comparison
      */
-    public function addCase(\AppBundle\Entity\ComparisonCase $cases)
+    public function addCase(ComparisonCase $cases)
     {
         $this->cases[] = $cases;
 
@@ -80,9 +83,9 @@ class Comparison
     /**
      * Remove cases.
      *
-     * @param \AppBundle\Entity\ComparisonCase $cases
+     * @param ComparisonCase $cases
      */
-    public function removeCase(\AppBundle\Entity\ComparisonCase $cases)
+    public function removeCase(ComparisonCase $cases)
     {
         $this->cases->removeElement($cases);
     }

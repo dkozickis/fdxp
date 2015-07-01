@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Flightwatch;
+
 /**
  * FlightwatchInfo
  */
@@ -53,7 +55,7 @@ class FlightwatchInfo
     private $completed_by;
 
     /**
-     * @var \AppBundle\Entity\Flightwatch
+     * @var Flightwatch
      */
     private $flight;
 
@@ -255,10 +257,10 @@ class FlightwatchInfo
     /**
      * Set flight
      *
-     * @param \AppBundle\Entity\Flightwatch $flight
+     * @param Flightwatch $flight
      * @return FlightwatchInfo
      */
-    public function setFlight(\AppBundle\Entity\Flightwatch $flight = null)
+    public function setFlight(Flightwatch $flight = null)
     {
         $this->flight = $flight;
 
@@ -268,7 +270,7 @@ class FlightwatchInfo
     /**
      * Get flight
      *
-     * @return \AppBundle\Entity\Flightwatch 
+     * @return Flightwatch
      */
     public function getFlight()
     {

@@ -118,7 +118,7 @@
                 var onShift = new Array();
                 $('.onShiftSelect').each(function(){
                     onShift.push({"2lc":$(this).attr('data-who'), desk:$(this).val()});
-                })
+                });
                 $.ajax({
                     method: "PUT",
                     url: Routing.generate('shiftlog_update_onshift'),

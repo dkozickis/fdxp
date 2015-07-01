@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 
 /**
  * FlightwatchRepository
@@ -23,7 +24,7 @@ class FlightwatchRepository extends EntityRepository
             ->orderBy('f.flightDate', 'ASC')
             ->addOrderBy('f.std', 'ASC')
             ->getQuery()
-            ->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
             ->getArrayResult();
 
     }

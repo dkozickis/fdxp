@@ -2,7 +2,6 @@
 
 namespace AppBundle\Menu;
 
-use Doctrine\ORM\EntityManager;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;

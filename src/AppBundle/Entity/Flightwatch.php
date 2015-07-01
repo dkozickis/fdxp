@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\FlightwatchInfo;
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Flightwatch
  */
@@ -47,7 +50,7 @@ class Flightwatch
      */
     public function __construct()
     {
-        $this->info = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->info = new ArrayCollection();
     }
 
     /**
@@ -178,10 +181,10 @@ class Flightwatch
     /**
      * Add info
      *
-     * @param \AppBundle\Entity\FlightwatchInfo $info
+     * @param FlightwatchInfo $info
      * @return Flightwatch
      */
-    public function addInfo(\AppBundle\Entity\FlightwatchInfo $info)
+    public function addInfo(FlightwatchInfo $info)
     {
         $this->info[] = $info;
 
@@ -191,9 +194,9 @@ class Flightwatch
     /**
      * Remove info
      *
-     * @param \AppBundle\Entity\FlightwatchInfo $info
+     * @param FlightwatchInfo $info
      */
-    public function removeInfo(\AppBundle\Entity\FlightwatchInfo $info)
+    public function removeInfo(FlightwatchInfo $info)
     {
         $this->info->removeElement($info);
     }

@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use GeoJson\Geometry\LineString;
 use GeoJson\Geometry\MultiPolygon;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

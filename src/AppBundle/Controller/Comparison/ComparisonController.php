@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller\Comparison;
 
-use AppBundle\Utils\ComparisonUtils;
 use GeoJson\Feature\Feature;
 use GeoJson\Feature\FeatureCollection;
 use GeoJson\Geometry\LineString;

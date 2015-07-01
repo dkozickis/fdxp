@@ -160,7 +160,7 @@ class ShiftLogController extends Controller
      *
      * @Method({"PUT"})
      */
-    public function updateOnShiftAction(Request $request, $type)
+    public function updateOnShiftAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $currentShift = $this->get('app.app_utils')->currentShift();

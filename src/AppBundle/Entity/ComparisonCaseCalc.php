@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\ComparisonCase;
+
 /**
  * ComparisonCaseCalc.
  */
@@ -28,7 +30,7 @@ class ComparisonCaseCalc
     private $time;
 
     /**
-     * @var \AppBundle\Entity\ComparisonCase
+     * @var ComparisonCase
      */
     private $case;
 
@@ -117,11 +119,11 @@ class ComparisonCaseCalc
     /**
      * Set case.
      *
-     * @param \AppBundle\Entity\ComparisonCase $case
+     * @param ComparisonCase $case
      *
      * @return ComparisonCaseCalc
      */
-    public function setCase(\AppBundle\Entity\ComparisonCase $case = null)
+    public function setCase(ComparisonCase $case = null)
     {
         $this->case = $case;
 
@@ -131,7 +133,7 @@ class ComparisonCaseCalc
     /**
      * Get case.
      *
-     * @return \AppBundle\Entity\ComparisonCase
+     * @return ComparisonCase
      */
     public function getCase()
     {

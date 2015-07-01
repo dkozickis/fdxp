@@ -2,6 +2,10 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Comparison;
+use AppBundle\Entity\ComparisonCaseCalc;
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * ComparisonCase.
  */
@@ -85,18 +89,18 @@ class ComparisonCase
         return $this->basic;
     }
     /**
-     * @var \AppBundle\Entity\Comparison
+     * @var Comparison
      */
     private $comparison;
 
     /**
      * Set comparison.
      *
-     * @param \AppBundle\Entity\Comparison $comparison
+     * @param Comparison $comparison
      *
      * @return ComparisonCase
      */
-    public function setComparison(\AppBundle\Entity\Comparison $comparison = null)
+    public function setComparison(Comparison $comparison = null)
     {
         $this->comparison = $comparison;
 
@@ -106,7 +110,7 @@ class ComparisonCase
     /**
      * Get comparison.
      *
-     * @return \AppBundle\Entity\Comparison
+     * @return Comparison
      */
     public function getComparison()
     {
@@ -122,17 +126,17 @@ class ComparisonCase
      */
     public function __construct()
     {
-        $this->calcs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->calcs = new ArrayCollection();
     }
 
     /**
      * Add calcs.
      *
-     * @param \AppBundle\Entity\ComparisonCaseCalc $calcs
+     * @param ComparisonCaseCalc $calcs
      *
      * @return ComparisonCase
      */
-    public function addCalc(\AppBundle\Entity\ComparisonCaseCalc $calcs)
+    public function addCalc(ComparisonCaseCalc $calcs)
     {
         $this->calcs[] = $calcs;
 
@@ -142,9 +146,9 @@ class ComparisonCase
     /**
      * Remove calcs.
      *
-     * @param \AppBundle\Entity\ComparisonCaseCalc $calcs
+     * @param ComparisonCaseCalc $calcs
      */
-    public function removeCalc(\AppBundle\Entity\ComparisonCaseCalc $calcs)
+    public function removeCalc(ComparisonCaseCalc $calcs)
     {
         $this->calcs->removeElement($calcs);
     }
