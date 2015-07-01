@@ -12,6 +12,16 @@ services:
         class: AppBundle\Utils\AppUtils
         arguments: [@doctrine]
 
+    app.comparison_utils:
+        class: AppBundle\Utils\ComparisonUtils
+        arguments: [@doctrine]
+
+    app.wx_utils:
+        class: AppBundle\Utils\WXUtils
+
+    app.fw_utils:
+        class: AppBundle\Utils\FWUtils
+
     app.geo_utils:
         class: AppBundle\Utils\GeoUtils
 

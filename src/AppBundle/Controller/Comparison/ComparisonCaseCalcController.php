@@ -59,7 +59,7 @@ class ComparisonCaseCalcController extends Controller
 
         if ($form->isValid()) {
             $data = $form->getData();
-            $utils = new ComparisonUtils();
+            $utils = $this->get('app.comparison_utils');
             $platoArray = $utils->platoToArray($data['plato']);
 
             foreach ($platoArray as $value) {

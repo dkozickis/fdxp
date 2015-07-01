@@ -279,8 +279,7 @@ class FlightWatchController extends Controller
     {
         $airportString = '';
         $em = $this->getDoctrine()->getManager();
-
-        /** @var FlightwatchInfo $entity */
+        $wxUtils = $this->get('app.wx_utils');
 
         $entity = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
         $airports = $entity->getAirports();
@@ -292,26 +291,9 @@ class FlightWatchController extends Controller
                 $airportString .= $airport." ";
             }
 
-            $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
-                'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
-                'hoursBeforeNow=6&stationString='.urlencode($airportString));
-
-            $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
-                'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=postfilter&'.
-                '&startTime='.(time() - 21600).'&endTime='.time().'&stationString='.urlencode($airportString));
-
-            $crawler = new Crawler($metarXML);
-            $metars = $crawler->filter('raw_text')->extract(array(
-                '_text'
-            ));
-            $crawler = new Crawler($tafXML);
-            $tafs = $crawler->filter('raw_text')->extract(array(
-                '_text'
-            ));
-
             $wxInfo = array(
-                'metars' => $metars,
-                'tafs' => $tafs,
+                'metars' => $wxUtils->getMetars($airportString),
+                'tafs' => $wxUtils->getTafs($airportString),
                 'time' => strtoupper((new \DateTime('now'))->format('dM H:i\Z'))
             );
 

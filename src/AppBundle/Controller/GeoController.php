@@ -37,9 +37,8 @@ class GeoController extends Controller
      */
     public function coordinatesToAreaAction()
     {
-
+        $notamPolygons = [];
         $geoUtils = $this->get('app.geo_utils');
-        $coordinates = [];
 
         $areaText[] = "101000N   0823500E
         103500N 0830000E
@@ -78,19 +77,6 @@ class GeoController extends Controller
                 new LinearRing($coordinates)
             ));
         }
-
-        /*$areaDMSCoordinates = explode("\n", $areaText);
-
-        foreach ($areaDMSCoordinates as $DMSCoordinates) {
-            preg_match('~(?<lat>\w+)\s+(?<lon>\w+)~', $DMSCoordinates, $DMSArray);
-            $coordinates[] = [
-                $geoUtils->convertDMStoDD($DMSArray['lon']),
-                $geoUtils->convertDMStoDD($DMSArray['lat'])];
-        }*/
-
-        /*$polygon = new Polygon(array(
-            new LinearRing($coordinates)
-        ));*/
 
         $final = new MultiPolygon($notamPolygons);
 

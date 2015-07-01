@@ -30,7 +30,6 @@ class ShiftLogController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $currentShift = $this->get('app.app_utils')->currentShift();
-
         $shiftInfo = $this->get('app.app_utils')->mainePageInit();
         $shiftFiles = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();
         $onShift = $em->getRepository('AppBundle:ShiftLogOnShift')->findOneBy(array(

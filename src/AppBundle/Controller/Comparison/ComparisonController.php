@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller\Comparison;
 
-use AppBundle\Entity\Waypoints;
 use AppBundle\Utils\ComparisonUtils;
 use GeoJson\Feature\Feature;
 use GeoJson\Feature\FeatureCollection;
@@ -13,7 +12,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Comparison;
 use AppBundle\Entity\ComparisonCase;
-use AppBundle\Entity\ComparisonCaseCalc;
 use AppBundle\Form\Type\ComparisonType;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -50,7 +48,7 @@ class ComparisonController extends Controller
      */
     public function summaryAction($comp_id)
     {
-        $utils = new ComparisonUtils();
+        $utils = $this->get('app.comparison_utils');
         $allCalcs = [];
         $header = [''];
         $i = 0;
@@ -118,51 +116,20 @@ class ComparisonController extends Controller
     {
 
         $features = [];
-        $rte_wpts = [];
-        $i = 0;
 
-        $em = $this->getDoctrine()->getManager();
-
-        $cases = $em->getRepository('AppBundle:ComparisonCase')->findBy(array(
+        $cases = $this->getDoctrine()->getManager()->getRepository('AppBundle:ComparisonCase')->findBy(array(
             'comparison' => $comp_id
         ));
 
         foreach ($cases as $case) {
-            /* @var $case ComparisonCase */
             $calcs = $case->getCalcs();
             foreach ($calcs as $calc) {
-                /* @var $calc ComparisonCaseCalc */
                 $route = $calc->getRoute();
                 if (trim($route) != '') {
-                    $coords = array();
 
-                    ++$i;
-                    preg_match_all('/[A-Z]{5}/', $route, $waypoints);
-                    $coordinates = $em->getRepository('AppBundle:Waypoints')->findBy(array(
-                        'wpt_id' => $waypoints[0]
-                    ));
+                    $coords = $this->get('app.comparison_utils')->atcToLatLon($route);
 
-                    foreach ($waypoints[0] as $wpt) {
-                        $rte_wpts[$i][$wpt]['name'] = $wpt;
-                    }
-
-                    foreach ($coordinates as $wpt_coords) {
-                        /* @var $wpt_coords Waypoints */
-
-                        $lat = $wpt_coords->getLat();
-                        $lon = $wpt_coords->getLon();
-
-                        $rte_wpts[$i][$wpt_coords->getWptId()]['lat'] = $lat;
-                        $rte_wpts[$i][$wpt_coords->getWptId()]['lon'] = $lon;
-
-                    }
-
-                    foreach ($rte_wpts[$i] as $key => $wpt) {
-                        array_push($coords, array($wpt['lon'], $wpt['lat']));
-                    }
-
-                    $line = new LineString($coords);
-                    $features[] = new Feature($line, array(
+                    $features[] = new Feature(new LineString($coords), array(
                         'color'=> sprintf('#%06X', mt_rand(0, 0xFFFFFF))
                     ));
 
@@ -171,7 +138,6 @@ class ComparisonController extends Controller
         }
 
         $geoJSON = new FeatureCollection($features);
-
         $response = new Response(json_encode($geoJSON));
         $response->headers->set('Content-Type', 'application/json');
 
