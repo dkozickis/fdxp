@@ -5,7 +5,7 @@ namespace AppBundle\Utils;
 use AppBundle\Entity\ShiftLogOnShift;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class AppUtils
+class ShiftLogUtils
 {
     private $managerRegistry;
 

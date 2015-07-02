@@ -3,7 +3,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ShiftLogFiles;
-use AppBundle\Entity\ShiftLogOnShift;
 use AppBundle\Form\Type\ShiftLogFileType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,6 +28,7 @@ class ShiftLogController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+
         $currentShift = $this->get('app.app_utils')->currentShift();
         $shiftInfo = $this->get('app.app_utils')->mainePageInit();
         $shiftFiles = $this->getDoctrine()->getRepository('AppBundle:ShiftLogFiles')->findAll();

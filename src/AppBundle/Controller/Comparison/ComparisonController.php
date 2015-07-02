@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Comparison;
-use AppBundle\Entity\ComparisonCase;
 use AppBundle\Form\Type\ComparisonType;
 use Symfony\Component\HttpFoundation\Response;
 

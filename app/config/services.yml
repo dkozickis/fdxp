@@ -9,7 +9,7 @@ services:
         arguments: ["@knp_menu.factory", @doctrine, @request_stack]
 
     app.app_utils:
-        class: AppBundle\Utils\AppUtils
+        class: AppBundle\Utils\ShiftLogUtils
         arguments: [@doctrine]
 
     app.comparison_utils:
@@ -21,6 +21,13 @@ services:
 
     app.geo_utils:
         class: AppBundle\Utils\GeoUtils
+
+    app.ofp_utils:
+        class: AppBundle\Utils\OFPUtils
+
+    app.fw_utils:
+        class: AppBundle\Utils\FWUtils
+        arguments: [@doctrine]
 
     app.main_menu:
             class: Knp\Menu\MenuItem

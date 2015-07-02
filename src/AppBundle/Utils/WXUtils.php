@@ -6,9 +6,11 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class WXUtils{
 
-    public function getMetars($airportString){
+    public function getMetars($airports){
 
-        $metarXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
+        $airportString = $this->generateAirportString($airports);
+
+        $metarXML = file_get_contents('http://aviationweather.gov/adds/dataserver_current/httpparam?'.
             'datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&'.
             'hoursBeforeNow=6&stationString='.urlencode($airportString));
 
@@ -21,9 +23,11 @@ class WXUtils{
 
     }
 
-    public function getTafs($airportString){
+    public function getTafs($airports){
 
-        $tafXML = file_get_contents('http://weather.aero/dataserver_current/httpparam?'.
+        $airportString = $this->generateAirportString($airports);
+
+        $tafXML = file_get_contents('http://aviationweather.gov/adds/dataserver_current/httpparam?'.
             'datasource=tafs&requestType=retrieve&format=xml&mostRecentForEachStation=postfilter&'.
             '&startTime='.(time() - 21600).'&endTime='.time().'&stationString='.urlencode($airportString));
 
@@ -33,6 +37,16 @@ class WXUtils{
         ));
 
         return $tafs;
+    }
+
+    public function generateAirportString($airports){
+
+        $airportString = '';
+        foreach ($airports as $airport) {
+            $airportString .= $airport." ";
+        }
+
+        return $airportString;
     }
 
 }

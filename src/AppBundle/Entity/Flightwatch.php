@@ -406,4 +406,26 @@ class Flightwatch
     {
         return $this->completed_by;
     }
+
+    public function setMainData($flightInfo){
+
+        $this->setFlightNumber($flightInfo['atcCs']);
+        $this->setDep($flightInfo['dep']);
+        $this->setDest($flightInfo['dest']);
+        $this->setFlightDate(new \DateTime($flightInfo['dof']));
+        $this->setStd(new \DateTime($flightInfo['std']));
+        $this->setAltn($flightInfo['altn']);
+
+        return $this;
+
+    }
+
+    public function setErdErda($erd, $erda){
+
+        $this->setErd($erd);
+        $this->setErda($erda);
+
+        return $this;
+    }
+
 }

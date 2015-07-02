@@ -323,6 +323,7 @@ class FlightwatchInfo
         return $this;
     }
 
+
     /**
      * Get wxTime
      *
@@ -331,5 +332,42 @@ class FlightwatchInfo
     public function getWxTime()
     {
         return $this->wxTime;
+    }
+
+
+    /**
+     * @param $wxInfo
+     * @param $wxTime
+     * @return FlightwatchInfo
+     */
+    public function setWxInfoAndTime($wxInfo, $wxTime){
+
+        $this->wxTime = $wxTime;
+        $this->wxInfo = $wxInfo;
+
+        return $this;
+    }
+
+
+    public function setPointInfo($fw, $info){
+
+        $this->setFlight($fw);
+        $this->setEto(new \DateTime($info['time']));
+        $this->setPointName($info['name']);
+        $this->setPointType('etops');
+        $this->setAirports($info['airports']);
+
+        return $this;
+    }
+
+    public function setDpInfo($fw, $dpInfo){
+
+        $this->setFlight($fw);
+        $this->setEto(new \DateTime($dpInfo['time']));
+        $this->setPointType('dp');
+        $this->setPointName($dpInfo['name']);
+        $this->setEbo($dpInfo['fob']);
+
+        return $this;
     }
 }

@@ -12,6 +12,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 class Builder extends ContainerAware
 {
     private $factory;
+    private $managerRegistry;
+    private $requestStack;
 
     /**
      * @param FactoryInterface $factory

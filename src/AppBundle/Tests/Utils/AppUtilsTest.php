@@ -17,7 +17,7 @@ class AppUtilsTest extends KernelTestCase
 
     public function testProposalNight()
     {
-        $appUtils = new Utils\AppUtils($this->em);
+        $appUtils = new Utils\ShiftLogUtils($this->em);
         $proposal = $appUtils->archiveDateShiftProposal(2);
 
         $this->assertEquals('N', $proposal['shift']);
@@ -25,7 +25,7 @@ class AppUtilsTest extends KernelTestCase
 
     public function testProposalFalse()
     {
-        $appUtils = new Utils\AppUtils($this->em);
+        $appUtils = new Utils\ShiftLogUtils($this->em);
         $proposal = $appUtils->archiveDateShiftProposal(16);
 
         $this->assertEquals(false, $proposal['shift']);
@@ -33,7 +33,7 @@ class AppUtilsTest extends KernelTestCase
 
     public function testProposalDefault()
     {
-        $appUtils = new Utils\AppUtils($this->em);
+        $appUtils = new Utils\ShiftLogUtils($this->em);
         $proposal = $appUtils->archiveDateShiftProposal();
 
         $this->assertArrayHasKey('shift', $proposal);
@@ -41,7 +41,7 @@ class AppUtilsTest extends KernelTestCase
 
     public function testButtonPositiveWithTime()
     {
-        $appUtils = new Utils\AppUtils($this->em);
+        $appUtils = new Utils\ShiftLogUtils($this->em);
         $button = $appUtils->showArchiveButton(15);
 
         $this->assertEquals(1, $button);
@@ -49,7 +49,7 @@ class AppUtilsTest extends KernelTestCase
 
     public function testButtonNegativeWithTime()
     {
-        $appUtils = new Utils\AppUtils($this->em);
+        $appUtils = new Utils\ShiftLogUtils($this->em);
         $button = $appUtils->showArchiveButton(10);
 
         $this->assertEquals(0, $button);
@@ -64,7 +64,7 @@ class AppUtilsTest extends KernelTestCase
         $stub->method('currentHours')
             ->willReturn(5);
 
-        $appUtils = new Utils\AppUtils($this->em);
+        $appUtils = new Utils\ShiftLogUtils($this->em);
 
         $button = $appUtils->showArchiveButton();
 
@@ -87,7 +87,7 @@ class AppUtilsTest extends KernelTestCase
         $stub->method('archiveDateShiftProposal')
             ->willReturn(array('date' => '22nov', 'shift'));
 
-        $appUtils = new Utils\AppUtils($this->em);
+        $appUtils = new Utils\ShiftLogUtils($this->em);
 
         $button = $appUtils->showArchiveButton();
 

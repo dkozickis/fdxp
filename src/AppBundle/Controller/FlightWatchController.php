@@ -25,9 +25,7 @@ class FlightWatchController extends Controller
     public function indexAction()
     {
 
-        $em = $this->getDoctrine()->getManager();
-
-        $flights = $em->getRepository('AppBundle:Flightwatch')->findAllWithInfo();
+        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findAllWithInfo();
         $form = $this->createOFPForm();
 
         foreach ($flights as $fKey => $flight) {
@@ -35,15 +33,12 @@ class FlightWatchController extends Controller
             foreach ($flight['info'] as $key => $info) {
 
                 $flights[$fKey]['info'][$key]['eto_info'] = 'info';
-                $airportString = '';
+                $flights[$fKey]['info'][$key]['airportsString'] = '';
 
                 if ($info['airports']) {
-                    foreach ($info['airports'] as $airport) {
-                        $airportString .= $airport." ";
-                    }
+                    $flights[$fKey]['info'][$key]['airportsString'] =
+                        $this->get('app.wx_utils')->generateAirportString($info['airports']);
                 }
-
-                $flights[$fKey]['info'][$key]['airportsString'] = trim($airportString);
 
                 if (isset($flight['takeOffTime'])) {
                     $takeOffTime = clone $flight['takeOffTime'];
@@ -54,11 +49,7 @@ class FlightWatchController extends Controller
 
                     $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
 
-                    if ($interval < 30) {
-                        $flights[$fKey]['info'][$key]['eto_info'] = 'danger';
-                    } elseif ($interval < 60) {
-                        $flights[$fKey]['info'][$key]['eto_info'] = 'warning';
-                    }
+                    $flights[$fKey]['info'][$key]['eto_info'] = $this->get('app.fw_utils')->dangerOrWarning($interval);
 
                     if ($info['completed']) {
                         $flights[$fKey]['info'][$key]['eto_info'] = 'success';
@@ -87,54 +78,20 @@ class FlightWatchController extends Controller
     public function insertAction(Request $request)
     {
         $flash = $this->get('braincrafted_bootstrap.flash');
-        $em = $this->getDoctrine()->getManager();
         $form = $this->createOFPForm();
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $data = $form->getData();
-            $utils = new OFPUtils();
-            $ofp = $data['ofp'];
+            $ofpUtils = $this->get('app.ofp_utils');
+            $fwUtils = $this->get('app.fw_utils');
+            $ofp = $form->getData()['ofp'];
 
-            $flightInfo = $utils->getMainInfo($ofp);
-            $pointInfo = $utils->getETOPSInfo($ofp);
-            $dpInfo = $utils->getDPInfo($ofp);
+            $flightInfo = $ofpUtils->getMainInfo($ofp);
+            $pointInfo = $ofpUtils->getETOPSInfo($ofp);
+            $dpInfo = $ofpUtils->getDPInfo($ofp);
+            $erdErda = $ofpUtils->getErdErda($ofp);
 
-            $fw = new Flightwatch();
-            $fw->setFlightNumber($flightInfo['atcCs']);
-            $fw->setDep($flightInfo['dep']);
-            $fw->setDest($flightInfo['dest']);
-            $fw->setFlightDate(new \DateTime($flightInfo['dof']));
-            $fw->setStd(new \DateTime($flightInfo['std']));
-            $fw->setAltn($flightInfo['altn']);
-
-            $em->persist($fw);
-
-            foreach ($pointInfo as $value) {
-                $fwInfo = new FlightwatchInfo();
-                $fwInfo->setFlight($fw);
-                $fwInfo->setEto(new \DateTime($value['time']));
-                $fwInfo->setPointName($value['name']);
-                $fwInfo->setPointType('etops');
-                $fwInfo->setAirports($value['airports']);
-                $em->persist($fwInfo);
-            }
-
-            if ($dpInfo) {
-                $erdErda = $utils->getErdErda($ofp);
-                $fw->setErd($erdErda['erd']);
-                $fw->setErda($erdErda['erda']);
-                $fwInfo = new FlightwatchInfo();
-                $fwInfo->setFlight($fw);
-                $fwInfo->setEto(new \DateTime($dpInfo['time']));
-                $fwInfo->setPointType('dp');
-                $fwInfo->setPointName($dpInfo['name']);
-                $fwInfo->setEbo($dpInfo['fob']);
-                $em->persist($fwInfo);
-            }
-
-            $em->flush();
-            $em->clear();
+            $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda);
 
             return $this->redirectToRoute('fw_index');
         } else {
@@ -276,29 +233,24 @@ class FlightWatchController extends Controller
      */
     public function wxAction($id, $force)
     {
-        $airportString = '';
         $em = $this->getDoctrine()->getManager();
         $wxUtils = $this->get('app.wx_utils');
 
-        $entity = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
-        $airports = $entity->getAirports();
-        $wxInfoDB = $entity->getWxInfo();
+        $fwInfo = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
+
+        $airports = $fwInfo->getAirports();
+        $wxInfoDB = $fwInfo->getWxInfo();
 
         if (empty($wxInfoDB) || $force == 1) {
 
-            foreach ($airports as $airport) {
-                $airportString .= $airport." ";
-            }
-
             $wxInfo = array(
-                'metars' => $wxUtils->getMetars($airportString),
-                'tafs' => $wxUtils->getTafs($airportString),
+                'metars' => $wxUtils->getMetars($airports),
+                'tafs' => $wxUtils->getTafs($airports),
                 'time' => strtoupper((new \DateTime('now'))->format('dM H:i\Z'))
             );
 
-            $entity->setWxInfo($wxInfo);
-            $entity->setWxTime(new \DateTime('now'));
-            $em->persist($entity);
+            $fwInfo->setWxInfoAndTime($wxInfo, new \DateTime('now'));
+            $em->persist($fwInfo);
             $em->flush();
 
         } else {
