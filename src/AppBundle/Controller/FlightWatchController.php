@@ -86,13 +86,14 @@ class FlightWatchController extends Controller
             $ofpUtils = $this->get('app.ofp_utils');
             $fwUtils = $this->get('app.fw_utils');
             $ofp = $form->getData()['ofp'];
+            $formDesk = $form->getData()['desk'];
 
             $flightInfo = $ofpUtils->getMainInfo($ofp);
             $pointInfo = $ofpUtils->getETOPSInfo($ofp);
             $dpInfo = $ofpUtils->getDPInfo($ofp);
             $erdErda = $ofpUtils->getErdErda($ofp);
 
-            $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $desk);
+            $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $formDesk);
 
             return $this->redirectToRoute('fw_index', array(
                 'desk' => $desk
