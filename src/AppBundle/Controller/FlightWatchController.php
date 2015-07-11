@@ -150,6 +150,7 @@ class FlightWatchController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+        $desk = $entity->getDesk();
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
@@ -161,7 +162,9 @@ class FlightWatchController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('fw_index'));
+            return $this->redirect($this->generateUrl('fw_index', array(
+                'desk' => $desk
+            )));
         }
 
         return array(
@@ -182,6 +185,7 @@ class FlightWatchController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+        $desk = $entity->getDesk();
 
         if (!$entity) {
             $flash->alert('Flight was not finalized');
@@ -196,7 +200,9 @@ class FlightWatchController extends Controller
         $em->flush();
 
         $flash->success('Flight finalized');
-        return $this->redirectToRoute('fw_index');
+        return $this->redirectToRoute('fw_index', array(
+            'desk' => $desk
+        ));
     }
 
     /**
@@ -214,6 +220,7 @@ class FlightWatchController extends Controller
         /** @var  $entity FlightwatchInfo */
 
         $entity = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
+        $desk = $entity->getFlight()->getDesk();
 
         if (!$entity) {
             $flash->alert('Point was not finalized');
@@ -228,7 +235,9 @@ class FlightWatchController extends Controller
         $em->flush();
 
         $flash->success('Point finalized');
-        return $this->redirectToRoute('fw_index');
+        return $this->redirectToRoute('fw_index', array(
+            'desk' => $desk
+        ));
 
     }
 
