@@ -94,7 +94,9 @@ class FlightWatchController extends Controller
 
             $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $desk);
 
-            return $this->redirectToRoute('fw_index');
+            return $this->redirectToRoute('fw_index', array(
+                'desk' => $desk
+            ));
         } else {
 
             $flash->alert('Something wrong with the form.');
