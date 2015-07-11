@@ -407,7 +407,7 @@ class Flightwatch
         return $this->completed_by;
     }
 
-    public function setMainData($flightInfo){
+    public function setMainData($flightInfo, $desk){
 
         $this->setFlightNumber($flightInfo['atcCs']);
         $this->setDep($flightInfo['dep']);
@@ -415,6 +415,7 @@ class Flightwatch
         $this->setFlightDate(new \DateTime($flightInfo['dof']));
         $this->setStd(new \DateTime($flightInfo['std']));
         $this->setAltn($flightInfo['altn']);
+        $this->setDesk($desk);
 
         return $this;
 
@@ -428,4 +429,32 @@ class Flightwatch
         return $this;
     }
 
+    /**
+     * @var integer
+     */
+    private $desk;
+
+
+    /**
+     * Set desk
+     *
+     * @param integer $desk
+     * @return Flightwatch
+     */
+    public function setDesk($desk)
+    {
+        $this->desk = $desk;
+
+        return $this;
+    }
+
+    /**
+     * Get desk
+     *
+     * @return integer 
+     */
+    public function getDesk()
+    {
+        return $this->desk;
+    }
 }

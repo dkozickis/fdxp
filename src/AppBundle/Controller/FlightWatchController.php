@@ -17,15 +17,15 @@ class FlightWatchController extends Controller
 {
 
     /**
-     * @Route("/fw", name="fw_index")
+     * @Route("/fw/{desk}", name="fw_index", defaults={"desk" : 1})
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($desk)
     {
 
-        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findAllWithInfo();
-        $form = $this->createOFPForm();
+        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findAllWithInfo($desk);
+        $form = $this->createOFPForm($desk);
 
         foreach ($flights as $fKey => $flight) {
 
@@ -66,18 +66,20 @@ class FlightWatchController extends Controller
 
         return array(
             'flights' => $flights,
-            'form' => $form->createView());
+            'form' => $form->createView(),
+            'desk' => $desk
+        );
 
     }
 
     /**
-     * @Route("/fw/insertOfp", name="fw_insert_ofp")
+     * @Route("/fw/insertOfp/{desk}", name="fw_insert_ofp", defaults={"desk" : 1})
      * @Method("POST")
      */
-    public function insertAction(Request $request)
+    public function insertAction(Request $request, $desk)
     {
         $flash = $this->get('braincrafted_bootstrap.flash');
-        $form = $this->createOFPForm();
+        $form = $this->createOFPForm($desk);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -90,7 +92,7 @@ class FlightWatchController extends Controller
             $dpInfo = $ofpUtils->getDPInfo($ofp);
             $erdErda = $ofpUtils->getErdErda($ofp);
 
-            $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda);
+            $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $desk);
 
             return $this->redirectToRoute('fw_index');
         } else {
@@ -288,12 +290,15 @@ class FlightWatchController extends Controller
         return $form;
     }
 
-    private function createOFPForm()
+    private function createOFPForm($desk)
     {
         return $this->createFormBuilder(array('ofp' => 'Copy OFP text here'))
             ->setAction($this->generateUrl('fw_insert_ofp'))
             ->add('ofp', 'textarea', array(
                 'label' => 'OFP'
+            ))
+            ->add('desk', 'hidden', array(
+                'data' => $desk
             ))
             ->add('Parse', 'submit')
             ->getForm();

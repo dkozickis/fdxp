@@ -7,6 +7,20 @@
 
     {# {{ dump(flights) }} #}
     <div class="row col-md-12">
+        <nav>
+            <ul class="pagination">
+                <li>
+                    <a href="#">
+                        <span aria-hidden="true">Desk</span>
+                    </a>
+                </li>
+                {% for i in 1..6 %}
+                    <li{{ desk == i ? " class='active'" }}>
+                        <a href="{{ path('fw_index', {'desk' : i}) }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
         <table class="table table-condensed">
             <thead>
             <tr>

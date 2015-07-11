@@ -45,6 +45,9 @@ AppBundle\Entity\Flightwatch:
         completed_by:
           type: string
           nullable: true
+        desk:
+          type: integer
+          nullable: false
     oneToMany:
           info:
             targetEntity: AppBundle\Entity\FlightwatchInfo

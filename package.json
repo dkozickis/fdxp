@@ -11,6 +11,7 @@
     "grunt-contrib-less": "^1.0.1",
     "grunt-contrib-uglify": "^0.5.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-purifycss": "^0.1.0",
     "grunt-uncss": "^0.4.2"
   }
 }

@@ -76,6 +76,14 @@ module.exports = function (grunt) {
                     'web/js/leaflet-ajax.js': ['src/AppBundle/Resources/public/js/leaflet-ajax.js']
                 }
             }
+        },
+        purifycss:{
+            options: {},
+            target: {
+                src: ['src/AppBundle/Resources/views/*/*.twig', 'src/AppBundle/Resources/views/*.twig'],
+                css: ['web/css/bundled.css'],
+                dest: 'web/css/purestyle.css'
+            }
         }
     });
 
@@ -86,6 +94,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-uncss');
+    grunt.loadNpmTasks('grunt-purifycss');
 
-    grunt.registerTask('default', ['less', 'bowercopy', 'concat', 'cssmin', 'uglify']);
+    grunt.registerTask('default', ['less', 'bowercopy', 'concat', 'cssmin', 'uglify', 'purifycss']);
 };

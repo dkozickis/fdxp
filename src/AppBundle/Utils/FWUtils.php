@@ -15,11 +15,11 @@ class FWUtils {
         $this->managerRegistry = $managerRegistry;
     }
 
-    public function addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda){
+    public function addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $desk){
 
         $em = $this->managerRegistry->getManager();
         $fw = new Flightwatch();
-        $fw->setMainData($flightInfo);
+        $fw->setMainData($flightInfo, $desk);
         $em->persist($fw);
         foreach ($pointInfo as $value) {
             $fwInfo = new FlightwatchInfo();

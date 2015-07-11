@@ -13,13 +13,15 @@ use Doctrine\ORM\Query;
  */
 class FlightwatchRepository extends EntityRepository
 {
-    public function findAllWithInfo() {
+    public function findAllWithInfo($desk) {
 
         return $this->createQueryBuilder('f')
             ->addSelect('i')
             ->join('f.info', 'i')
             ->where('f.completed is null')
             ->andWhere('i.pointName not like :pointName')
+            ->andWhere('f.desk = :desk')
+            ->setParameter('desk', $desk)
             ->setParameter('pointName', 'EXP%')
             ->orderBy('f.flightDate', 'ASC')
             ->addOrderBy('f.std', 'ASC')
