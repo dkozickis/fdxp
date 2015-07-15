@@ -99,3 +99,13 @@ vich_uploader:
       uri_prefix: /uploads/shiftlog
       upload_destination: %kernel.root_dir%/../web/uploads/shiftlog
       namer: vich_uploader.namer_origname
+
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     /usr/local/bin/wkhtmltopdf
+        options:    []
+    image:
+        enabled:    true
+        binary:     /usr/local/bin/wkhtmltoimage
+        options:    []
