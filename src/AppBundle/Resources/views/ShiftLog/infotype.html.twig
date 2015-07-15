@@ -1,9 +1,9 @@
-<div class="col-md-6">
+<div class="col-md-{{ colSize|default(6) }}" style="page-break-after:always;">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
                 {{ header }}
-                {% if (is_granted('ROLE_SHIFT_MANAGER_FD'))
+                {% if (is_granted('ROLE_SHIFT_MANAGER_FD')) and (colSize|default(6) != 12)
                     and (app.request.attributes.get('_route') != 'shiftlog_archive_view') %}
                 <button type="button" class="btn btn-default btn-xs edit_button" data-id="{{ info_type }}">
                     <span class="glyphicon glyphicon-edit"></span> Edit

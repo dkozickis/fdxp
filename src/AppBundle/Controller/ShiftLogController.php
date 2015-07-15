@@ -21,11 +21,12 @@ class ShiftLogController extends Controller
     /**
      * Lists all ShiftLog entities.
      *
+     * @Route("/{print}", name="shiftlog_index_print", defaults={"print" : "no"})
      * @Route("/", name="shiftlog_index")
      *
      * @Method({"GET","POST"})
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, $print = null)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -59,13 +60,36 @@ class ShiftLogController extends Controller
 
         $info_result = $this->getDoctrine()->getRepository('AppBundle:ShiftLog')->returnAllOrdered();
 
-        return $this->render('AppBundle:ShiftLog:index.html.twig', array(
-            'information' => $info_result,
-            'shift_info' => $shiftInfo,
-            'form' => $form->createView(),
-            'files' => $shiftFiles,
-            'onShift' => $onShift->getOnShift()
-        ));
+        if($print === "print") {
+
+            $html = $this->renderView('AppBundle:ShiftLog:index_print.html.twig', array(
+                'information' => $info_result,
+            ));
+
+            return new Response(
+                $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+                200,
+                array(
+                    'Content-Type'          => 'application/pdf',
+                    'Content-Disposition'   => 'attachment; filename="FD_ShiftLog_'.date("d_m_Y_Hi\\Z").'.pdf"'
+                )
+            );
+
+
+        }else{
+
+            return $this->render(
+                'AppBundle:ShiftLog:index.html.twig',
+                array(
+                    'information' => $info_result,
+                    'shift_info' => $shiftInfo,
+                    'form' => $form->createView(),
+                    'files' => $shiftFiles,
+                    'onShift' => $onShift->getOnShift()
+                )
+            );
+
+        }
     }
 
     /**

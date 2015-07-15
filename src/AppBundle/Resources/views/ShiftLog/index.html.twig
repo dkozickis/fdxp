@@ -15,6 +15,7 @@
     <div class="row">
         <div class="col-md-3 col-md-offset-9 text-right">
             <a href="#" id="onShiftToggle"><span class="badge">{{ onShift|length }}</span> people on shift</a>
+            | <a href="{{ path('shiftlog_index_print', {'print' : 'print'}) }}"> Save as PDF </a>
             <ul class="list-group hidden" id="onShiftInfo">
                 {% for dxp in onShift %}
                     <li class="list-group-item onShiftList">{{ dxp['2lc'] }} @ LIDO desk
@@ -29,6 +30,7 @@
                     </li>
                 {% endfor %}
             </ul>
+
         </div>
     </div>
 

@@ -1,0 +1,37 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block title %}
+    <title>FDXP - Shift Log</title>
+{% endblock %}
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        body {
+            padding-top: 5px;
+        }
+    </style>
+{% endblock %}
+{% block navigation %}{% endblock %}
+{% block body %}
+
+    FD Shift Log exported as PDF at {{ "now"|date("d/m/Y H:i\\Z") }}
+
+    {% for info in information %}
+
+        {% if loop.index is odd %}
+            <div class="row">
+        {% endif %}
+
+        {% include 'AppBundle:ShiftLog:infotype.html.twig'
+        with {'content' : info.content, 'info_type' : info.info_type, 'header' : info.info_header, 'colSize' : 12} %}
+
+        {% if (loop.index is even) or loop.last %}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block javascript %}{% endblock %}
