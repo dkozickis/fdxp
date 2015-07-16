@@ -30,7 +30,7 @@ class FlightwatchRepository extends EntityRepository
                 ->setParameter('desk', $desk);
         }
 
-        if($dp == 'dp'){
+        if($dp != 0){
             $qb
                 ->andWhere('f.erd IS NOT NULL');
         }
