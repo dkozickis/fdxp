@@ -6,109 +6,123 @@
 {% block body %}
 
     {# {{ dump(flights) }} #}
-    <div class="row col-md-12">
-        <nav>
-            <ul class="pagination">
-                <li>
-                    <span aria-hidden="true" style="color:black">Desk #</span>
-                </li>
-                {% for i in 1..6 %}
-                    <li{{ desk == i ? " class='active'" }}>
-                        <a href="{{ path('fw_index', {'desk' : i}) }}">{{ i }}</a>
+    <div class="row">
+        <div class="col-md-6">
+            <nav>
+                <ul class="pagination no-margin">
+                    <li>
+                        <span aria-hidden="true" style="color:black">Desk #</span>
                     </li>
-                {% endfor %}
+                    {% for i in 1..6 %}
+                        <li{{ desk == i ? " class='active'" }}>
+                            <a href="{{ path('fw_index', {'desk' : i}) }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
                     <li{{ desk == 'all' ? " class='active'" }}>
                         <a href="{{ path('fw_index', {'desk' : 'all'}) }}">All</a>
                     </li>
-            </ul>
-        </nav>
-        <table class="table table-condensed">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>No.</th>
-                <th>Dep-Dest</th>
-                <th>STD</th>
-                <th>T/O</th>
-                <th>ALTN</th>
-                <th>ERD</th>
-                <th>ERDA</th>
-                <th>FW Info</th>
-                {% if desk != 'all' %}
-                <th>Finalize flight</th>
-                {% endif %}
-            </tr>
-            </thead>
-            {% for flight in flights %}
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-6">
+            <span>
+                Display only flights with DP:
+                <input type="checkbox" data-size="small" name="my-checkbox"{{ dp ? " checked" }}>
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+
+            <table class="table table-condensed">
+                <thead>
                 <tr>
-                    <td>
-                        {{ flight.flightDate|date('dM')|upper }}
-                    </td>
-                    <td>
-                        {{ flight.flightNumber }}
-                    </td>
-                    <td>
-                        {{ flight.dep }}-{{ flight.dest }}
-                    </td>
-                    <td>
-                        {{ flight.std|date('H:i') }}Z
-                    </td>
-                    <td>
-                        {{ flight.takeOffTime ? flight.takeOffTime|date('H:i')~'Z' : 'N/A' }}
-                        <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                        </a>
-                    </td>
-                    <td>
-                        {{ flight.altn }}
-                    </td>
-                    <td>
-                        {{ flight.erd ? flight.erd : 'N/A' }}
-                    </td>
-                    <td>
-                        {{ flight.erda ? flight.erda : 'N/A' }}
-                    </td>
-                    <td>
-                        {% for info in flight.info %}
-                            <div class="row bg-{{ info.eto_info }} eto fw-row">
-                                <div class="col-md-8 no-gutter ">
-                                    {{ info.pointName }}
-                                    {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
-                                    {{ info.ebo ? info.ebo~'T' : '' }}
-                                    <a href="#wxModal" data-toggle="modal" data-airports="{{ info.id }}">
-                                        {{ info.airportsString }}
-                                    </a>
-                                </div>
-                                <div class="col-md-4 no-gutter text-right">
-                                    {% if (info.form is defined) and desk != 'all' %}
-                                        <span class="text-right">
+                    <th>Date</th>
+                    <th>No.</th>
+                    <th>Dep-Dest</th>
+                    <th>STD</th>
+                    <th>T/O</th>
+                    <th>ALTN</th>
+                    <th>ERD</th>
+                    <th>ERDA</th>
+                    <th>FW Info</th>
+                    {% if desk != 'all' %}
+                        <th>Finalize flight</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                {% for flight in flights %}
+                    <tr>
+                        <td>
+                            {{ flight.flightDate|date('dM')|upper }}
+                        </td>
+                        <td>
+                            {{ flight.flightNumber }}
+                        </td>
+                        <td>
+                            {{ flight.dep }}-{{ flight.dest }}
+                        </td>
+                        <td>
+                            {{ flight.std|date('H:i') }}Z
+                        </td>
+                        <td>
+                            {{ flight.takeOffTime ? flight.takeOffTime|date('H:i')~'Z' : 'N/A' }}
+                            <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                        <td>
+                            {{ flight.altn }}
+                        </td>
+                        <td>
+                            {{ flight.erd ? flight.erd : 'N/A' }}
+                        </td>
+                        <td>
+                            {{ flight.erda ? flight.erda : 'N/A' }}
+                        </td>
+                        <td>
+                            {% for info in flight.info %}
+                                <div class="row bg-{{ info.eto_info }} eto fw-row">
+                                    <div class="col-md-8 no-gutter ">
+                                        {{ info.pointName }}
+                                        {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                        {{ info.ebo ? info.ebo~'T' : '' }}
+                                        <a href="#wxModal" data-toggle="modal" data-airports="{{ info.id }}">
+                                            {{ info.airportsString }}
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4 no-gutter text-right">
+                                        {% if (info.form is defined) and desk != 'all' %}
+                                            <span class="text-right">
                                             <button type="button"
                                                     class="btn btn-link btn-xs finalize-point-form"
                                                     data-form-id="{{ info.id }}">
                                                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Finalize
-                                                </button>
-                                            {{ form(info.form, { 'attr' : { 'id' : 'finalize-point-form-'~info.id } } ) }}
+                                            </button>
+                                                {{ form(info.form, { 'attr' : { 'id' : 'finalize-point-form-'~info.id } } ) }}
                                         </span>
-                                    {% elseif info.completed %}
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Finalized
-                                    {% endif %}
+                                        {% elseif info.completed %}
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Finalized
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </td>
-                    {% if desk != 'all' %}
-                    <td>
-                        <button type="button" class="btn btn-default btn-lg btn-block finalize-flight-form"
-                                data-form-id="{{ flight.id }}">
-                            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                        </button>
-                        {{ form(flight.form, { 'attr' : { 'id' : 'finalize-form-'~flight.id } }) }}
-                    </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
+                            {% endfor %}
+                        </td>
+                        {% if desk != 'all' %}
+                            <td>
+                                <button type="button" class="btn btn-default btn-lg btn-block finalize-flight-form"
+                                        data-form-id="{{ flight.id }}">
+                                    <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                                </button>
+                                {{ form(flight.form, { 'attr' : { 'id' : 'finalize-form-'~flight.id } }) }}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
+
 
     <div class="row col-md-12">
         {{ form(form) }}
@@ -127,6 +141,21 @@
         <script src="/js/fos_js_routes.js"></script>
     {% endif %}
     <script>
+
+        $("[name='my-checkbox']").bootstrapSwitch();
+
+        $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state){
+
+            if(state == true){
+                window.location = Routing.generate('fw_index', {desk: '{{ desk }}', dp: 'dp'});
+            }else{
+                window.location = Routing.generate('fw_index', {desk: '{{ desk }}' });
+            }
+            console.log(this); // DOM element
+            console.log(event); // jQuery event
+            console.log(state); // true | false
+        });
+
         function updateWxModal(airportsID, force){
             force = typeof force !== 'undefined' ? force : 0;
             $('.wx-update-button').attr('data-airports', airportsID);

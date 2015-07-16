@@ -21,7 +21,7 @@ class ShiftLogController extends Controller
     /**
      * Lists all ShiftLog entities.
      *
-     * @Route("/{print}", name="shiftlog_index_print", defaults={"print" : "no"})
+     * @Route("/current/{print}", name="shiftlog_index_print", defaults={"print" : "no"})
      * @Route("/", name="shiftlog_index")
      *
      * @Method({"GET","POST"})

@@ -17,14 +17,16 @@ class FlightWatchController extends Controller
 {
 
     /**
-     * @Route("/fw/{desk}", name="fw_index", defaults={"desk" : "all"})
+     * @Route("/fw/{desk}/{dp}", name="fw_index", defaults={"desk":"all", "dp" : 0}, options={"expose"=true})
      * @Method("GET")
      * @Template()
      */
-    public function indexAction($desk)
+    public function indexAction($desk, $dp)
     {
 
-        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfo($desk);
+        dump($dp);
+
+        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfo($desk, $dp);
 
         $form = $this->createOFPForm($desk);
 
@@ -68,7 +70,8 @@ class FlightWatchController extends Controller
         return array(
             'flights' => $flights,
             'form' => $form->createView(),
-            'desk' => $desk
+            'desk' => $desk,
+            'dp' => $dp
         );
 
     }

@@ -23,8 +23,9 @@ module.exports = function (grunt) {
                     'jquery.js': 'jquery/dist/jquery.js',
                     'jquery-json.js': 'jquery-json/src/jquery.json.js',
                     'bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
-                    'boostrap-fileinput.js': 'bootstrap-fileinput/js/fileinput.js',
+                    'bootstrap-fileinput.js': 'bootstrap-fileinput/js/fileinput.js',
                     'bootstrap-datepicker.js': 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+                    'bootstrap-switch.js': 'bootstrap-switch/dist/js/bootstrap-switch.min.js',
                     'moment.js': 'moment/min/moment.min.js'
                 }
             },
@@ -35,7 +36,8 @@ module.exports = function (grunt) {
                 files: {
                     'bootstrap.css': 'bootstrap/dist/css/bootstrap.css',
                     'bootstrap-fileinput.css': 'bootstrap-fileinput/css/fileinput.css',
-                    'bootstrap-datepicker.css': 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
+                    'bootstrap-datepicker.css': 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+                    'bootstrap-switch.css': 'bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css'
 
                 }
             }
@@ -49,6 +51,7 @@ module.exports = function (grunt) {
                     'web/css/bootstrap.css',
                     'web/css/bootstrap-fileinput.css',
                     'web/css/bootstrap-braincrafted.css',
+                    'web/css/bootstrap-switch.css',
                     'src/AppBundle/Resources/public/css/*.css'
                 ],
                 dest: 'web/css/bundled.css'
@@ -58,7 +61,8 @@ module.exports = function (grunt) {
                     'web/js/jquery.js',
                     'web/js/jquery-json.js',
                     'web/js/bootstrap.js',
-                    'web/js/boostrap-fileinput.js'
+                    'web/js/bootstrap-fileinput.js',
+                    'web/js/bootstrap-switch.js'
                 ],
                 dest: 'web/js/bundled.js'
             }
@@ -96,5 +100,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-uncss');
     grunt.loadNpmTasks('grunt-purifycss');
 
-    grunt.registerTask('default', ['less', 'bowercopy', 'concat', 'cssmin', 'uglify', 'purifycss']);
+    grunt.registerTask('default', ['less', 'bowercopy', 'concat', 'cssmin', 'uglify']);
 };

@@ -13,7 +13,7 @@ use Doctrine\ORM\Query;
  */
 class FlightwatchRepository extends EntityRepository
 {
-    public function findByDeskWithInfo($desk) {
+    public function findByDeskWithInfo($desk, $dp = NULL) {
 
         $qb = $this->createQueryBuilder('f');
 
@@ -30,6 +30,10 @@ class FlightwatchRepository extends EntityRepository
                 ->setParameter('desk', $desk);
         }
 
+        if($dp){
+            $qb
+                ->andWhere('f.erd IS NOT NULL');
+        }
 
         $qb
             ->orderBy('f.flightDate', 'ASC')
