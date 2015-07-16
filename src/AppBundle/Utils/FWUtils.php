@@ -21,6 +21,7 @@ class FWUtils {
         $fw = new Flightwatch();
         $fw->setMainData($flightInfo, $desk);
         $em->persist($fw);
+
         foreach ($pointInfo as $value) {
             $fwInfo = new FlightwatchInfo();
             $fwInfo->setPointInfo($fw, $value);
