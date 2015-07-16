@@ -122,7 +122,7 @@ class OFPUtils
 
     public function getATCCS($ofp) {
 
-        preg_match_all('~ATC C\/S (ETD[0-9A-Z]{1,4})\s~', $ofp, $atc_cs_preg, PREG_SET_ORDER);
+        preg_match_all('~ATC C\/S ([A-Z]{3}[0-9A-Z]{1,4})\s~', $ofp, $atc_cs_preg, PREG_SET_ORDER);
 
         return $atc_cs_preg[0][1];
 
