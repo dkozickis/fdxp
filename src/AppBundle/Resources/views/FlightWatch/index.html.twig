@@ -10,15 +10,16 @@
         <nav>
             <ul class="pagination">
                 <li>
-                    <a href="#">
-                        <span aria-hidden="true">Desk</span>
-                    </a>
+                    <span aria-hidden="true" style="color:black">Desk #</span>
                 </li>
                 {% for i in 1..6 %}
                     <li{{ desk == i ? " class='active'" }}>
                         <a href="{{ path('fw_index', {'desk' : i}) }}">{{ i }}</a>
                     </li>
                 {% endfor %}
+                    <li{{ desk == 'all' ? " class='active'" }}>
+                        <a href="{{ path('fw_index', {'desk' : 'all'}) }}">All</a>
+                    </li>
             </ul>
         </nav>
         <table class="table table-condensed">

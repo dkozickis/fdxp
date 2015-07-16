@@ -24,7 +24,12 @@ class FlightWatchController extends Controller
     public function indexAction($desk)
     {
 
-        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findAllWithInfo($desk);
+        if($desk == "all"){
+            $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findAllWithInfo();
+        }else{
+            $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfo($desk);
+        }
+
         $form = $this->createOFPForm($desk);
 
         foreach ($flights as $fKey => $flight) {
