@@ -13,9 +13,39 @@ use Doctrine\ORM\Query;
  */
 class FlightwatchRepository extends EntityRepository
 {
-    public function findByDeskWithInfo($desk) {
+    public function findByDeskWithInfo($desk, $dp = 0) {
 
-        return $this->createQueryBuilder('f')
+        $qb = $this->createQueryBuilder('f');
+
+        $qb
+            ->addSelect('i')
+            ->join('f.info', 'i')
+            ->where('f.completed is null')
+            ->andWhere('i.pointName not like :pointName')
+            ->setParameter('pointName', 'EXP%');
+
+        if($desk != 'all'){
+            $qb
+                ->andWhere('f.desk = :desk')
+                ->setParameter('desk', $desk);
+        }
+
+        if($dp == 'dp'){
+            $qb
+                ->andWhere('f.erd IS NOT NULL');
+        }
+
+
+        $qb
+            ->orderBy('f.flightDate', 'ASC')
+            ->addOrderBy('f.std', 'ASC');
+
+        return $qb
+            ->getQuery()
+            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->getArrayResult();
+
+        /*return $this->createQueryBuilder('f')
             ->addSelect('i')
             ->join('f.info', 'i')
             ->where('f.completed is null')
@@ -27,7 +57,7 @@ class FlightwatchRepository extends EntityRepository
             ->addOrderBy('f.std', 'ASC')
             ->getQuery()
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
-            ->getArrayResult();
+            ->getArrayResult();*/
 
     }
 
