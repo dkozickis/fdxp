@@ -113,7 +113,7 @@ class FlightWatchController extends Controller
     /**
      * Displays a form to edit an existing Flightwatch entity.
      *
-     * @Route("/fw/{id}/edit", name="fw_edit")
+     * @Route("/fw/flight/{id}/edit", name="fw_edit")
      *
      * @Method("GET")
      * @Template()
