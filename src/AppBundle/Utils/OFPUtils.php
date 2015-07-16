@@ -147,7 +147,7 @@ class OFPUtils
     }
 
     public function getAltn($ofp) {
-        preg_match('~-[A-Z]{4}[0-9]{4}\s([A-Z]{4})~', $ofp, $matches);
+        preg_match('~ALTN\s+([A-Z]{3,4})~', $ofp, $matches);
         return $matches[1];
     }
 
