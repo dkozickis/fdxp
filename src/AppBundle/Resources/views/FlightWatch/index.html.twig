@@ -80,7 +80,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-4 no-gutter text-right">
-                                    {% if info.form is defined%}
+                                    {% if (info.form is defined) and desk != 'all' %}
                                         <span class="text-right">
                                             <button type="button"
                                                     class="btn btn-link btn-xs finalize-point-form"
