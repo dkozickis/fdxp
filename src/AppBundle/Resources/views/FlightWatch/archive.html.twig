@@ -62,7 +62,7 @@
                             {{ flight.std|date('H:i') }}Z
                         </td>
                         <td>
-                            {{ flight.takeOffTime ? flight.takeOffTime|date('H:i')~'Z' : 'N/A' }}
+                            {{ flight.takeOffTime ? flight.takeOffTime|date('dM Hi')|upper~'Z' : 'N/A' }}
                         </td>
                         <td>
                             {{ flight.altn }}
@@ -78,13 +78,13 @@
                                 <div class="row bg-{{ info.eto_info }} eto fw-row">
                                     <div class="col-md-8 no-gutter ">
                                         {{ info.pointName }}
-                                        {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                        {{ flight.takeOffTime ? info.eto_time|date('Hi')~'Z' : '+'~info.eto|date('H:i') }}
                                         {{ info.ebo ? info.ebo~'T' : '' }}
                                         {{ info.airportsString }}
                                     </div>
                                     <div class="col-md-4 no-gutter text-right">
                                         {% if info.completed %}
-                                            Finalized at {{ info.completed_at|date('H:i')~'Z' }}
+                                            @ {{ info.completed_at|date('dM Hi')|upper~'Z' }}
                                         {% else %}
                                             Not finalized
                                         {% endif %}
@@ -94,7 +94,7 @@
                         </td>
 
                             <td>
-                                {{ flight.completed_at|date('H:i') }}
+                                {{ flight.completed_at|date('dM Hi')|upper~'Z' }}
                             </td>
                     </tr>
                 {% endfor %}
