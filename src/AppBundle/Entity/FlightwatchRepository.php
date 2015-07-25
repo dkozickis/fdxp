@@ -75,4 +75,19 @@ class FlightwatchRepository extends EntityRepository
             ->getArrayResult();
 
     }
+
+    //TODO : Fix, this is ugly.
+    public function findCompletedByDate($date){
+
+        return $this->createQueryBuilder('f')
+            ->addSelect('i')
+            ->join('f.info', 'i')
+            ->where('f.completed = 1')
+            ->andWhere('f.flightDate = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->getArrayResult();
+
+    }
 }

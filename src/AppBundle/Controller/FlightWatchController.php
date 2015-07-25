@@ -13,11 +13,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class FlightWatchController
+ * @package AppBundle\Controller
+ * @Route("/fw")
+ */
 class FlightWatchController extends Controller
 {
 
     /**
-     * @Route("/fw/{desk}/{dp}", name="fw_index", defaults={"desk":"all", "dp" : 0}, options={"expose"=true})
+     * @Route("/")
+     */
+    public function oldIndexAction(){
+
+        return $this->redirectToRoute('fw_index');
+
+    }
+
+    /**
+     * @Route("/view/{desk}/{dp}", name="fw_index", defaults={"desk":"all", "dp" : 0}, options={"expose"=true})
      * @Method("GET")
      * @Template()
      */
@@ -75,7 +89,80 @@ class FlightWatchController extends Controller
     }
 
     /**
-     * @Route("/fw/insertOfp/{desk}", name="fw_insert_ofp", defaults={"desk" : 1})
+     * @Route("/archive", name="fw_archive_select")
+     * @Method("GET")
+     */
+    public function archiveSelectAction() {
+
+        return $this->render('AppBundle:FlightWatch:archive.html.twig');
+
+    }
+
+    /**
+     * @Route("/archive/view/{date}", name="fw_archive_view", options={"expose"=true})
+     * @Method("GET")
+     */
+    public function archiveViewAction($date) {
+
+        $em = $this->getDoctrine()->getManager();
+        $date = new \DateTime($date);
+
+        /*$flights = $em->getRepository('AppBundle:Flightwatch')->findBy(array(
+            'flightDate' => $date,
+            'completed' => 1
+        ));*/
+
+        $flights = $em->getRepository('AppBundle:Flightwatch')->findCompletedByDate($date);
+
+        foreach ($flights as $fKey => $flight) {
+
+            foreach ($flight['info'] as $key => $info) {
+
+                $flights[$fKey]['info'][$key]['eto_info'] = 'info';
+                $flights[$fKey]['info'][$key]['airportsString'] = '';
+
+                if ($info['airports']) {
+                    $flights[$fKey]['info'][$key]['airportsString'] =
+                        $this->get('app.wx_utils')->generateAirportString($info['airports']);
+                }
+
+                if (isset($flight['takeOffTime'])) {
+                    $takeOffTime = clone $flight['takeOffTime'];
+                    $addInterval = new \DateInterval('P0000-00-00T'.$info['eto']->format('H:i:s'));
+
+                    $eto_time = $takeOffTime->add($addInterval);
+                    $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
+
+                    $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
+
+                    $flights[$fKey]['info'][$key]['eto_info'] = $this->get('app.fw_utils')->dangerOrWarning($interval);
+
+                    if ($info['completed']) {
+                        $flights[$fKey]['info'][$key]['eto_info'] = 'success';
+                    } else {
+                        $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView();
+                    }
+
+                }
+
+            }
+
+            $flights[$fKey]['form'] = $this->createFinalizeFlightForm($flight['id'])->createView();
+
+        }
+
+
+        return $this->render('AppBundle:FlightWatch:archive.html.twig',
+            array(
+                'flights' => $flights,
+                'date' => $date
+            )
+        );
+
+    }
+
+    /**
+     * @Route("/insertOfp/{desk}", name="fw_insert_ofp", defaults={"desk" : 1})
      * @Method("POST")
      */
     public function insertAction(Request $request, $desk)
@@ -113,7 +200,7 @@ class FlightWatchController extends Controller
     /**
      * Displays a form to edit an existing Flightwatch entity.
      *
-     * @Route("/fw/flight/{id}/edit", name="fw_edit")
+     * @Route("/flight/{id}/edit", name="fw_edit")
      *
      * @Method("GET")
      * @Template()
@@ -141,7 +228,7 @@ class FlightWatchController extends Controller
     }
 
     /**
-     * @Route("/fw/{id}", name="fw_update")
+     * @Route("/{id}", name="fw_update")
      *
      * @Method("PUT")
      * @Template("AppBundle:Flightwatch:edit.html.twig")
@@ -176,7 +263,7 @@ class FlightWatchController extends Controller
     }
 
     /**
-     * @Route("/fw/finalize/{id}", name="fw_finalize_flight")
+     * @Route("/finalize/{id}", name="fw_finalize_flight")
      *
      * @Method("POST")
      */
@@ -209,7 +296,7 @@ class FlightWatchController extends Controller
 
     /**
      * @param $id
-     * @Route("/fw/finalize/point/{id}", name="fw_finalize_point")
+     * @Route("/finalize/point/{id}", name="fw_finalize_point")
      *
      * @Method("POST")
      */
@@ -244,7 +331,7 @@ class FlightWatchController extends Controller
     }
 
     /**
-     * @Route("/fw/wx/{id}/{force}", name="fw_wx", defaults={"force": 0}, options={"expose"=true})
+     * @Route("/wx/{id}/{force}", name="fw_wx", defaults={"force": 0}, options={"expose"=true})
      * @Method({"GET"})
      */
     public function wxAction($id, $force)

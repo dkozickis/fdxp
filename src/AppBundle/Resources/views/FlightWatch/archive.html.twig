@@ -1,0 +1,134 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('css/bootstrap-datepicker.css') }}" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block title %}
+    <title>FDXP - Flight Watch Archive</title>
+{% endblock %}
+{% block body %}
+
+
+    <div class="row" style="margin-bottom: 15px">
+        <div class='col-md-6'>
+            <form class="form-inline">
+                <div class="form-group">
+                    <div class='input-group date' id='datetimepicker1' style="width: 250px">
+                        <input type='text' class="form-control" name="date" placeholder="Select date"
+                               value="{{ date is defined ? date|date("Y-m-d") }}"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-default" id="showButton">Show</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            {% if flights is defined %}
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>No.</th>
+                    <th>Dep-Dest</th>
+                    <th>STD</th>
+                    <th>T/O</th>
+                    <th>ALTN</th>
+                    <th>ERD</th>
+                    <th>ERDA</th>
+                    <th>FW Info</th>
+                    <th>Finalized at</th>
+                </tr>
+                </thead>
+                {% for flight in flights %}
+                    <tr>
+                        <td>
+                            {{ flight.flightDate|date('dM')|upper }}
+                        </td>
+                        <td>
+                            {{ flight.flightNumber }}
+                        </td>
+                        <td>
+                            {{ flight.dep }}-{{ flight.dest }}
+                        </td>
+                        <td>
+                            {{ flight.std|date('H:i') }}Z
+                        </td>
+                        <td>
+                            {{ flight.takeOffTime ? flight.takeOffTime|date('H:i')~'Z' : 'N/A' }}
+                        </td>
+                        <td>
+                            {{ flight.altn }}
+                        </td>
+                        <td>
+                            {{ flight.erd ? flight.erd : 'N/A' }}
+                        </td>
+                        <td>
+                            {{ flight.erda ? flight.erda : 'N/A' }}
+                        </td>
+                        <td>
+                            {% for info in flight.info %}
+                                <div class="row bg-{{ info.eto_info }} eto fw-row">
+                                    <div class="col-md-8 no-gutter ">
+                                        {{ info.pointName }}
+                                        {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                        {{ info.ebo ? info.ebo~'T' : '' }}
+                                        {{ info.airportsString }}
+                                    </div>
+                                    <div class="col-md-4 no-gutter text-right">
+                                        {% if info.completed %}
+                                            Finalized at {{ info.completed_at|date('H:i')~'Z' }}
+                                        {% else %}
+                                            Not finalized
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </td>
+
+                            <td>
+                                {{ flight.completed_at|date('H:i') }}
+                            </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    {% if app.debug %}
+        <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+    {% else %}
+        <script src="/js/fos_js_routes.js"></script>
+    {% endif %}
+    <script src="{{ asset('js/moment.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: "YYYY-MM-DD",
+            });
+            $('#showButton').on('click', function (e) {
+                e.preventDefault();
+                console.log($('#datetimepicker1').data("DateTimePicker").date().format("YYYY-MM-DD"));
+                window.location.replace(Routing.generate("fw_archive_view", {
+                    date: $('#datetimepicker1').data("DateTimePicker").date().format("YYYY-MM-DD")
+                }));
+            });
+        });
+    </script>
+{% endblock %}
+
+
+

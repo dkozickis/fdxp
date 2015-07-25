@@ -33,6 +33,11 @@ class Builder extends ContainerAware
             $menu->addChild('Shift Log', array('route' => 'shiftlog_index'));
             $menu['Shift Log']->addChild('Current', array('route' => 'shiftlog_index'));
             $menu['Shift Log']->addChild('Archive', array('route' => 'shiftlog_archive_select'));
+
+            $menu->addChild('Flight Watch', array('route' => 'fw_index'));
+            $menu['Flight Watch']->addChild('Current', array('route' => 'fw_index'));
+            $menu['Flight Watch']->addChild('Archive', array('route' => 'fw_archive_select'));
+
         }
 
         if ($securityContext->isGranted('ROLE_TFD')) {
