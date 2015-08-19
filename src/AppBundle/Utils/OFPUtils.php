@@ -100,7 +100,7 @@ class OFPUtils
     public function getETOPSInfoFromPortion($ofp) {
 
         preg_match_all(
-            '~(EEP[0-9]|EXP[0-9]|ETP[0-9]|ETP[0-9]-[0-9])\s([A-Z]{4}\/[A-Z]{4}).{32}\s*([0-9.]+)\s+~',
+            '~(EEP[0-9]|EXP[0-9]|ETP[0-9]|ETP[0-9]-[0-9])\s([A-Z]{4}\/[A-Z]{0,4}).+(DX|DC|1X).{28}\s*([0-9.]+)\s+~',
             $ofp, $etops_matches, PREG_SET_ORDER);
 
         return $etops_matches;
