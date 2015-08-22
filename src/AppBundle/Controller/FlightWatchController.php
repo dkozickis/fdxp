@@ -76,6 +76,7 @@ class FlightWatchController extends Controller
             }
 
             $flights[$fKey]['form'] = $this->createFinalizeFlightForm($flight['id'])->createView();
+            $flights[$fKey]['delete_form'] = $this->createDeleteFlightForm($flight['id'])->createView();
 
         }
 
@@ -184,14 +185,12 @@ class FlightWatchController extends Controller
 
             $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $formDesk);
 
-            return $this->redirectToRoute('fw_index', array(
-                'desk' => $formDesk
-            ));
+            return $this->redirect($this->get('request')->headers->get('referer'));
 
         } else {
 
             $flash->alert('Something wrong with the form.');
-            return $this->redirectToRoute('fw_index');
+            return $this->redirect($this->get('request')->headers->get('referer'));
 
         }
 
@@ -274,11 +273,10 @@ class FlightWatchController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
-        $desk = $entity->getDesk();
 
         if (!$entity) {
             $flash->alert('Flight was not finalized');
-            return $this->redirectToRoute('fw_index');
+            return $this->redirect($this->get('request')->headers->get('referer'));
         }
 
         $entity->setCompleted(true);
@@ -289,9 +287,32 @@ class FlightWatchController extends Controller
         $em->flush();
 
         $flash->success('Flight finalized');
-        return $this->redirectToRoute('fw_index', array(
-            'desk' => $desk
-        ));
+        return $this->redirect($this->get('request')->headers->get('referer'));
+    }
+
+    /**
+     * @Route("/delete/{id}", name="fw_delete_flight")
+     *
+     * @Method("POST")
+     */
+    public function deleteFlightAction($id)
+    {
+
+        $flash = $this->get('braincrafted_bootstrap.flash');
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+
+        if (!$entity) {
+            $flash->alert('Flight was NOT deleted');
+            return $this->redirect($this->get('request')->headers->get('referer'));
+        }
+
+        $em->remove($entity);
+        $em->flush();
+
+        $flash->success('Flight DELETED');
+        return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
     /**
@@ -309,11 +330,10 @@ class FlightWatchController extends Controller
         /** @var  $entity FlightwatchInfo */
 
         $entity = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
-        $desk = $entity->getFlight()->getDesk();
 
         if (!$entity) {
             $flash->alert('Point was not finalized');
-            return $this->redirectToRoute('fw_index');
+            return $this->redirect($this->get('request')->headers->get('referer'));
         }
 
         $entity->setCompleted(true);
@@ -324,11 +344,11 @@ class FlightWatchController extends Controller
         $em->flush();
 
         $flash->success('Point finalized');
-        return $this->redirectToRoute('fw_index', array(
-            'desk' => $desk
-        ));
+        return $this->redirect($this->get('request')->headers->get('referer'));
 
     }
+
+
 
     /**
      * @Route("/wx/{id}/{force}", name="fw_wx", defaults={"force": 0}, options={"expose"=true})
@@ -411,6 +431,16 @@ class FlightWatchController extends Controller
 
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('fw_finalize_flight', array(
+                'id' => $id
+            )))
+            ->getForm();
+    }
+
+    private function createDeleteFlightForm($id)
+    {
+
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('fw_delete_flight', array(
                 'id' => $id
             )))
             ->getForm();

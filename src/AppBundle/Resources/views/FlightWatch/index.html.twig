@@ -46,9 +46,9 @@
                     <th>ERD</th>
                     <th>ERDA</th>
                     <th>FW Info</th>
-                    {% if desk != 'all' %}
-                        <th>Finalize flight</th>
-                    {% endif %}
+                    <th>Delete</th>
+                    <th>Finalize</th>
+
                 </tr>
                 </thead>
                 {% for flight in flights %}
@@ -92,12 +92,13 @@
                                         </a>
                                     </div>
                                     <div class="col-md-4 no-gutter text-right">
-                                        {% if (info.form is defined) and desk != 'all' %}
+                                        {% if (info.form is defined) %}
                                             <span class="text-right">
                                             <button type="button"
                                                     class="btn btn-link btn-xs finalize-point-form"
                                                     data-form-id="{{ info.id }}">
-                                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Finalize
+                                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                                                Finalize
                                             </button>
                                                 {{ form(info.form, { 'attr' : { 'id' : 'finalize-point-form-'~info.id } } ) }}
                                         </span>
@@ -108,15 +109,20 @@
                                 </div>
                             {% endfor %}
                         </td>
-                        {% if desk != 'all' %}
-                            <td>
-                                <button type="button" class="btn btn-default btn-lg btn-block finalize-flight-form"
-                                        data-form-id="{{ flight.id }}">
-                                    <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                                </button>
-                                {{ form(flight.form, { 'attr' : { 'id' : 'finalize-form-'~flight.id } }) }}
-                            </td>
-                        {% endif %}
+                        <td>
+                            <button type="button" class="btn btn-default btn-lg btn-block delete-flight-form"
+                                    data-form-id="{{ flight.id }}">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </button>
+                            {{ form(flight.delete_form, { 'attr' : { 'id' : 'delete-form-'~flight.id } }) }}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default btn-lg btn-block finalize-flight-form"
+                                    data-form-id="{{ flight.id }}">
+                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                            </button>
+                            {{ form(flight.form, { 'attr' : { 'id' : 'finalize-form-'~flight.id } }) }}
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
@@ -124,11 +130,11 @@
     </div>
 
 
-{% if desk != 'all' %}
-    <div class="row col-md-12">
-        {{ form(form) }}
-    </div>
-{% endif %}
+    {% if desk != 'all' %}
+        <div class="row col-md-12">
+            {{ form(form) }}
+        </div>
+    {% endif %}
 
     {% include 'AppBundle:FlightWatch:wxModal.html.twig' %}
     {% include 'AppBundle:FlightWatch:finalizeModal.html.twig' %}
@@ -145,25 +151,20 @@
     <script>
 
         $("[name='my-checkbox']").bootstrapSwitch();
-
-        $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state){
-
-            if(state == true){
+        $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function (event, state) {
+            if (state == true) {
                 window.location = Routing.generate('fw_index', {desk: '{{ desk }}', dp: 'dp'});
-            }else{
-                window.location = Routing.generate('fw_index', {desk: '{{ desk }}' });
+            } else {
+                window.location = Routing.generate('fw_index', {desk: '{{ desk }}'});
             }
-            console.log(this); // DOM element
-            console.log(event); // jQuery event
-            console.log(state); // true | false
         });
 
-        function updateWxModal(airportsID, force){
+        function updateWxModal(airportsID, force) {
             force = typeof force !== 'undefined' ? force : 0;
             $('.wx-update-button').attr('data-airports', airportsID);
             var modalBody = $('#wx-modal-body');
             modalBody.html('<p> Please wait... Loading WX info... </p>');
-            $.getJSON(Routing.generate('fw_wx', { id : airportsID, force: force}), function (data) {
+            $.getJSON(Routing.generate('fw_wx', {id: airportsID, force: force}), function (data) {
 
                 modalBody.html('');
                 modalBody.append('<h4>METARs</h4>');
@@ -182,7 +183,7 @@
             var airportsID = e.relatedTarget.getAttribute('data-airports');
             updateWxModal(airportsID);
         });
-        $('.wx-update-button').on('click', function (e){
+        $('.wx-update-button').on('click', function (e) {
             var airportsID = $(this).attr('data-airports');
             updateWxModal(airportsID, 1);
         });
@@ -194,6 +195,15 @@
             $('#modal-finalize').modal({backdrop: true, keyboard: true})
                     .one('click', '#modal-delete-button', function (e) {
                         $('#finalize-form-' + formID).trigger('submit');
+                    });
+        });
+        $('.delete-flight-form').on('click', function (e) {
+            e.preventDefault();
+            var formID = $(this).attr('data-form-id');
+            $('.finalize-modal-text').text('Do you really want to DELETE this flight?');
+            $('#modal-delete').modal({backdrop: true, keyboard: true})
+                    .one('click', '#modal-delete-button', function (e) {
+                        $('#delete-form-' + formID).trigger('submit');
                     });
         });
         $('.finalize-point-form').on('click', function (e) {
