@@ -63,11 +63,25 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="{{ asset('js/leaflet-ajax.js') }}"></script>
     <script>
-        var map = L.map('map').setView([51.505, -0.09], 13);
 
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        var baseLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18
-        }).addTo(map);
+        });
+
+        var Thunderforest_Transport = L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        });
+
+        var baseMaps = {
+            'Base': baseLayer,
+            'Political': Thunderforest_Transport
+        }
+
+        var map = L.map('map',{
+            layers: [baseLayer]
+        }).setView([51.505, -0.09], 13);
+
+        L.control.layers(baseMaps).addTo(map);
 
         var geojsonLayer =
                 new L.GeoJSON.AJAX("{{ path('compare_route',
