@@ -1,0 +1,39 @@
+AppBundle\Entity\HighSpeedFuel:
+  type: entity
+  table: high_speed_fuel
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    date:
+      type: date
+    flightNumber:
+      type: string
+      length: 7
+      column: flight_number
+    depIATA:
+      type: string
+      length: 3
+      column: dep_iata
+      nullable: true
+    destIATA:
+      type: string
+      length: 3
+      column: dest_iata
+      nullable: true
+    normalFlightTime:
+      type: time
+    highSpeedFlightTime:
+      type: time
+    normalCost:
+      type: integer
+    highSpeedCost:
+      type: integer
+    archived:
+      type: boolean
+      nullable: true
+
+
+
+

@@ -1,0 +1,28 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block body %}
+    <div class="col-md-6">
+        <h1>Comparison edit</h1>
+
+        {{ form(edit_form) }}
+
+        {{ form(delete_form, { 'attr' : { 'id' : 'delete-form'}}) }}
+    </div>
+    {% include 'AppBundle::modal_snippet.html.twig' %}
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function () {
+            $('.btn-danger').on('click', function (e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({backdrop: true, keyboard: true})
+                        .one('click', '#modal-delete-button', function (e) {
+                            $('#delete-form').trigger('submit');
+                        });
+            });
+        });
+    </script>
+{% endblock %}
+
