@@ -15,15 +15,21 @@ class HighSpeedFuelType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('date')
+            ->add('date', 'date', array(
+                //'format' => 'text',
+                'widget' => 'single_text',
+                'html5' => 'false',
+                // this is actually the default format for single_text
+                'format' => 'yyyy-MM-dd',
+            ))
             ->add('flightNumber')
             ->add('depIATA', null, array(
-                'read_only' => true,
+                //'read_only' => true,
                 'label' => 'DEP',
                 'attr' => array('style' => 'width: 50px;')
             ))
             ->add('destIATA', null, array(
-                'read_only' => true,
+                //'read_only' => true,
                 'label' => 'DEST',
                 'attr' => array('style' => 'width: 50px;')
             ))

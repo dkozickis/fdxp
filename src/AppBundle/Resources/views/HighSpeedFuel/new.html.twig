@@ -1,8 +1,38 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('css/bootstrap-datepicker.css') }}" rel="stylesheet" media="screen">
+{% endblock %}
+
 {% block body %}
     <h1>New High Speed Fuel entry</h1>
+
+{# {{ form(form) }} #}
+{% form_theme form.date 'AppBundle:Form:datepicker.input.html.twig' %}
 
     {{ form(form) }}
 
 {% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('js/moment.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: "YYYY-MM-DD",
+            });
+            $('#showButton').on('click', function (e) {
+                e.preventDefault();
+                console.log($('#datetimepicker1').data("DateTimePicker").date().format("YYYY-MM-DD"));
+                window.location.replace(Routing.generate("fw_archive_view", {
+                    date: $('#datetimepicker1').data("DateTimePicker").date().format("YYYY-MM-DD")
+                }));
+            });
+        });
+    </script>
+{% endblock %}
+
+

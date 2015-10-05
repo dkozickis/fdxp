@@ -8,4 +8,8 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "scotchbox"
   config.vm.synced_folder ".", "/var/www", :nfs => { :mount_options => ["dmode=777", "fmode=666"]}
 
+  config.vm.provider "virtualbox" do |v|
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
+  end
+
 end

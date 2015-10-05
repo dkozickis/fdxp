@@ -24,9 +24,7 @@ module.exports = function (grunt) {
                     'jquery-json.js': 'jquery-json/src/jquery.json.js',
                     'bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
                     'bootstrap-fileinput.js': 'bootstrap-fileinput/js/fileinput.js',
-                    'bootstrap-datepicker.js': 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-                    'bootstrap-switch.js': 'bootstrap-switch/dist/js/bootstrap-switch.min.js',
-                    'moment.js': 'moment/min/moment.min.js'
+                    'bootstrap-switch.js': 'bootstrap-switch/dist/js/bootstrap-switch.min.js'
                 }
             },
             stylesheets: {
@@ -52,6 +50,7 @@ module.exports = function (grunt) {
                     'web/css/bootstrap-fileinput.css',
                     'web/css/bootstrap-braincrafted.css',
                     'web/css/bootstrap-switch.css',
+                    'web/css/bootstrap-datepicker.css',
                     'src/AppBundle/Resources/public/css/*.css'
                 ],
                 dest: 'web/css/bundled.css'
