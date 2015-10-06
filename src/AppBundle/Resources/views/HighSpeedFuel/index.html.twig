@@ -16,7 +16,7 @@
                     <th>FLT TIME</th>
                     <th>REV. FLT TIME</th>
                     <th>COST INC</th>
-                    <th>REV. COST</th>
+                    {# <th>REV. COST</th> #}
                     <th>Edit</th>
                 </tr>
             </thead>
@@ -28,8 +28,7 @@
                     <td>{{ entity.depIATA }}-{{ entity.destIATA }}</td>
                     <td>{% if entity.normalFlightTime %}{{ entity.normalFlightTime|date("H:i") }}{% endif %}</td>
                     <td>{% if entity.highSpeedFlightTime %}{{ entity.highSpeedFlightTime|date("H:i") }}{% endif %}</td>
-                    <td>{{ entity.normalCost }}</td>
-                    <td>{{ entity.highSpeedCost }}</td>
+                    <td>{% if entity.highSpeedCost %}{{ entity.highSpeedCost - entity.normalCost }}{% endif %}</td>
                     <td>
                         <a href="{{ path('highspeedfuel_edit', { 'id': entity.id }) }}">edit</a>
                     </td>
