@@ -24,6 +24,16 @@ class FlightWatchType extends AbstractType
             ->add('dest', null, array(
                 'read_only' => true
             ))
+            ->add('desk', 'choice', array(
+                'choices' => array(
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6'
+                )
+            ))
             ->add('takeOffTime', null, array(
                 'date_format' => 'yyyy-MMM-dd'
             ))
