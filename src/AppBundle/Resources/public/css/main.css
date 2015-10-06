@@ -25,3 +25,11 @@ body {
 .no-margin{
     margin:0;
 }
+
+.hundred_w{
+    width: 100px;
+}
+
+.small_datepicker{
+    width: 139px;
+}

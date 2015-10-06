@@ -8,10 +8,17 @@
 {% block body %}
     <h1>New High Speed Fuel entry</h1>
 
-{# {{ form(form) }} #}
 {% form_theme form.date 'AppBundle:Form:datepicker.input.html.twig' %}
 
-    {{ form(form) }}
+
+    <div class="row">
+        <div class="col-md-6">
+
+                {{ form(form) }}
+
+        </div>
+    </div>
+
 
 {% endblock %}
 
@@ -22,14 +29,7 @@
     <script type="text/javascript">
         $(function () {
             $('#datetimepicker1').datetimepicker({
-                format: "YYYY-MM-DD",
-            });
-            $('#showButton').on('click', function (e) {
-                e.preventDefault();
-                console.log($('#datetimepicker1').data("DateTimePicker").date().format("YYYY-MM-DD"));
-                window.location.replace(Routing.generate("fw_archive_view", {
-                    date: $('#datetimepicker1').data("DateTimePicker").date().format("YYYY-MM-DD")
-                }));
+                format: "DD-MM-YYYY",
             });
         });
     </script>

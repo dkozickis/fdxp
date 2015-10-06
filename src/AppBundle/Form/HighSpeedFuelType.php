@@ -19,20 +19,21 @@ class HighSpeedFuelType extends AbstractType
                 //'format' => 'text',
                 'widget' => 'single_text',
                 'html5' => 'false',
-                // this is actually the default format for single_text
-                'format' => 'yyyy-MM-dd',
+                'format' => 'dd-MM-yyyy',
             ))
-            ->add('flightNumber')
-            ->add('depIATA', null, array(
-                //'read_only' => true,
+            ->add('flightNumber', null, array(
+                'attr' => array()
+            ))
+            /* ->add('depIATA', null, array(
+                'read_only' => true,
                 'label' => 'DEP',
                 'attr' => array('style' => 'width: 50px;')
             ))
             ->add('destIATA', null, array(
-                //'read_only' => true,
+                'read_only' => true,
                 'label' => 'DEST',
                 'attr' => array('style' => 'width: 50px;')
-            ))
+            ))*/
             ->add('normalFlightTime')
             ->add('highSpeedFlightTime')
             ->add('normalCost')

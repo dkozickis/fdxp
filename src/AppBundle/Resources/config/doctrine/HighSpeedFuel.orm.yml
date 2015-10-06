@@ -24,12 +24,16 @@ AppBundle\Entity\HighSpeedFuel:
       nullable: true
     normalFlightTime:
       type: time
+      nullable: true
     highSpeedFlightTime:
       type: time
+      nullable: true
     normalCost:
       type: integer
+      nullable: true
     highSpeedCost:
       type: integer
+      nullable: true
     archived:
       type: boolean
       nullable: true

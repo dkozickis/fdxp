@@ -10,32 +10,28 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Date</th>
+                    <th>DATE</th>
                     <th>FLT NO</th>
                     <th>DEP-DEST</th>
-                    <th>N FLT Time</th>
-                    <th>HI FLT Time</th>
-                    <th>Norm COST</th>
-                    <th>HI COST</th>
-                    <th>Actions</th>
+                    <th>FLT TIME</th>
+                    <th>REV. FLT TIME</th>
+                    <th>COST INC</th>
+                    <th>REV. COST</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
             {% for entity in entities %}
                 <tr>
-                    <td>{% if entity.date %}{{ entity.date|date('d-m-Y') }}{% endif %}</td>
+                    <td>{% if entity.date %}{{ entity.date|date('dM')|upper }}{% endif %}</td>
                     <td>{{ entity.flightNumber }}</td>
                     <td>{{ entity.depIATA }}-{{ entity.destIATA }}</td>
-                    <td>{{ entity.normalFlightTime|date("h:i") }}</td>
-                    <td>{{ entity.highSpeedFlightTime|date("h:i") }}</td>
+                    <td>{% if entity.normalFlightTime %}{{ entity.normalFlightTime|date("H:i") }}{% endif %}</td>
+                    <td>{% if entity.highSpeedFlightTime %}{{ entity.highSpeedFlightTime|date("H:i") }}{% endif %}</td>
                     <td>{{ entity.normalCost }}</td>
                     <td>{{ entity.highSpeedCost }}</td>
                     <td>
-                        <ul>
-                            <li>
-                                <a href="{{ path('highspeedfuel_edit', { 'id': entity.id }) }}">edit</a>
-                            </li>
-                        </ul>
+                        <a href="{{ path('highspeedfuel_edit', { 'id': entity.id }) }}">edit</a>
                     </td>
                 </tr>
             {% endfor %}

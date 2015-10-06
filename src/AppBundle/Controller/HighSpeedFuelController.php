@@ -44,6 +44,7 @@ class HighSpeedFuelController extends Controller
      */
     public function createAction(Request $request)
     {
+        $flash = $this->get('braincrafted_bootstrap.flash');
         $entity = new HighSpeedFuel();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -53,7 +54,8 @@ class HighSpeedFuelController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('highspeedfuel_show', array('id' => $entity->getId())));
+            $flash->success('New entry inserted.');
+            return $this->redirect($this->generateUrl('highspeedfuel'));
         }
 
         return array(
@@ -76,7 +78,14 @@ class HighSpeedFuelController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Create'));
+        $form->get('actions')->add('backToList', 'button', array(
+            'as_link' => true, 'attr' => array(
+                'href' => $this->generateUrl('highspeedfuel'),
+            ),
+        ));
 
         return $form;
     }
@@ -191,6 +200,7 @@ class HighSpeedFuelController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        $flash = $this->get('braincrafted_bootstrap.flash');
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:HighSpeedFuel')->find($id);
@@ -206,7 +216,8 @@ class HighSpeedFuelController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('highspeedfuel_edit', array('id' => $id)));
+            $flash->success('Entry edited.');
+            return $this->redirect($this->generateUrl('highspeedfuel'));
         }
 
         return array(
@@ -223,6 +234,7 @@ class HighSpeedFuelController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $flash = $this->get('braincrafted_bootstrap.flash');
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
@@ -238,6 +250,7 @@ class HighSpeedFuelController extends Controller
             $em->flush();
         }
 
+        $flash->success('Entry deleted');
         return $this->redirect($this->generateUrl('highspeedfuel'));
     }
 
