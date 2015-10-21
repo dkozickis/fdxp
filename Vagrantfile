@@ -10,6 +10,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |v|
     v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
+    v.customize ["modifyvm", :id, "--memory", "1024"]
   end
+
 
 end
