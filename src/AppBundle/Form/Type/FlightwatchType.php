@@ -35,7 +35,10 @@ class FlightWatchType extends AbstractType
                 )
             ))
             ->add('takeOffTime', null, array(
-                'date_format' => 'yyyy-MMM-dd'
+                'widget' => 'single_text',
+                'html5' => 'false',
+                'format' => 'dd-MMM-yyyy HH:mm'
+                //'date_format' => 'yyyy-MMM-dd',
             ))
         ;
     }

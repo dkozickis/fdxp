@@ -1,17 +1,18 @@
 {% block form_row %}
     {% spaceless %}
         {% set style = style|default(bootstrap_get_style()) %}
+        {% set datepicker_size = datepicker_size|default('small') %}
 
         <div class="form-group{% if form.vars.errors|length > 0 %} has-error{% endif %}">
-                {{ form_label(form) }}
-                <div class='input-group date small_datepicker' id='datetimepicker1'>
-                    {{ block('form_input_group') }}
-                    <span class="input-group-addon">
+            {{ form_label(form) }}
+            <div class='input-group date  {{ datepicker_size }}_datepicker' id='datetimepicker1'>
+                {{ block('form_input_group') }}
+                <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
-                </div>
-                {{ block('form_help') }}
-                {{ form_errors(form) }}
+            </div>
+            {{ block('form_help') }}
+            {{ form_errors(form) }}
         </div>
         {% if style == 'inline' %}&nbsp;{% endif %}
     {% endspaceless %}

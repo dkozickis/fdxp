@@ -214,9 +214,9 @@ class FlightWatchController extends Controller
             throw $this->createNotFoundException('Unable to find Flightwatch entity.');
         }
 
-        if (!$entity->getTakeOffTime()) {
+        /*if (!$entity->getTakeOffTime()) {
             $entity->setTakeOffTime(new \DateTime('today'));
-        }
+        }*/
 
         $editForm = $this->createEditForm($entity);
 

@@ -1,12 +1,36 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('css/bootstrap-datepicker.css') }}" rel="stylesheet" media="screen">
+{% endblock %}
+
+
 {% block body %}
 <div class="col-md-6">
 
     <h1>Flight edit</h1>
 
+    {% set datepicker_size = 'medium' %}
+    {% form_theme edit_form.takeOffTime 'AppBundle:Form:datepicker.input.html.twig' %}
+
     {{ form(edit_form) }}
 
+
     </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('js/moment.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: "DD-MMM-YYYY HH:mm",
+                sideBySide: true
+            });
+        });
+    </script>
 {% endblock %}
 
