@@ -29,7 +29,7 @@ class FlightwatchListener
                 ));
 
                 if($dp){
-                    $dpTripTime = new \DateInterval($dp->getEto()->format('\P\Th\Hi\M'));
+                    $dpTripTime = new \DateInterval($dp->getEto()->format('\P\TG\Hi\M'));
                     $entity->setDpTime($immutableTOT->add($dpTripTime));
                 }
 
