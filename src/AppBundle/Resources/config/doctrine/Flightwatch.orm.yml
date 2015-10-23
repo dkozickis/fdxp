@@ -31,6 +31,9 @@ AppBundle\Entity\Flightwatch:
         erd:
           type: string
           nullable: true
+        dpTime:
+          type: datetime
+          nullable: true
         erda:
           type: string
           nullable: true

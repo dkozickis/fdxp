@@ -50,6 +50,11 @@ services:
       tags:
         - { name : doctrine.event_listener, event : onFlush }
 
+    app.flightwatch_listener:
+      class: AppBundle\Listener\FlightwatchListener
+      tags:
+        - { name : doctrine.event_listener, event : preUpdate }
+
     app.twig_extension:
       class: AppBundle\Twig\AppExtension
       public: false

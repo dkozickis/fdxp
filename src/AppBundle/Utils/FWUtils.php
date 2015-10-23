@@ -30,6 +30,7 @@ class FWUtils {
 
         if ($dpInfo) {
             $fw->setErdErda($erdErda['erd'], $erdErda['erda']);
+            $fw->setDpTime($dpInfo['time']);
             $fwInfo = new FlightwatchInfo();
             $fwInfo->setDpInfo($fw, $dpInfo);
             $em->persist($fwInfo);

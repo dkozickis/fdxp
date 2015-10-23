@@ -31,16 +31,19 @@ class FlightWatchController extends Controller
     }
 
     /**
-     * @Route("/view/{desk}/{dp}", name="fw_index", defaults={"desk":"all", "dp" : 0}, options={"expose"=true})
+     * @Route("/view/desk/{desk}/filterDP/{dp}", name="fw_index",
+                defaults={"desk" : "all", "dp" : 0, "dpSort" : 0}, options={"expose"=true})
+     * @Route("/view/")
+     * @Route("/view")
      * @Method("GET")
      * @Template()
-     */
-    public function indexAction($desk, $dp)
+     **/
+    public function indexAction($desk = 'all', $dp = '0', $dpSort = '0')
     {
 
         $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfo($desk, $dp);
 
-        $form = $this->createOFPForm($desk);
+        $OFPForm = $this->createOFPForm($desk);
 
         foreach ($flights as $fKey => $flight) {
 
@@ -82,7 +85,7 @@ class FlightWatchController extends Controller
 
         return array(
             'flights' => $flights,
-            'form' => $form->createView(),
+            'form' => $OFPForm->createView(),
             'desk' => $desk,
             'dp' => $dp
         );
@@ -107,11 +110,6 @@ class FlightWatchController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $date = new \DateTime($date);
-
-        /*$flights = $em->getRepository('AppBundle:Flightwatch')->findBy(array(
-            'flightDate' => $date,
-            'completed' => 1
-        ));*/
 
         $flights = $em->getRepository('AppBundle:Flightwatch')->findCompletedByDate($date);
 
@@ -213,10 +211,6 @@ class FlightWatchController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Flightwatch entity.');
         }
-
-        /*if (!$entity->getTakeOffTime()) {
-            $entity->setTakeOffTime(new \DateTime('today'));
-        }*/
 
         $editForm = $this->createEditForm($entity);
 

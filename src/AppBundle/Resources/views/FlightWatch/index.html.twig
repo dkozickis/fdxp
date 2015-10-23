@@ -15,11 +15,11 @@
                     </li>
                     {% for i in 1..6 %}
                         <li{{ desk == i ? " class='active'" }}>
-                            <a href="{{ path('fw_index', {'desk' : i}) }}">{{ i }}</a>
+                            <a href="{{ path('fw_index', {'desk' : i, 'dp' : dp}) }}">{{ i }}</a>
                         </li>
                     {% endfor %}
                     <li{{ desk == 'all' ? " class='active'" }}>
-                        <a href="{{ path('fw_index', {'desk' : 'all'}) }}">All</a>
+                        <a href="{{ path('fw_index', {'desk' : 'all', 'dp' : dp}) }}">All</a>
                     </li>
                 </ul>
             </nav>
@@ -66,7 +66,7 @@
                             {{ flight.std|date('H:i') }}Z
                         </td>
                         <td>
-                            {{ flight.takeOffTime ? flight.takeOffTime|date('H:i')~'Z' : 'N/A' }}
+                            {{ flight.takeOffTime ? flight.takeOffTime|date('d/H:i')~'Z' : 'N/A' }}
                             <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             </a>
@@ -85,7 +85,7 @@
                                 <div class="row bg-{{ info.eto_info }} eto fw-row">
                                     <div class="col-md-8 no-gutter ">
                                         {{ info.pointName }}
-                                        {{ flight.takeOffTime ? info.eto_time|date('H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                        {{ flight.takeOffTime ? info.eto_time|date('d/H:i')~'Z' : '+'~info.eto|date('H:i') }}
                                         {{ info.ebo ? info.ebo~'T' : '' }}
                                         <a href="#wxModal" data-toggle="modal" data-airports="{{ info.id }}">
                                             {{ info.airportsString }}
@@ -153,7 +153,7 @@
         $("[name='my-checkbox']").bootstrapSwitch();
         $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function (event, state) {
             if (state == true) {
-                window.location = Routing.generate('fw_index', {desk: '{{ desk }}', dp: 'dp'});
+                window.location = Routing.generate('fw_index', {desk: '{{ desk }}', dp: 'on'});
             } else {
                 window.location = Routing.generate('fw_index', {desk: '{{ desk }}'});
             }

@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use AppBundle\Doctrine\Walker\SortableNullsWalker;
 
 /**
  * FlightwatchRepository
@@ -35,28 +36,25 @@ class FlightwatchRepository extends EntityRepository
                 ->andWhere('f.erd IS NOT NULL');
         }
 
+        if($dp){
+            $qb
+                ->addOrderBy('f.dpTime', 'ASC');
+        }
+
         $qb
-            ->orderBy('f.flightDate', 'ASC')
+            ->addOrderBy('f.flightDate', 'ASC')
             ->addOrderBy('f.std', 'ASC');
+
+
 
         return $qb
             ->getQuery()
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'AppBundle\Doctrine\Walker\SortableNullsWalker')
+            ->setHint('SortableNullsWalker.fields', array(
+                'dpTime' => SortableNullsWalker::NULLS_LAST
+            ))
             ->getArrayResult();
-
-        /*return $this->createQueryBuilder('f')
-            ->addSelect('i')
-            ->join('f.info', 'i')
-            ->where('f.completed is null')
-            ->andWhere('i.pointName not like :pointName')
-            ->andWhere('f.desk = :desk')
-            ->setParameter('desk', $desk)
-            ->setParameter('pointName', 'EXP%')
-            ->orderBy('f.flightDate', 'ASC')
-            ->addOrderBy('f.std', 'ASC')
-            ->getQuery()
-            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
-            ->getArrayResult();*/
 
     }
 
