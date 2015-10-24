@@ -25,7 +25,7 @@ class SortableNullsWalker extends SqlWalker
                         {
                             /**
                              * NULLs are considered lower than any non-NULL value,
-                             * except if a – (minus) character is added before
+                             * except if a â€“ (minus) character is added before
                              * the column name and ASC is changed to DESC, or DESC to ASC;
                              * this minus-before-column-name feature seems undocumented.
                              */

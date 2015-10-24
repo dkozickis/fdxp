@@ -202,7 +202,7 @@ class FlightWatchController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -212,7 +212,7 @@ class FlightWatchController extends Controller
             throw $this->createNotFoundException('Unable to find Flightwatch entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($entity, $request);
 
         return array(
             'entity' => $entity,
@@ -238,15 +238,13 @@ class FlightWatchController extends Controller
             throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($entity, $request);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('fw_index', array(
-                'desk' => $desk
-            )));
+            return $this->redirect($editForm->get('ref')->getData());
         }
 
         return array(
@@ -384,10 +382,10 @@ class FlightWatchController extends Controller
 
     }
 
-    private function createEditForm(Flightwatch $entity)
+    private function createEditForm(Flightwatch $entity, Request $request)
     {
 
-        $form = $this->createForm(new FlightWatchType(), $entity, array(
+        $form = $this->createForm(new FlightWatchType($request), $entity, array(
             'action' => $this->generateUrl('fw_update', array(
                 'id' => $entity->getId())),
             'method' => 'PUT'

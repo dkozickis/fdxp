@@ -4,9 +4,17 @@ namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class FlightWatchType extends AbstractType
 {
+    protected $request;
+
+    public function __construct(Request $request){
+
+        $this->request = $request;
+
+    }
 
     /**
      * @param FormBuilderInterface $builder
@@ -40,7 +48,12 @@ class FlightWatchType extends AbstractType
                 'format' => 'dd-MMM-yyyy HH:mm'
                 //'date_format' => 'yyyy-MMM-dd',
             ))
+            ->add('ref', 'hidden', array(
+                'mapped' => false,
+                'data' => $this->request->headers->get('referer')
+            ))
         ;
+
     }
 
     /**
