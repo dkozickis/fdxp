@@ -5,7 +5,6 @@
 {% endblock %}
 {% block body %}
 
-    {# {{ dump(flights) }} #}
     <div class="row">
         <div class="col-md-6">
             <nav>
@@ -88,7 +87,7 @@
                                         {{ flight.takeOffTime ? info.eto_time|date('d/H:i')~'Z' : '+'~info.eto|date('H:i') }}
                                         {{ info.ebo ? info.ebo~'T' : '' }}
                                         <a href="#wxModal" data-toggle="modal" data-airports="{{ info.id }}">
-                                            {{ info.airportsString }}
+                                            {{ info.pointType == 'dp' ? 'DP WX' : info.airportsString  }}
                                         </a>
                                     </div>
                                     <div class="col-md-4 no-gutter text-right">

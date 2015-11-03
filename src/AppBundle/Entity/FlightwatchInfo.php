@@ -360,13 +360,14 @@ class FlightwatchInfo
         return $this;
     }
 
-    public function setDpInfo($fw, $dpInfo){
+    public function setDpInfo($fw, $dpInfo, $airports){
 
         $this->setFlight($fw);
         $this->setEto(new \DateTime($dpInfo['time']));
         $this->setPointType('dp');
         $this->setPointName($dpInfo['name']);
         $this->setEbo($dpInfo['fob']);
+        $this->setAirports($airports);
 
         return $this;
     }

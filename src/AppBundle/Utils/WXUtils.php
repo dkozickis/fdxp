@@ -19,7 +19,15 @@ class WXUtils{
             '_text'
         ));
 
-        return $metars;
+        foreach($metars as $key => $value){
+            preg_match('/[A-Z]{4}/', $value, $airportArray);
+            $metars[$airportArray[0]] = $metars[$key];
+            unset($metars[$key]);
+        }
+
+        $sortedMetars = array_merge(array_flip($airports), $metars);
+
+        return $sortedMetars;
 
     }
 
@@ -36,7 +44,15 @@ class WXUtils{
             '_text'
         ));
 
-        return $tafs;
+        foreach($tafs as $key => $value){
+            preg_match('/[A-Z]{4}/', $value, $airportArray);
+            $tafs[$airportArray[0]] = $tafs[$key];
+            unset($tafs[$key]);
+        }
+
+        $sortedTafs = array_merge(array_flip($airports), $tafs);
+
+        return $sortedTafs;
     }
 
     public function generateAirportString($airports){

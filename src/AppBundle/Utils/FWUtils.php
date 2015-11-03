@@ -29,9 +29,24 @@ class FWUtils {
         }
 
         if ($dpInfo) {
+
+            $airports = array($flightInfo['dest']);
+
+            if($flightInfo['altn'] != 'NIL'){
+                $airports[] = $flightInfo['altn'];
+            }
+
+            if(isset($erdErda['erd'])){
+                $airports[] = $erdErda['erd'];
+            }
+
+            if(isset($erdErda['erda'])){
+                $airports[] = $erdErda['erda'];
+            }
+
             $fw->setErdErda($erdErda['erd'], $erdErda['erda']);
             $fwInfo = new FlightwatchInfo();
-            $fwInfo->setDpInfo($fw, $dpInfo);
+            $fwInfo->setDpInfo($fw, $dpInfo, $airports);
             $em->persist($fwInfo);
         }
 
