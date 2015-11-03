@@ -168,11 +168,11 @@
                 modalBody.html('');
                 modalBody.append('<h4>METARs</h4>');
                 $.each(data['metars'], function (index, element) {
-                    modalBody.append('<div>' + element + '</div>');
+                    modalBody.append('<div>' + element + '</div><br/>');
                 });
                 modalBody.append('<h4>TAFs</h4>');
                 $.each(data['tafs'], function (index, element) {
-                    modalBody.append('<div>' + element + '</div>');
+                    modalBody.append('<div>' + element + '</div><br/>');
                 });
                 $('.wx-update-time').html(data['time']);
             });
