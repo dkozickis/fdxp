@@ -100,7 +100,8 @@ class FlightWatchController extends Controller
 
            return new Response(
                 $this->get('knp_snappy.pdf')->getOutputFromHtml($html,
-                    array('orientation' => 'Landscape')),
+                    array('orientation' => 'Landscape',
+                        'header-left' => 'Flight Watch')),
                 200,
                 array(
                     'Content-Type' => 'application/pdf',
