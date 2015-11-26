@@ -70,15 +70,7 @@
                                     </div>
                                     <div class="col-md-4 no-gutter text-right">
                                         {% if (info.form is defined) %}
-                                            <span class="text-right">
-                                            <button type="button"
-                                                    class="btn btn-link btn-xs finalize-point-form"
-                                                    data-form-id="{{ info.id }}">
-                                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                                                Finalize
-                                            </button>
-                                                {{ form(info.form, { 'attr' : { 'id' : 'finalize-point-form-'~info.id } } ) }}
-                                        </span>
+                                         
                                         {% elseif info.completed %}
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Finalized
                                         {% endif %}
@@ -91,7 +83,7 @@
             </table>
         </div>
     </div>
-    
+
 {% endblock %}
 {% block javascript %} {% endblock %}
 
