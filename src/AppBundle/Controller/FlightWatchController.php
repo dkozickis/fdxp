@@ -31,17 +31,20 @@ class FlightWatchController extends Controller
     }
 
     /**
-     * @Route("/view/desk/{desk}/filterDP/{dp}", name="fw_index",
-                defaults={"desk" : "all", "dp" : 0, "dpSort" : 0}, options={"expose"=true})
+     * @Route("/view/desk/{desk}/filterDP/{dp}/{print}", name="fw_index",
+                defaults={"desk" : "all", "dp" : 0, "dpSort" : 0, "print" : "no"}, options={"expose"=true})
      * @Route("/view/")
      * @Route("/view")
      * @Method("GET")
      * @Template()
      **/
-    public function indexAction($desk = 'all', $dp = '0', $dpSort = '0')
+    public function indexAction($desk = 'all', $dp = '0', $print = null)
     {
 
-        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfo($desk, $dp);
+        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfo(
+            $desk,
+            $dp
+        );
 
         $OFPForm = $this->createOFPForm($desk);
 
@@ -71,7 +74,8 @@ class FlightWatchController extends Controller
                     if ($info['completed']) {
                         $flights[$fKey]['info'][$key]['eto_info'] = 'success';
                     } else {
-                        $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView();
+                        $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView(
+                        );
                     }
 
                 }
@@ -83,12 +87,38 @@ class FlightWatchController extends Controller
 
         }
 
+        if ($print === "print") {
+
+            $html = $this->renderView('AppBundle:FlightWatch:index_print.html.twig',
+                array(
+                    'flights' => $flights,
+                    'form' => $OFPForm->createView(),
+                    'desk' => $desk,
+                    'dp' => $dp
+                )
+            );
+
+           return new Response(
+                $this->get('knp_snappy.pdf')->getOutputFromHtml($html,
+                    array('orientation' => 'Landscape')),
+                200,
+                array(
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'attachment; filename="Flightwatch_Desk_'.$desk.'_'.date("d_m_Y_Hi\\Z").'.pdf"'
+                )
+            );
+
+
+        } else {
+
+
         return array(
             'flights' => $flights,
             'form' => $OFPForm->createView(),
             'desk' => $desk,
             'dp' => $dp
         );
+    }
 
     }
 

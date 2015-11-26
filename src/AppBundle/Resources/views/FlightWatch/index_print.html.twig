@@ -1,0 +1,99 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block title %}
+    <title>FDXP - Flight Watch</title>
+{% endblock %}
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        body {
+            padding-top: 5px;
+        }
+    </style>
+{% endblock %}
+{% block navigation %}{% endblock %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>No.</th>
+                    <th>Dep-Dest</th>
+                    <th>STD</th>
+                    <th>T/O</th>
+                    <th>ALTN</th>
+                    <th>ERD</th>
+                    <th>ERDA</th>
+                    <th>FW Info</th>
+                </tr>
+                </thead>
+                {% for flight in flights %}
+                    <tr>
+                        <td>
+                            {{ flight.flightDate|date('dM')|upper }}
+                        </td>
+                        <td>
+                            {{ flight.flightNumber }}
+                        </td>
+                        <td>
+                            {{ flight.dep }}-{{ flight.dest }}
+                        </td>
+                        <td>
+                            {{ flight.std|date('H:i') }}Z
+                        </td>
+                        <td>
+                            {{ flight.takeOffTime ? flight.takeOffTime|date('d/H:i')~'Z' : 'N/A' }}
+                        </td>
+                        <td>
+                            {{ flight.altn }}
+                        </td>
+                        <td>
+                            {{ flight.erd ? flight.erd : 'N/A' }}
+                        </td>
+                        <td>
+                            {{ flight.erda ? flight.erda : 'N/A' }}
+                        </td>
+                        <td>
+                            {% for info in flight.info %}
+                                <div class="row bg-{{ info.eto_info }} eto fw-row">
+                                    <div class="col-md-8 no-gutter ">
+                                        {{ info.pointName }}
+                                        {{ flight.takeOffTime ? info.eto_time|date('d/H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                        {{ info.ebo ? info.ebo~'T' : '' }}
+                                        <a href="#wxModal" data-toggle="modal" data-airports="{{ info.id }}">
+                                            {{ info.pointType == 'dp' ? 'DP WX' : info.airportsString  }}
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4 no-gutter text-right">
+                                        {% if (info.form is defined) %}
+                                            <span class="text-right">
+                                            <button type="button"
+                                                    class="btn btn-link btn-xs finalize-point-form"
+                                                    data-form-id="{{ info.id }}">
+                                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                                                Finalize
+                                            </button>
+                                                {{ form(info.form, { 'attr' : { 'id' : 'finalize-point-form-'~info.id } } ) }}
+                                        </span>
+                                        {% elseif info.completed %}
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Finalized
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    
+{% endblock %}
+{% block javascript %} {% endblock %}
+
+
+

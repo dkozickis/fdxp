@@ -6,7 +6,7 @@
 {% block body %}
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <nav>
                 <ul class="pagination no-margin">
                     <li>
@@ -27,6 +27,11 @@
             <span>
                 Only flights with DP (sorting by DP time):
                 <input type="checkbox" data-size="small" name="my-checkbox"{{ dp ? " checked" }}>
+            </span>
+        </div>
+        <div class="col-md-2">
+            <span>
+                <a href="{{ path('fw_index', {'desk' : desk, 'dp' : dp, 'print' : 'print'}) }}"> Save as PDF </a>
             </span>
         </div>
     </div>
