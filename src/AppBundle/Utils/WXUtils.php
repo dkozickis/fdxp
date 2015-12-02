@@ -50,9 +50,7 @@ class WXUtils{
             $tafs[$airportArray[0]] = preg_replace('/(BECMG)|((PROB30|PROB40)(\sTEMPO)?)|(TEMPO)|(FM)/','<br/>$0', $value);
             unset($tafs[$key]);
         }
-
-        dump($tafs);
-
+        
         $sortedTafs = array_merge(array_flip($airports), $tafs);
 
         return $sortedTafs;
