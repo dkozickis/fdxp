@@ -403,6 +403,7 @@ class FlightWatchController extends Controller
 
         }
 
+
         $response = new Response();
         $response->setContent(json_encode($wxInfo));
         $response->headers->set('Content-Type', 'application/json');
