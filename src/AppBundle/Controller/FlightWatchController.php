@@ -262,7 +262,6 @@ class FlightWatchController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
-        $desk = $entity->getDesk();
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
