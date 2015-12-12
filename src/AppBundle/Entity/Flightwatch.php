@@ -46,6 +46,45 @@ class Flightwatch
      */
     private $info;
 
+    private $form;
+    private $deleteForm;
+    /**
+     * @var \DateTime
+     */
+    private $std;
+    /**
+     * @var string
+     */
+    private $altn;
+    /**
+     * @var string
+     */
+    private $erd;
+    /**
+     * @var string
+     */
+    private $erda;
+    /**
+     * @var boolean
+     */
+    private $completed;
+    /**
+     * @var \DateTime
+     */
+    private $completed_at;
+    /**
+     * @var string
+     */
+    private $completed_by;
+    /**
+     * @var integer
+     */
+    private $desk;
+    /**
+     * @var \DateTime
+     */
+    private $dpTime;
+
     /**
      * Constructor
      */
@@ -55,13 +94,55 @@ class Flightwatch
     }
 
     /**
+     * @return mixed
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param mixed $form
+     */
+    public function setForm($form)
+    {
+        $this->form = $form;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeleteForm()
+    {
+        return $this->deleteForm;
+    }
+
+    /**
+     * @param mixed $deleteForm
+     */
+    public function setDeleteForm($deleteForm)
+    {
+        $this->deleteForm = $deleteForm;
+    }
+
+    /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get flightNumber
+     *
+     * @return string
+     */
+    public function getFlightNumber()
+    {
+        return $this->flightNumber;
     }
 
     /**
@@ -78,13 +159,13 @@ class Flightwatch
     }
 
     /**
-     * Get flightNumber
+     * Get dep
      *
-     * @return string 
+     * @return string
      */
-    public function getFlightNumber()
+    public function getDep()
     {
-        return $this->flightNumber;
+        return $this->dep;
     }
 
     /**
@@ -101,13 +182,13 @@ class Flightwatch
     }
 
     /**
-     * Get dep
+     * Get dest
      *
-     * @return string 
+     * @return string
      */
-    public function getDep()
+    public function getDest()
     {
-        return $this->dep;
+        return $this->dest;
     }
 
     /**
@@ -124,13 +205,13 @@ class Flightwatch
     }
 
     /**
-     * Get dest
+     * Get flightDate
      *
-     * @return string 
+     * @return \DateTime
      */
-    public function getDest()
+    public function getFlightDate()
     {
-        return $this->dest;
+        return $this->flightDate;
     }
 
     /**
@@ -147,13 +228,13 @@ class Flightwatch
     }
 
     /**
-     * Get flightDate
+     * Get takeOffTime
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getFlightDate()
+    public function getTakeOffTime()
     {
-        return $this->flightDate;
+        return $this->takeOffTime;
     }
 
     /**
@@ -167,16 +248,6 @@ class Flightwatch
         $this->takeOffTime = $takeOffTime;
 
         return $this;
-    }
-
-    /**
-     * Get takeOffTime
-     *
-     * @return \DateTime 
-     */
-    public function getTakeOffTime()
-    {
-        return $this->takeOffTime;
     }
 
     /**
@@ -205,17 +276,22 @@ class Flightwatch
     /**
      * Get info
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getInfo()
     {
         return $this->info;
     }
-    /**
-     * @var \DateTime
-     */
-    private $std;
 
+    /**
+     * Get std
+     *
+     * @return \DateTime
+     */
+    public function getStd()
+    {
+        return $this->std;
+    }
 
     /**
      * Set std
@@ -231,29 +307,14 @@ class Flightwatch
     }
 
     /**
-     * Get std
+     * Get altn
      *
-     * @return \DateTime 
+     * @return string
      */
-    public function getStd()
+    public function getAltn()
     {
-        return $this->std;
+        return $this->altn;
     }
-    /**
-     * @var string
-     */
-    private $altn;
-
-    /**
-     * @var string
-     */
-    private $erd;
-
-    /**
-     * @var string
-     */
-    private $erda;
-
 
     /**
      * Set altn
@@ -269,13 +330,13 @@ class Flightwatch
     }
 
     /**
-     * Get altn
+     * Get erd
      *
-     * @return string 
+     * @return string
      */
-    public function getAltn()
+    public function getErd()
     {
-        return $this->altn;
+        return $this->erd;
     }
 
     /**
@@ -292,13 +353,13 @@ class Flightwatch
     }
 
     /**
-     * Get erd
+     * Get erda
      *
-     * @return string 
+     * @return string
      */
-    public function getErd()
+    public function getErda()
     {
-        return $this->erd;
+        return $this->erda;
     }
 
     /**
@@ -315,19 +376,14 @@ class Flightwatch
     }
 
     /**
-     * Get erda
+     * Get completed
      *
-     * @return string 
+     * @return boolean
      */
-    public function getErda()
+    public function getCompleted()
     {
-        return $this->erda;
+        return $this->completed;
     }
-    /**
-     * @var boolean
-     */
-    private $completed;
-
 
     /**
      * Set completed
@@ -343,24 +399,14 @@ class Flightwatch
     }
 
     /**
-     * Get completed
+     * Get completed_at
      *
-     * @return boolean 
+     * @return \DateTime
      */
-    public function getCompleted()
+    public function getCompletedAt()
     {
-        return $this->completed;
+        return $this->completed_at;
     }
-    /**
-     * @var \DateTime
-     */
-    private $completed_at;
-
-    /**
-     * @var string
-     */
-    private $completed_by;
-
 
     /**
      * Set completed_at
@@ -376,13 +422,13 @@ class Flightwatch
     }
 
     /**
-     * Get completed_at
+     * Get completed_by
      *
-     * @return \DateTime 
+     * @return string
      */
-    public function getCompletedAt()
+    public function getCompletedBy()
     {
-        return $this->completed_at;
+        return $this->completed_by;
     }
 
     /**
@@ -396,16 +442,6 @@ class Flightwatch
         $this->completed_by = $completedBy;
 
         return $this;
-    }
-
-    /**
-     * Get completed_by
-     *
-     * @return string 
-     */
-    public function getCompletedBy()
-    {
-        return $this->completed_by;
     }
 
     public function setMainData($flightInfo, $desk){
@@ -431,10 +467,14 @@ class Flightwatch
     }
 
     /**
-     * @var integer
+     * Get desk
+     *
+     * @return integer 
      */
-    private $desk;
-
+    public function getDesk()
+    {
+        return $this->desk;
+    }
 
     /**
      * Set desk
@@ -450,19 +490,14 @@ class Flightwatch
     }
 
     /**
-     * Get desk
+     * Get dpTime
      *
-     * @return integer 
+     * @return \DateTime
      */
-    public function getDesk()
+    public function getDpTime()
     {
-        return $this->desk;
+        return $this->dpTime;
     }
-    /**
-     * @var \DateTime
-     */
-    private $dpTime;
-
 
     /**
      * Set dpTime
@@ -475,15 +510,5 @@ class Flightwatch
         $this->dpTime = $dpTime;
 
         return $this;
-    }
-
-    /**
-     * Get dpTime
-     *
-     * @return \DateTime 
-     */
-    public function getDpTime()
-    {
-        return $this->dpTime;
     }
 }

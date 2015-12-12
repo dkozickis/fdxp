@@ -22,31 +22,206 @@ class FlightWatchController extends Controller
 {
 
     /**
-     * @Route("/")
-     */
-    public function oldIndexAction(){
-
-        return $this->redirectToRoute('fw_index');
-
-    }
-
-    /**
      * @Route("/view/desk/{desk}/filterDP/{dp}/{print}", name="fw_index",
-                defaults={"desk" : "all", "dp" : 0, "dpSort" : 0, "print" : "no"}, options={"expose"=true})
+    defaults={"desk" : "all", "dp" : 0, "dpSort" : 0, "print" : "no"}, options={"expose"=true})
      * @Route("/view/")
      * @Route("/view")
+     * @Route("/")
      * @Method("GET")
      * @Template()
-     **/
+     *
+     */
     public function indexAction($desk = 'all', $dp = '0', $print = null)
     {
 
-        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfo(
+        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfoObject(
             $desk,
             $dp
         );
 
         $OFPForm = $this->createOFPForm($desk);
+
+        /** @var Flightwatch $flight */
+        foreach ($flights as $flight) {
+
+            /** @var FlightwatchInfo $flightInfo */
+            foreach ($flight->getInfo() as $flightInfo) {
+
+                $flightInfo->setAirportsString(
+                    $this->get('app.wx_utils')->generateAirportString($flightInfo->getAirports())
+                );
+
+                if ($flight->getTakeOffTime() !== null) {
+
+                    $takeOffTime = \DateTimeImmutable::createFromMutable($flight->getTakeOffTime());
+                    $addInterval = new \DateInterval('P0000-00-00T'.$flightInfo->getEto()->format('H:i:s'));
+
+                    $etoTime = $takeOffTime->add($addInterval);
+                    $flightInfo->setEtoTime($etoTime);
+
+                    if ($flightInfo->getCompleted() !== null) {
+                        $flightInfo->setEtoInfo('success');
+                    } else {
+                        $interval = ($etoTime->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
+                        $flightInfo->setEtoInfo($this->get('app.fw_utils')->dangerOrWarning($interval));
+                        $flightInfo->setForm($this->createFinalizePointForm($flightInfo->getId())->createView());
+                    }
+
+                }
+
+            }
+
+            $flight->setForm($this->createFinalizeFlightForm($flight->getId())->createView());
+            $flight->setDeleteForm($this->createDeleteFlightForm($flight->getId())->createView());
+
+        }
+
+        if ($print === "print") {
+
+            $html = $this->renderView(
+                'AppBundle:FlightWatch:index_print.html.twig',
+                array(
+                    'flights' => $flights,
+                    'form' => $OFPForm->createView(),
+                    'desk' => $desk,
+                    'dp' => $dp
+                )
+            );
+
+            return new Response(
+                $this->get('knp_snappy.pdf')->getOutputFromHtml(
+                    $html,
+                    array('orientation' => 'Landscape')
+                ),
+                200,
+                array(
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'attachment; filename="Flightwatch_Desk_'.$desk.'_'.date(
+                            "d_m_Y_Hi\\Z"
+                        ).'.pdf"'
+                )
+            );
+
+
+        } else {
+
+
+            return array(
+                'flights' => $flights,
+                'form' => $OFPForm->createView(),
+                'desk' => $desk,
+                'dp' => $dp
+            );
+        }
+
+    }
+
+    private function createOFPForm($desk)
+    {
+        return $this->createFormBuilder(array('ofp' => 'Copy OFP text here'))
+            ->setAction($this->generateUrl('fw_insert_ofp'))
+            ->add(
+                'ofp',
+                'textarea',
+                array(
+                    'label' => 'OFP'
+                )
+            )
+            ->add(
+                'desk',
+                'hidden',
+                array(
+                    'data' => $desk
+                )
+            )
+            ->add('Parse', 'submit')
+            ->getForm();
+    }
+
+    private function createFinalizePointForm($id)
+    {
+        return $this->createFormBuilder()
+            ->setAction(
+                $this->generateUrl(
+                    'fw_finalize_point',
+                    array(
+                        'id' => $id
+                    )
+                )
+            )
+            ->getForm();
+    }
+
+    private function createFinalizeFlightForm($id)
+    {
+
+        return $this->createFormBuilder()
+            ->setAction(
+                $this->generateUrl(
+                    'fw_finalize_flight',
+                    array(
+                        'id' => $id
+                    )
+                )
+            )
+            ->getForm();
+    }
+
+    private function createDeleteFlightForm($id)
+    {
+
+        return $this->createFormBuilder(
+            null,
+            array(
+                'attr' => array('id' => 'delete-flight-form-'.$id,
+                    'class' => 'delete-flight-form')
+            )
+        )
+            ->setAction(
+                $this->generateUrl(
+                    'fw_delete_flight',
+                    array(
+                        'id' => $id
+                    )
+                )
+            )
+            ->add(
+                'button',
+                'button',
+                array(
+                    'label' => ' ',
+                    'button_class' => 'default',
+                    'attr' => array(
+                        'class' => 'btn-lg btn-block',
+                        'icon' => 'remove'
+                    )
+                )
+            )
+            ->getForm();
+    }
+
+    /**
+     * @Route("/archive", name="fw_archive_select")
+     * @Method("GET")
+     */
+    public function archiveSelectAction()
+    {
+
+        return $this->render('AppBundle:FlightWatch:archive.html.twig');
+
+    }
+
+    /**
+     * @Route("/archive/view/{date}", name="fw_archive_view", options={"expose"=true})
+     * @Method("GET")
+     */
+    public function archiveViewAction($date)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $date = new \DateTime($date);
+
+        $flights = $em->getRepository('AppBundle:Flightwatch')->findCompletedByDate($date);
 
         foreach ($flights as $fKey => $flight) {
 
@@ -83,105 +258,12 @@ class FlightWatchController extends Controller
             }
 
             $flights[$fKey]['form'] = $this->createFinalizeFlightForm($flight['id'])->createView();
-            $flights[$fKey]['delete_form'] = $this->createDeleteFlightForm($flight['id'])->createView();
-
-        }
-
-        if ($print === "print") {
-
-            $html = $this->renderView('AppBundle:FlightWatch:index_print.html.twig',
-                array(
-                    'flights' => $flights,
-                    'form' => $OFPForm->createView(),
-                    'desk' => $desk,
-                    'dp' => $dp
-                )
-            );
-
-           return new Response(
-                $this->get('knp_snappy.pdf')->getOutputFromHtml($html,
-                    array('orientation' => 'Landscape')),
-                200,
-                array(
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'attachment; filename="Flightwatch_Desk_'.$desk.'_'.date("d_m_Y_Hi\\Z").'.pdf"'
-                )
-            );
-
-
-        } else {
-
-
-        return array(
-            'flights' => $flights,
-            'form' => $OFPForm->createView(),
-            'desk' => $desk,
-            'dp' => $dp
-        );
-    }
-
-    }
-
-    /**
-     * @Route("/archive", name="fw_archive_select")
-     * @Method("GET")
-     */
-    public function archiveSelectAction() {
-
-        return $this->render('AppBundle:FlightWatch:archive.html.twig');
-
-    }
-
-    /**
-     * @Route("/archive/view/{date}", name="fw_archive_view", options={"expose"=true})
-     * @Method("GET")
-     */
-    public function archiveViewAction($date) {
-
-        $em = $this->getDoctrine()->getManager();
-        $date = new \DateTime($date);
-
-        $flights = $em->getRepository('AppBundle:Flightwatch')->findCompletedByDate($date);
-
-        foreach ($flights as $fKey => $flight) {
-
-            foreach ($flight['info'] as $key => $info) {
-
-                $flights[$fKey]['info'][$key]['eto_info'] = 'info';
-                $flights[$fKey]['info'][$key]['airportsString'] = '';
-
-                if ($info['airports']) {
-                    $flights[$fKey]['info'][$key]['airportsString'] =
-                        $this->get('app.wx_utils')->generateAirportString($info['airports']);
-                }
-
-                if (isset($flight['takeOffTime'])) {
-                    $takeOffTime = clone $flight['takeOffTime'];
-                    $addInterval = new \DateInterval('P0000-00-00T'.$info['eto']->format('H:i:s'));
-
-                    $eto_time = $takeOffTime->add($addInterval);
-                    $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
-
-                    $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
-
-                    $flights[$fKey]['info'][$key]['eto_info'] = $this->get('app.fw_utils')->dangerOrWarning($interval);
-
-                    if ($info['completed']) {
-                        $flights[$fKey]['info'][$key]['eto_info'] = 'success';
-                    } else {
-                        $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView();
-                    }
-
-                }
-
-            }
-
-            $flights[$fKey]['form'] = $this->createFinalizeFlightForm($flight['id'])->createView();
 
         }
 
 
-        return $this->render('AppBundle:FlightWatch:archive.html.twig',
+        return $this->render(
+            'AppBundle:FlightWatch:archive.html.twig',
             array(
                 'flights' => $flights,
                 'date' => $date
@@ -218,6 +300,7 @@ class FlightWatchController extends Controller
         } else {
 
             $flash->alert('Something wrong with the form.');
+
             return $this->redirect($this->get('request')->headers->get('referer'));
 
         }
@@ -248,6 +331,40 @@ class FlightWatchController extends Controller
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
         );
+    }
+
+    private function createEditForm(Flightwatch $entity, Request $request)
+    {
+
+        $form = $this->createForm(
+            new FlightWatchType($request),
+            $entity,
+            array(
+                'action' => $this->generateUrl(
+                    'fw_update',
+                    array(
+                        'id' => $entity->getId()
+                    )
+                ),
+                'method' => 'PUT'
+            )
+        );
+
+        $form->add('actions', 'form_actions');
+
+        $form->get('actions')->add('submit', 'submit', array('label' => 'Update'));
+        $form->get('actions')->add(
+            'backToList',
+            'button',
+            array(
+                'as_link' => true,
+                'attr' => array(
+                    'href' => $this->generateUrl('fw_index'),
+                ),
+            )
+        );
+
+        return $form;
     }
 
     /**
@@ -297,6 +414,7 @@ class FlightWatchController extends Controller
 
         if (!$entity) {
             $flash->alert('Flight was not finalized');
+
             return $this->redirect($this->get('request')->headers->get('referer'));
         }
 
@@ -308,6 +426,7 @@ class FlightWatchController extends Controller
         $em->flush();
 
         $flash->success('Flight finalized');
+
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
@@ -326,6 +445,7 @@ class FlightWatchController extends Controller
 
         if (!$entity) {
             $flash->alert('Flight was NOT deleted');
+
             return $this->redirect($this->get('request')->headers->get('referer'));
         }
 
@@ -333,6 +453,7 @@ class FlightWatchController extends Controller
         $em->flush();
 
         $flash->success('Flight DELETED');
+
         return $this->redirect($this->get('request')->headers->get('referer'));
     }
 
@@ -354,6 +475,7 @@ class FlightWatchController extends Controller
 
         if (!$entity) {
             $flash->alert('Point was not finalized');
+
             return $this->redirect($this->get('request')->headers->get('referer'));
         }
 
@@ -365,11 +487,10 @@ class FlightWatchController extends Controller
         $em->flush();
 
         $flash->success('Point finalized');
+
         return $this->redirect($this->get('request')->headers->get('referer'));
 
     }
-
-
 
     /**
      * @Route("/wx/{id}/{force}", name="fw_wx", defaults={"force": 0}, options={"expose"=true})
@@ -410,71 +531,6 @@ class FlightWatchController extends Controller
 
         return $response;
 
-    }
-
-    private function createEditForm(Flightwatch $entity, Request $request)
-    {
-
-        $form = $this->createForm(new FlightWatchType($request), $entity, array(
-            'action' => $this->generateUrl('fw_update', array(
-                'id' => $entity->getId())),
-            'method' => 'PUT'
-        ));
-
-        $form->add('actions', 'form_actions');
-
-        $form->get('actions')->add('submit', 'submit', array('label' => 'Update'));
-        $form->get('actions')->add('backToList', 'button', array(
-                'as_link' => true, 'attr' => array(
-                    'href' => $this->generateUrl('fw_index'),
-                ),
-            )
-        );
-
-        return $form;
-    }
-
-    private function createOFPForm($desk)
-    {
-        return $this->createFormBuilder(array('ofp' => 'Copy OFP text here'))
-            ->setAction($this->generateUrl('fw_insert_ofp'))
-            ->add('ofp', 'textarea', array(
-                'label' => 'OFP'
-            ))
-            ->add('desk', 'hidden', array(
-                'data' => $desk
-            ))
-            ->add('Parse', 'submit')
-            ->getForm();
-    }
-
-    private function createFinalizeFlightForm($id)
-    {
-
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('fw_finalize_flight', array(
-                'id' => $id
-            )))
-            ->getForm();
-    }
-
-    private function createDeleteFlightForm($id)
-    {
-
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('fw_delete_flight', array(
-                'id' => $id
-            )))
-            ->getForm();
-    }
-
-    private function createFinalizePointForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('fw_finalize_point', array(
-                'id' => $id
-            )))
-            ->getForm();
     }
 
 }

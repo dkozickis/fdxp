@@ -86,17 +86,17 @@
                         </td>
                         <td>
                             {% for info in flight.info %}
-                                <div class="row bg-{{ info.eto_info }} eto fw-row">
+                                <div class="row bg-{{ info.etoInfo }} eto fw-row">
                                     <div class="col-md-8 no-gutter ">
                                         {{ info.pointName }}
-                                        {{ flight.takeOffTime ? info.eto_time|date('d/H:i')~'Z' : '+'~info.eto|date('H:i') }}
+                                        {{ flight.takeOffTime ? info.etoTime|date('d/H:i')~'Z' : '+'~info.eto|date('H:i') }}
                                         {{ info.ebo ? info.ebo~'T' : '' }}
                                         <a href="#wxModal" data-toggle="modal" data-airports="{{ info.id }}">
                                             {{ info.pointType == 'dp' ? 'DP WX' : info.airportsString  }}
                                         </a>
                                     </div>
                                     <div class="col-md-4 no-gutter text-right">
-                                        {% if (info.form is defined) %}
+                                        {% if (info.form is not null) %}
                                             <span class="text-right">
                                             <button type="button"
                                                     class="btn btn-link btn-xs finalize-point-form"
@@ -114,11 +114,7 @@
                             {% endfor %}
                         </td>
                         <td>
-                            <button type="button" class="btn btn-default btn-lg btn-block delete-flight-form"
-                                    data-form-id="{{ flight.id }}">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </button>
-                            {{ form(flight.delete_form, { 'attr' : { 'id' : 'delete-form-'~flight.id } }) }}
+                            {{ form(flight.deleteForm) }}
                         </td>
                         <td>
                             <button type="button" class="btn btn-default btn-lg btn-block finalize-flight-form"
@@ -195,22 +191,25 @@
         $('.finalize-flight-form').on('click', function (e) {
             e.preventDefault();
             var formID = $(this).attr('data-form-id');
-            $('.finalize-modal-text').text('Do you really want to finalize this flight?');
+            $('.finalize-modal-text').text('Do you really want to FINALIZE this flight?');
             $('#modal-finalize').modal({backdrop: true, keyboard: true})
                     .one('click', '#modal-delete-button', function (e) {
                         $('#finalize-form-' + formID).trigger('submit');
                     });
         });
+
         $('.delete-flight-form').on('click', function (e) {
             e.preventDefault();
-            var formID = $(this).attr('data-form-id');
+            form = $(this);
             $('.finalize-modal-text').text('Do you really want to DELETE this flight?');
             $('#modal-delete').modal({backdrop: true, keyboard: true})
                     .one('click', '#modal-delete-button', function (e) {
-                        $('#delete-form-' + formID).trigger('submit');
+                        form.submit();
                     });
         });
+
         $('.finalize-point-form').on('click', function (e) {
+            console.log('FIN POINT FORM')
             e.preventDefault();
             var formID = $(this).attr('data-form-id');
             $('.finalize-modal-text').text('Do you really want to finalize this point?');

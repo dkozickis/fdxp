@@ -58,10 +58,7 @@ class WXUtils{
 
     public function generateAirportString($airports){
 
-        $airportString = '';
-        foreach ($airports as $airport) {
-            $airportString .= $airport." ";
-        }
+        $airportString = implode(" ", $airports);
 
         return $airportString;
     }

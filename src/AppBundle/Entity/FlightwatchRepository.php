@@ -58,6 +58,50 @@ class FlightwatchRepository extends EntityRepository
 
     }
 
+    public function findByDeskWithInfoObject($desk, $dp = NULL) {
+
+        $qb = $this->createQueryBuilder('f');
+
+        $qb
+            ->addSelect('i')
+            ->join('f.info', 'i')
+            ->where('f.completed is null')
+            ->andWhere('i.pointName not like :pointName')
+            ->setParameter('pointName', 'EXP%');
+
+        if($desk != 'all'){
+            $qb
+                ->andWhere('f.desk = :desk')
+                ->setParameter('desk', $desk);
+        }
+
+        if($dp){
+            $qb
+                ->andWhere('f.erd IS NOT NULL');
+        }
+
+        if($dp){
+            $qb
+                ->addOrderBy('f.dpTime', 'ASC');
+        }
+
+        $qb
+            ->addOrderBy('f.flightDate', 'ASC')
+            ->addOrderBy('f.std', 'ASC');
+
+
+
+        return $qb
+            ->getQuery()
+            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'AppBundle\Doctrine\Walker\SortableNullsWalker')
+            ->setHint('SortableNullsWalker.fields', array(
+                'dpTime' => SortableNullsWalker::NULLS_LAST
+            ))
+            ->getResult();
+
+    }
+
     public function findAllWithInfo() {
 
         return $this->createQueryBuilder('f')
@@ -85,6 +129,22 @@ class FlightwatchRepository extends EntityRepository
             ->setParameter('date', $date)
             ->getQuery()
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
+            ->getArrayResult();
+
+    }
+
+    public function findComingUpDP(){
+
+        return $this->createQueryBuilder('f')
+            ->addSelect('i')
+            ->join('f.info', 'i')
+            ->where('f.takeOffTime IS NOT NULL')
+            ->andWhere('f.completed is NULL')
+            ->andWhere('i.pointType = :pointType')
+            ->setParameter('pointType', 'dp')
+            ->andWhere('i.eto > :time')
+            ->setParameter('time', date("Y-m-d H:i:s"))
+            ->getQuery()
             ->getArrayResult();
 
     }

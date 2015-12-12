@@ -59,15 +59,110 @@ class FlightwatchInfo
      */
     private $flight;
 
+    /**
+     * @var string
+     */
+    private $etoInfo = 'info';
+
+    /** @var  \DateTimeImmutable */
+    private $etoTime;
+
+    private $form;
+    /**
+     * @var string
+     */
+    private $airportsString;
+    /**
+     * @var array
+     */
+    private $wxInfo;
+    /**
+     * @var \DateTime
+     */
+    private $wxTime;
+
+    /**
+     * @return mixed
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param mixed $form
+     */
+    public function setForm($form)
+    {
+        $this->form = $form;
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getEtoTime()
+    {
+        return $this->etoTime;
+    }
+
+    /**
+     * @param \DateTimeImmutable $etoTime
+     */
+    public function setEtoTime($etoTime)
+    {
+        $this->etoTime = $etoTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAirportsString()
+    {
+        return $this->airportsString;
+    }
+
+    /**
+     * @param string $airportsString
+     */
+    public function setAirportsString($airportsString)
+    {
+        $this->airportsString = $airportsString;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEtoInfo()
+    {
+        return $this->etoInfo;
+    }
+
+    /**
+     * @param string $etoInfo
+     */
+    public function setEtoInfo($etoInfo)
+    {
+        $this->etoInfo = $etoInfo;
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get pointType
+     *
+     * @return string
+     */
+    public function getPointType()
+    {
+        return $this->pointType;
     }
 
     /**
@@ -84,13 +179,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get pointType
+     * Get pointName
      *
-     * @return string 
+     * @return string
      */
-    public function getPointType()
+    public function getPointName()
     {
-        return $this->pointType;
+        return $this->pointName;
     }
 
     /**
@@ -107,13 +202,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get pointName
+     * Get eto
      *
-     * @return string 
+     * @return \DateTime
      */
-    public function getPointName()
+    public function getEto()
     {
-        return $this->pointName;
+        return $this->eto;
     }
 
     /**
@@ -130,13 +225,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get eto
+     * Get ebo
      *
-     * @return \DateTime 
+     * @return float
      */
-    public function getEto()
+    public function getEbo()
     {
-        return $this->eto;
+        return $this->ebo;
     }
 
     /**
@@ -153,13 +248,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get ebo
+     * Get airports
      *
-     * @return float 
+     * @return array
      */
-    public function getEbo()
+    public function getAirports()
     {
-        return $this->ebo;
+        return $this->airports;
     }
 
     /**
@@ -176,13 +271,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get airports
+     * Get completed
      *
-     * @return array 
+     * @return boolean
      */
-    public function getAirports()
+    public function getCompleted()
     {
-        return $this->airports;
+        return $this->completed;
     }
 
     /**
@@ -199,13 +294,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get completed
+     * Get completed_at
      *
-     * @return boolean 
+     * @return \DateTime
      */
-    public function getCompleted()
+    public function getCompletedAt()
     {
-        return $this->completed;
+        return $this->completed_at;
     }
 
     /**
@@ -222,13 +317,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get completed_at
+     * Get completed_by
      *
-     * @return \DateTime 
+     * @return string
      */
-    public function getCompletedAt()
+    public function getCompletedBy()
     {
-        return $this->completed_at;
+        return $this->completed_by;
     }
 
     /**
@@ -245,13 +340,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get completed_by
+     * Get flight
      *
-     * @return string 
+     * @return Flightwatch
      */
-    public function getCompletedBy()
+    public function getFlight()
     {
-        return $this->completed_by;
+        return $this->flight;
     }
 
     /**
@@ -268,24 +363,14 @@ class FlightwatchInfo
     }
 
     /**
-     * Get flight
+     * Get wxInfo
      *
-     * @return Flightwatch
+     * @return array
      */
-    public function getFlight()
+    public function getWxInfo()
     {
-        return $this->flight;
+        return $this->wxInfo;
     }
-    /**
-     * @var array
-     */
-    private $wxInfo;
-
-    /**
-     * @var \DateTime
-     */
-    private $wxTime;
-
 
     /**
      * Set wxInfo
@@ -301,13 +386,13 @@ class FlightwatchInfo
     }
 
     /**
-     * Get wxInfo
+     * Get wxTime
      *
-     * @return array 
+     * @return \DateTime
      */
-    public function getWxInfo()
+    public function getWxTime()
     {
-        return $this->wxInfo;
+        return $this->wxTime;
     }
 
     /**
@@ -323,24 +408,13 @@ class FlightwatchInfo
         return $this;
     }
 
-
-    /**
-     * Get wxTime
-     *
-     * @return \DateTime 
-     */
-    public function getWxTime()
-    {
-        return $this->wxTime;
-    }
-
-
     /**
      * @param $wxInfo
      * @param $wxTime
      * @return FlightwatchInfo
      */
-    public function setWxInfoAndTime($wxInfo, $wxTime){
+    public function setWxInfoAndTime($wxInfo, $wxTime)
+    {
 
         $this->wxTime = $wxTime;
         $this->wxInfo = $wxInfo;
@@ -349,7 +423,8 @@ class FlightwatchInfo
     }
 
 
-    public function setPointInfo($fw, $info){
+    public function setPointInfo($fw, $info)
+    {
 
         $this->setFlight($fw);
         $this->setEto(new \DateTime($info['time']));
@@ -360,7 +435,8 @@ class FlightwatchInfo
         return $this;
     }
 
-    public function setDpInfo($fw, $dpInfo, $airports){
+    public function setDpInfo($fw, $dpInfo, $airports)
+    {
 
         $this->setFlight($fw);
         $this->setEto(new \DateTime($dpInfo['time']));
