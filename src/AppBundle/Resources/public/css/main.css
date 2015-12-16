@@ -33,3 +33,7 @@ body {
 .small_datepicker{
     width: 200px;
 }
+
+.finalize-point-form .form-group{
+    margin-bottom: 0px;
+}

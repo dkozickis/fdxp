@@ -2,13 +2,13 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\FlightwatchInfo;
+use AppBundle\Entity\FlightWatchInfo;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Flightwatch
  */
-class Flightwatch
+class FlightWatch
 {
 
     /**
@@ -46,7 +46,7 @@ class Flightwatch
      */
     private $info;
 
-    private $form;
+    private $finalizeForm;
     private $deleteForm;
     /**
      * @var \DateTime
@@ -96,17 +96,17 @@ class Flightwatch
     /**
      * @return mixed
      */
-    public function getForm()
+    public function getFinalizeForm()
     {
-        return $this->form;
+        return $this->finalizeForm;
     }
 
     /**
-     * @param mixed $form
+     * @param mixed $finalizeForm
      */
-    public function setForm($form)
+    public function setFinalizeForm($finalizeForm)
     {
-        $this->form = $form;
+        $this->finalizeForm = $finalizeForm;
     }
 
     /**
@@ -149,7 +149,7 @@ class Flightwatch
      * Set flightNumber
      *
      * @param string $flightNumber
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setFlightNumber($flightNumber)
     {
@@ -172,7 +172,7 @@ class Flightwatch
      * Set dep
      *
      * @param string $dep
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setDep($dep)
     {
@@ -195,7 +195,7 @@ class Flightwatch
      * Set dest
      *
      * @param string $dest
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setDest($dest)
     {
@@ -218,7 +218,7 @@ class Flightwatch
      * Set flightDate
      *
      * @param \DateTime $flightDate
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setFlightDate($flightDate)
     {
@@ -241,7 +241,7 @@ class Flightwatch
      * Set takeOffTime
      *
      * @param \DateTime $takeOffTime
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setTakeOffTime($takeOffTime)
     {
@@ -253,10 +253,10 @@ class Flightwatch
     /**
      * Add info
      *
-     * @param FlightwatchInfo $info
-     * @return Flightwatch
+     * @param FlightWatchInfo $info
+     * @return FlightWatch
      */
-    public function addInfo(FlightwatchInfo $info)
+    public function addInfo(FlightWatchInfo $info)
     {
         $this->info[] = $info;
 
@@ -266,9 +266,9 @@ class Flightwatch
     /**
      * Remove info
      *
-     * @param FlightwatchInfo $info
+     * @param FlightWatchInfo $info
      */
-    public function removeInfo(FlightwatchInfo $info)
+    public function removeInfo(FlightWatchInfo $info)
     {
         $this->info->removeElement($info);
     }
@@ -297,7 +297,7 @@ class Flightwatch
      * Set std
      *
      * @param \DateTime $std
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setStd($std)
     {
@@ -320,7 +320,7 @@ class Flightwatch
      * Set altn
      *
      * @param string $altn
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setAltn($altn)
     {
@@ -343,7 +343,7 @@ class Flightwatch
      * Set erd
      *
      * @param string $erd
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setErd($erd)
     {
@@ -366,7 +366,7 @@ class Flightwatch
      * Set erda
      *
      * @param string $erda
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setErda($erda)
     {
@@ -389,7 +389,7 @@ class Flightwatch
      * Set completed
      *
      * @param boolean $completed
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setCompleted($completed)
     {
@@ -412,7 +412,7 @@ class Flightwatch
      * Set completed_at
      *
      * @param \DateTime $completedAt
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setCompletedAt($completedAt)
     {
@@ -435,7 +435,7 @@ class Flightwatch
      * Set completed_by
      *
      * @param string $completedBy
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setCompletedBy($completedBy)
     {
@@ -480,7 +480,7 @@ class Flightwatch
      * Set desk
      *
      * @param integer $desk
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setDesk($desk)
     {
@@ -503,7 +503,7 @@ class Flightwatch
      * Set dpTime
      *
      * @param \DateTime $dpTime
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function setDpTime($dpTime)
     {

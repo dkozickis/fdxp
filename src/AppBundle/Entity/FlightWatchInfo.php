@@ -2,12 +2,12 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Flightwatch;
+use AppBundle\Entity\FlightWatch;
 
 /**
  * FlightwatchInfo
  */
-class FlightwatchInfo
+class FlightWatchInfo
 {
     /**
      * @var integer
@@ -55,7 +55,7 @@ class FlightwatchInfo
     private $completed_by;
 
     /**
-     * @var Flightwatch
+     * @var FlightWatch
      */
     private $flight;
 
@@ -169,7 +169,7 @@ class FlightwatchInfo
      * Set pointType
      *
      * @param string $pointType
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setPointType($pointType)
     {
@@ -192,7 +192,7 @@ class FlightwatchInfo
      * Set pointName
      *
      * @param string $pointName
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setPointName($pointName)
     {
@@ -215,7 +215,7 @@ class FlightwatchInfo
      * Set eto
      *
      * @param \DateTime $eto
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setEto($eto)
     {
@@ -238,7 +238,7 @@ class FlightwatchInfo
      * Set ebo
      *
      * @param float $ebo
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setEbo($ebo)
     {
@@ -261,7 +261,7 @@ class FlightwatchInfo
      * Set airports
      *
      * @param array $airports
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setAirports($airports)
     {
@@ -284,7 +284,7 @@ class FlightwatchInfo
      * Set completed
      *
      * @param boolean $completed
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setCompleted($completed)
     {
@@ -307,7 +307,7 @@ class FlightwatchInfo
      * Set completed_at
      *
      * @param \DateTime $completedAt
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setCompletedAt($completedAt)
     {
@@ -330,7 +330,7 @@ class FlightwatchInfo
      * Set completed_by
      *
      * @param string $completedBy
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setCompletedBy($completedBy)
     {
@@ -342,7 +342,7 @@ class FlightwatchInfo
     /**
      * Get flight
      *
-     * @return Flightwatch
+     * @return FlightWatch
      */
     public function getFlight()
     {
@@ -352,10 +352,10 @@ class FlightwatchInfo
     /**
      * Set flight
      *
-     * @param Flightwatch $flight
-     * @return FlightwatchInfo
+     * @param FlightWatch $flight
+     * @return FlightWatchInfo
      */
-    public function setFlight(Flightwatch $flight = null)
+    public function setFlight(FlightWatch $flight = null)
     {
         $this->flight = $flight;
 
@@ -376,7 +376,7 @@ class FlightwatchInfo
      * Set wxInfo
      *
      * @param array $wxInfo
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setWxInfo($wxInfo)
     {
@@ -399,7 +399,7 @@ class FlightwatchInfo
      * Set wxTime
      *
      * @param \DateTime $wxTime
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setWxTime($wxTime)
     {
@@ -411,7 +411,7 @@ class FlightwatchInfo
     /**
      * @param $wxInfo
      * @param $wxTime
-     * @return FlightwatchInfo
+     * @return FlightWatchInfo
      */
     public function setWxInfoAndTime($wxInfo, $wxTime)
     {

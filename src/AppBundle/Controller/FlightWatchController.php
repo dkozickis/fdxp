@@ -3,9 +3,9 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Flightwatch;
-use AppBundle\Entity\FlightwatchInfo;
-use AppBundle\Form\Type\FlightWatchType;
+use AppBundle\Entity\FlightWatch;
+use AppBundle\Entity\FlightWatchInfo;
+use AppBundle\Form\Type\FlightWatch\FlightWatchType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -22,8 +22,8 @@ class FlightWatchController extends Controller
 {
 
     /**
-     * @Route("/view/desk/{desk}/filterDP/{dp}/{print}", name="fw_index",
-    defaults={"desk" : "all", "dp" : 0, "dpSort" : 0, "print" : "no"}, options={"expose"=true})
+     * @Route("/view/desk/{desk}/{filterDP}/{print}", name="fw_index",
+    defaults={"desk" : "all", "filterDP" : "off", "print" : "no"}, options={"expose"=true})
      * @Route("/view/")
      * @Route("/view")
      * @Route("/")
@@ -31,88 +31,33 @@ class FlightWatchController extends Controller
      * @Template()
      *
      */
-    public function indexAction($desk = 'all', $dp = '0', $print = null)
+    public function indexAction($desk = 'all', $filterDP = 'off', $print = 'no')
     {
 
-        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:Flightwatch')->findByDeskWithInfoObject(
+        $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:FlightWatch')->findByDeskWithInfo(
             $desk,
-            $dp
+            $filterDP
         );
 
-        $OFPForm = $this->createOFPForm($desk);
+        $this->get('app.fw_utils')->prepareFlightsForView($flights);
 
-        /** @var Flightwatch $flight */
-        foreach ($flights as $flight) {
-
-            /** @var FlightwatchInfo $flightInfo */
-            foreach ($flight->getInfo() as $flightInfo) {
-
-                $flightInfo->setAirportsString(
-                    $this->get('app.wx_utils')->generateAirportString($flightInfo->getAirports())
-                );
-
-                if ($flight->getTakeOffTime() !== null) {
-
-                    $takeOffTime = \DateTimeImmutable::createFromMutable($flight->getTakeOffTime());
-                    $addInterval = new \DateInterval('P0000-00-00T'.$flightInfo->getEto()->format('H:i:s'));
-
-                    $etoTime = $takeOffTime->add($addInterval);
-                    $flightInfo->setEtoTime($etoTime);
-
-                    if ($flightInfo->getCompleted() !== null) {
-                        $flightInfo->setEtoInfo('success');
-                    } else {
-                        $interval = ($etoTime->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
-                        $flightInfo->setEtoInfo($this->get('app.fw_utils')->dangerOrWarning($interval));
-                        $flightInfo->setForm($this->createFinalizePointForm($flightInfo->getId())->createView());
-                    }
-
-                }
-
-            }
-
-            $flight->setForm($this->createFinalizeFlightForm($flight->getId())->createView());
-            $flight->setDeleteForm($this->createDeleteFlightForm($flight->getId())->createView());
-
-        }
-
-        if ($print === "print") {
-
-            $html = $this->renderView(
-                'AppBundle:FlightWatch:index_print.html.twig',
-                array(
-                    'flights' => $flights,
-                    'form' => $OFPForm->createView(),
-                    'desk' => $desk,
-                    'dp' => $dp
-                )
-            );
-
-            return new Response(
-                $this->get('knp_snappy.pdf')->getOutputFromHtml(
-                    $html,
-                    array('orientation' => 'Landscape')
-                ),
-                200,
-                array(
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'attachment; filename="Flightwatch_Desk_'.$desk.'_'.date(
-                            "d_m_Y_Hi\\Z"
-                        ).'.pdf"'
-                )
-            );
-
-
-        } else {
-
-
-            return array(
+        $html = $this->renderView(
+            'AppBundle:FlightWatch:index.html.twig',
+            array(
                 'flights' => $flights,
-                'form' => $OFPForm->createView(),
+                'form' => $this->createOFPForm($desk)->createView(),
                 'desk' => $desk,
-                'dp' => $dp
-            );
-        }
+                'filterDP' => $filterDP,
+                'print' => $print
+            )
+        );
+
+        return new Response(
+            $this->get('app.fw_utils')->responseContent($html, $print),
+            200,
+            $this->get('app.fw_utils')->responseHeaders($desk, $print)
+        );
+
 
     }
 
@@ -138,68 +83,6 @@ class FlightWatchController extends Controller
             ->getForm();
     }
 
-    private function createFinalizePointForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction(
-                $this->generateUrl(
-                    'fw_finalize_point',
-                    array(
-                        'id' => $id
-                    )
-                )
-            )
-            ->getForm();
-    }
-
-    private function createFinalizeFlightForm($id)
-    {
-
-        return $this->createFormBuilder()
-            ->setAction(
-                $this->generateUrl(
-                    'fw_finalize_flight',
-                    array(
-                        'id' => $id
-                    )
-                )
-            )
-            ->getForm();
-    }
-
-    private function createDeleteFlightForm($id)
-    {
-
-        return $this->createFormBuilder(
-            null,
-            array(
-                'attr' => array('id' => 'delete-flight-form-'.$id,
-                    'class' => 'delete-flight-form')
-            )
-        )
-            ->setAction(
-                $this->generateUrl(
-                    'fw_delete_flight',
-                    array(
-                        'id' => $id
-                    )
-                )
-            )
-            ->add(
-                'button',
-                'button',
-                array(
-                    'label' => ' ',
-                    'button_class' => 'default',
-                    'attr' => array(
-                        'class' => 'btn-lg btn-block',
-                        'icon' => 'remove'
-                    )
-                )
-            )
-            ->getForm();
-    }
-
     /**
      * @Route("/archive", name="fw_archive_select")
      * @Method("GET")
@@ -221,45 +104,9 @@ class FlightWatchController extends Controller
         $em = $this->getDoctrine()->getManager();
         $date = new \DateTime($date);
 
-        $flights = $em->getRepository('AppBundle:Flightwatch')->findCompletedByDate($date);
+        $flights = $em->getRepository('AppBundle:FlightWatch')->findCompletedByDate($date);
 
-        foreach ($flights as $fKey => $flight) {
-
-            foreach ($flight['info'] as $key => $info) {
-
-                $flights[$fKey]['info'][$key]['eto_info'] = 'info';
-                $flights[$fKey]['info'][$key]['airportsString'] = '';
-
-                if ($info['airports']) {
-                    $flights[$fKey]['info'][$key]['airportsString'] =
-                        $this->get('app.wx_utils')->generateAirportString($info['airports']);
-                }
-
-                if (isset($flight['takeOffTime'])) {
-                    $takeOffTime = clone $flight['takeOffTime'];
-                    $addInterval = new \DateInterval('P0000-00-00T'.$info['eto']->format('H:i:s'));
-
-                    $eto_time = $takeOffTime->add($addInterval);
-                    $flights[$fKey]['info'][$key]['eto_time'] = $eto_time;
-
-                    $interval = ($eto_time->getTimestamp() - (new \DateTime("now"))->getTimestamp()) / 60;
-
-                    $flights[$fKey]['info'][$key]['eto_info'] = $this->get('app.fw_utils')->dangerOrWarning($interval);
-
-                    if ($info['completed']) {
-                        $flights[$fKey]['info'][$key]['eto_info'] = 'success';
-                    } else {
-                        $flights[$fKey]['info'][$key]['form'] = $this->createFinalizePointForm($info['id'])->createView(
-                        );
-                    }
-
-                }
-
-            }
-
-            $flights[$fKey]['form'] = $this->createFinalizeFlightForm($flight['id'])->createView();
-
-        }
+        $this->get('app.fw_utils')->prepareFlightsForView($flights);
 
 
         return $this->render(
@@ -278,6 +125,7 @@ class FlightWatchController extends Controller
      */
     public function insertAction(Request $request, $desk)
     {
+
         $flash = $this->get('braincrafted_bootstrap.flash');
         $form = $this->createOFPForm($desk);
         $form->handleRequest($request);
@@ -319,10 +167,10 @@ class FlightWatchController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+        $entity = $em->getRepository('AppBundle:FlightWatch')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Flightwatch entity.');
+            throw $this->createNotFoundException('Unable to find FlightWatch entity.');
         }
 
         $editForm = $this->createEditForm($entity, $request);
@@ -333,7 +181,7 @@ class FlightWatchController extends Controller
         );
     }
 
-    private function createEditForm(Flightwatch $entity, Request $request)
+    private function createEditForm(FlightWatch $entity, Request $request)
     {
 
         $form = $this->createForm(
@@ -378,7 +226,7 @@ class FlightWatchController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+        $entity = $em->getRepository('AppBundle:FlightWatch')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ComparisonCaseCalc entity.');
@@ -410,7 +258,7 @@ class FlightWatchController extends Controller
         $flash = $this->get('braincrafted_bootstrap.flash');
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+        $entity = $em->getRepository('AppBundle:FlightWatch')->find($id);
 
         if (!$entity) {
             $flash->alert('Flight was not finalized');
@@ -441,7 +289,7 @@ class FlightWatchController extends Controller
         $flash = $this->get('braincrafted_bootstrap.flash');
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AppBundle:Flightwatch')->find($id);
+        $entity = $em->getRepository('AppBundle:FlightWatch')->find($id);
 
         if (!$entity) {
             $flash->alert('Flight was NOT deleted');
@@ -469,9 +317,9 @@ class FlightWatchController extends Controller
         $flash = $this->get('braincrafted_bootstrap.flash');
         $em = $this->getDoctrine()->getManager();
 
-        /** @var  $entity FlightwatchInfo */
+        /** @var  $entity FlightWatchInfo */
 
-        $entity = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
+        $entity = $em->getRepository('AppBundle:FlightWatchInfo')->find($id);
 
         if (!$entity) {
             $flash->alert('Point was not finalized');
@@ -501,7 +349,7 @@ class FlightWatchController extends Controller
         $em = $this->getDoctrine()->getManager();
         $wxUtils = $this->get('app.wx_utils');
 
-        $fwInfo = $em->getRepository('AppBundle:FlightwatchInfo')->find($id);
+        $fwInfo = $em->getRepository('AppBundle:FlightWatchInfo')->find($id);
 
         $airports = $fwInfo->getAirports();
         $wxInfoDB = $fwInfo->getWxInfo();

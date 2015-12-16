@@ -27,7 +27,7 @@ services:
 
     app.fw_utils:
         class: AppBundle\Utils\FWUtils
-        arguments: [@doctrine]
+        arguments: [@doctrine, @app.wx_utils, @form.factory, @router, @knp_snappy.pdf]
 
     app.main_menu:
             class: Knp\Menu\MenuItem
@@ -51,7 +51,7 @@ services:
         - { name : doctrine.event_listener, event : onFlush }
 
     app.flightwatch_listener:
-      class: AppBundle\Listener\FlightwatchListener
+      class: AppBundle\Listener\FlightWatchListener
       tags:
         - { name : doctrine.event_listener, event : preUpdate }
 

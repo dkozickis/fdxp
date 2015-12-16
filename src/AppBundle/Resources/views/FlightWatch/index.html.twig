@@ -1,40 +1,58 @@
 {% extends 'AppBundle::layout.html.twig' %}
-
 {% block title %}
     <title>FDXP - Flight Watch</title>
 {% endblock %}
+{% block stylesheet %}
+    {{ parent() }}
+    {% if print == 'print' %}
+        <style>
+            body {
+                padding-top: 5px;
+            }
+            thead { display: table-header-group }
+            tfoot { display: table-row-group }
+            tr { page-break-inside: avoid }
+        </style>
+    {% endif %}
+{% endblock %}
+{% block navigation %}
+    {% if print != 'print' %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
 {% block body %}
-
-    <div class="row">
-        <div class="col-md-4">
-            <nav>
-                <ul class="pagination no-margin">
-                    <li>
-                        <span aria-hidden="true" style="color:black">Desk #</span>
-                    </li>
-                    {% for i in 1..6 %}
-                        <li{{ desk == i ? " class='active'" }}>
-                            <a href="{{ path('fw_index', {'desk' : i, 'dp' : dp}) }}">{{ i }}</a>
+    {% if print != 'print' %}
+        <div class="row">
+            <div class="col-md-4">
+                <nav>
+                    <ul class="pagination no-margin">
+                        <li>
+                            <span aria-hidden="true" style="color:black">Desk #</span>
                         </li>
-                    {% endfor %}
-                    <li{{ desk == 'all' ? " class='active'" }}>
-                        <a href="{{ path('fw_index', {'desk' : 'all', 'dp' : dp}) }}">All</a>
-                    </li>
-                </ul>
-            </nav>
+                        {% for i in 1..6 %}
+                            <li{{ desk == i ? " class='active'" }}>
+                                <a href="{{ path('fw_index', {'desk' : i, 'filterDP' : filterDP}) }}">{{ i }}</a>
+                            </li>
+                        {% endfor %}
+                        <li{{ desk == 'all' ? " class='active'" }}>
+                            <a href="{{ path('fw_index', {'desk' : 'all', 'filterDP' : filterDP}) }}">All</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-md-6">
+                <span>
+                    Only flights with DP (sorting by DP time):
+                    <input type="checkbox" data-size="small" name="my-checkbox"{{ filterDP == 'filter-DP' ? " checked" }}>
+                </span>
+            </div>
+            <div class="col-md-2">
+                <span>
+                    <a href="{{ path('fw_index', {'desk' : desk, 'filterDP' : filterDP, 'print' : 'print'}) }}"> Save as PDF </a>
+                </span>
+            </div>
         </div>
-        <div class="col-md-6">
-            <span>
-                Only flights with DP (sorting by DP time):
-                <input type="checkbox" data-size="small" name="my-checkbox"{{ dp ? " checked" }}>
-            </span>
-        </div>
-        <div class="col-md-2">
-            <span>
-                <a href="{{ path('fw_index', {'desk' : desk, 'dp' : dp, 'print' : 'print'}) }}"> Save as PDF </a>
-            </span>
-        </div>
-    </div>
+    {% endif %}
     <div class="row">
         <div class="col-md-12">
 
@@ -50,9 +68,10 @@
                     <th>ERD</th>
                     <th>ERDA</th>
                     <th>FW Info</th>
-                    <th>Delete</th>
-                    <th>Finalize</th>
-
+                    {% if print != 'print' %}
+                        <th>Delete</th>
+                        <th>Finalize</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 {% for flight in flights %}
@@ -71,9 +90,11 @@
                         </td>
                         <td>
                             {{ flight.takeOffTime ? flight.takeOffTime|date('d/H:i')~'Z' : 'N/A' }}
-                            <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
-                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                            </a>
+                            {% if print != 'print' %}
+                                <a href="{{ path('fw_edit', { 'id' : flight.id }) }}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                            {% endif %}
                         </td>
                         <td>
                             {{ flight.altn }}
@@ -96,16 +117,10 @@
                                         </a>
                                     </div>
                                     <div class="col-md-4 no-gutter text-right">
-                                        {% if (info.form is not null) %}
+                                        {% if (info.form is not null) and (print != 'print')%}
                                             <span class="text-right">
-                                            <button type="button"
-                                                    class="btn btn-link btn-xs finalize-point-form"
-                                                    data-form-id="{{ info.id }}">
-                                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                                                Finalize
-                                            </button>
-                                                {{ form(info.form, { 'attr' : { 'id' : 'finalize-point-form-'~info.id } } ) }}
-                                        </span>
+                                                {{ form(info.form) }}
+                                            </span>
                                         {% elseif info.completed %}
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Finalized
                                         {% endif %}
@@ -113,16 +128,14 @@
                                 </div>
                             {% endfor %}
                         </td>
-                        <td>
-                            {{ form(flight.deleteForm) }}
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-default btn-lg btn-block finalize-flight-form"
-                                    data-form-id="{{ flight.id }}">
-                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                            </button>
-                            {{ form(flight.form, { 'attr' : { 'id' : 'finalize-form-'~flight.id } }) }}
-                        </td>
+                        {% if print != 'print' %}
+                            <td>
+                                {{ form(flight.deleteForm) }}
+                            </td>
+                            <td>
+                                {{ form(flight.finalizeForm) }}
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </table>
@@ -130,95 +143,98 @@
     </div>
 
 
-    {% if desk != 'all' %}
+    {% if (desk != 'all') and (print != 'print') %}
         <div class="row col-md-12">
             {{ form(form) }}
         </div>
     {% endif %}
 
-    {% include 'AppBundle:FlightWatch:wxModal.html.twig' %}
-    {% include 'AppBundle:FlightWatch:finalizeModal.html.twig' %}
+    {% if print != 'print' %}
+        {% include 'AppBundle:FlightWatch:wxModal.html.twig' %}
+        {% include 'AppBundle:FlightWatch:finalizeModal.html.twig' %}
+    {% endif %}
 
 {% endblock %}
 {% block javascript %}
-    {{ parent() }}
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    {% if app.debug %}
-        <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
-    {% else %}
-        <script src="{{ asset('js/fos_js_routes.js') }}"></script>
-    {% endif %}
-    <script>
+    {% if print != 'print' %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        {% if app.debug %}
+            <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+        {% else %}
+            <script src="{{ asset('js/fos_js_routes.js') }}"></script>
+        {% endif %}
+        <script>
 
-        $("[name='my-checkbox']").bootstrapSwitch();
-        $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function (event, state) {
-            if (state == true) {
-                window.location = Routing.generate('fw_index', {desk: '{{ desk }}', dp: 'on'});
-            } else {
-                window.location = Routing.generate('fw_index', {desk: '{{ desk }}'});
-            }
-        });
-
-        function updateWxModal(airportsID, force) {
-            force = typeof force !== 'undefined' ? force : 0;
-            $('.wx-update-button').attr('data-airports', airportsID);
-            var modalBody = $('#wx-modal-body');
-            modalBody.html('<p> Please wait... Loading WX info... </p>');
-            $.getJSON(Routing.generate('fw_wx', {id: airportsID, force: force}), function (data) {
-
-                modalBody.html('');
-                modalBody.append('<h4>METARs</h4>');
-                $.each(data['metars'], function (index, element) {
-                    modalBody.append('<div>' + element + '</div><br/>');
-                });
-                modalBody.append('<h4>TAFs</h4>');
-                $.each(data['tafs'], function (index, element) {
-                    modalBody.append('<div>' + element + '</div><br/>');
-                });
-                $('.wx-update-time').html(data['time']);
+            $("[name='my-checkbox']").bootstrapSwitch();
+            $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function (event, state) {
+                if (state == true) {
+                    window.location = Routing.generate('fw_index', {desk: '{{ desk }}', filterDP: 'filter-DP'});
+                } else {
+                    window.location = Routing.generate('fw_index', {desk: '{{ desk }}', filterDP: 'off'});
+                }
             });
-        }
 
-        $('#wxModal').on('show.bs.modal', function (e) {
-            var airportsID = e.relatedTarget.getAttribute('data-airports');
-            updateWxModal(airportsID);
-        });
-        $('.wx-update-button').on('click', function (e) {
-            var airportsID = $(this).attr('data-airports');
-            updateWxModal(airportsID, 1);
-        });
+            function updateWxModal(airportsID, force) {
+                force = typeof force !== 'undefined' ? force : 0;
+                $('.wx-update-button').attr('data-airports', airportsID);
+                var modalBody = $('#wx-modal-body');
+                modalBody.html('<p> Please wait... Loading WX info... </p>');
+                $.getJSON(Routing.generate('fw_wx', {id: airportsID, force: force}), function (data) {
 
-        $('.finalize-flight-form').on('click', function (e) {
-            e.preventDefault();
-            var formID = $(this).attr('data-form-id');
-            $('.finalize-modal-text').text('Do you really want to FINALIZE this flight?');
-            $('#modal-finalize').modal({backdrop: true, keyboard: true})
-                    .one('click', '#modal-delete-button', function (e) {
-                        $('#finalize-form-' + formID).trigger('submit');
+                    modalBody.html('');
+                    modalBody.append('<h4>METARs</h4>');
+                    $.each(data['metars'], function (index, element) {
+                        modalBody.append('<div>' + element + '</div><br/>');
                     });
-        });
-
-        $('.delete-flight-form').on('click', function (e) {
-            e.preventDefault();
-            form = $(this);
-            $('.finalize-modal-text').text('Do you really want to DELETE this flight?');
-            $('#modal-delete').modal({backdrop: true, keyboard: true})
-                    .one('click', '#modal-delete-button', function (e) {
-                        form.submit();
+                    modalBody.append('<h4>TAFs</h4>');
+                    $.each(data['tafs'], function (index, element) {
+                        modalBody.append('<div>' + element + '</div><br/>');
                     });
-        });
+                    $('.wx-update-time').html(data['time']);
+                });
+            }
 
-        $('.finalize-point-form').on('click', function (e) {
-            console.log('FIN POINT FORM')
-            e.preventDefault();
-            var formID = $(this).attr('data-form-id');
-            $('.finalize-modal-text').text('Do you really want to finalize this point?');
-            $('#modal-finalize').modal({backdrop: true, keyboard: true})
-                    .one('click', '#modal-delete-button', function (e) {
-                        $('#finalize-point-form-' + formID).trigger('submit');
-                    });
-        });
-    </script>
+            $('#wxModal').on('show.bs.modal', function (e) {
+                var airportsID = e.relatedTarget.getAttribute('data-airports');
+                updateWxModal(airportsID);
+            });
+            $('.wx-update-button').on('click', function (e) {
+                var airportsID = $(this).attr('data-airports');
+                updateWxModal(airportsID, 1);
+            });
+
+            $('.finalize-flight-form').on('click', function (e) {
+                e.preventDefault();
+                form = $(this);
+                $('.finalize-modal-text').text('Do you really want to FINALIZE this flight?');
+                $('#modal-finalize').modal({backdrop: true, keyboard: true})
+                        .one('click', '#modal-delete-button', function (e) {
+                            form.submit();
+                        });
+            });
+
+            $('.delete-flight-form').on('click', function (e) {
+                e.preventDefault();
+                form = $(this);
+                $('.finalize-modal-text').text('Do you really want to DELETE this flight?');
+                $('#modal-delete').modal({backdrop: true, keyboard: true})
+                        .one('click', '#modal-delete-button', function (e) {
+                            form.submit();
+                        });
+            });
+
+            $('.finalize-point-form').on('click', function (e) {
+                e.preventDefault();
+                form = $(this);
+                $('.finalize-modal-text').text('Do you really want to finalize this point?');
+                $('#modal-finalize').modal({backdrop: true, keyboard: true})
+                        .one('click', '#modal-delete-button', function (e) {
+                            form.submit();
+                        });
+            });
+        </script>
+    {% endif %}
 {% endblock %}
 
 

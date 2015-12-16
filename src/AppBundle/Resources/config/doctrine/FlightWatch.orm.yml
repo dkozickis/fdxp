@@ -1,7 +1,7 @@
-AppBundle\Entity\Flightwatch:
+AppBundle\Entity\FlightWatch:
     type: entity
     table: flightwatch
-    repositoryClass: AppBundle\Entity\FlightwatchRepository
+    repositoryClass: AppBundle\Entity\FlightWatchRepository
     id:
         id:
             type: integer
@@ -53,7 +53,7 @@ AppBundle\Entity\Flightwatch:
           nullable: false
     oneToMany:
           info:
-            targetEntity: AppBundle\Entity\FlightwatchInfo
+            targetEntity: AppBundle\Entity\FlightWatchInfo
             mappedBy: flight
             orphanRemoval: true
             cascade: ['remove']

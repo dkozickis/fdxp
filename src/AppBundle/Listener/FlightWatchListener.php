@@ -2,20 +2,20 @@
 
 namespace AppBundle\Listener;
 
-use AppBundle\Entity\Flightwatch;
+use AppBundle\Entity\FlightWatch;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 
-class FlightwatchListener
+class FlightWatchListener
 {
 
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
-        /** @var Flightwatch $entity */
+        /** @var FlightWatch $entity */
         $entity = $eventArgs->getEntity();
         $em = $eventArgs->getEntityManager();
 
-        if ($entity instanceof Flightwatch) {
+        if ($entity instanceof FlightWatch) {
             if ($eventArgs->hasChangedField('takeOffTime')) {
 
 

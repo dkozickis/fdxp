@@ -1,4 +1,4 @@
-AppBundle\Entity\FlightwatchInfo:
+AppBundle\Entity\FlightWatchInfo:
     type: entity
     table: flightwatch_info
     id:
@@ -42,7 +42,7 @@ AppBundle\Entity\FlightwatchInfo:
           nullable: true
     manyToOne:
           flight:
-            targetEntity: AppBundle\Entity\Flightwatch
+            targetEntity: AppBundle\Entity\FlightWatch
             inversedBy: info
             joinColumn:
                     name: flight_id

@@ -75,16 +75,16 @@
                         </td>
                         <td>
                             {% for info in flight.info %}
-                                <div class="row bg-{{ info.eto_info }} eto fw-row">
+                                <div class="row bg-{{ info.etoInfo }} eto fw-row">
                                     <div class="col-md-8 no-gutter ">
                                         {{ info.pointName }}
-                                        {{ flight.takeOffTime ? info.eto_time|date('Hi')~'Z' : '+'~info.eto|date('H:i') }}
+                                        {{ flight.takeOffTime ? info.etoTime|date('Hi')~'Z' : '+'~info.eto|date('H:i') }}
                                         {{ info.ebo ? info.ebo~'T' : '' }}
                                         {{ info.airportsString }}
                                     </div>
                                     <div class="col-md-4 no-gutter text-right">
                                         {% if info.completed %}
-                                            @ {{ info.completed_at|date('dM Hi')|upper~'Z' }}
+                                            @ {{ info.completedAt|date('dM Hi')|upper~'Z' }}
                                         {% else %}
                                             Not finalized
                                         {% endif %}
@@ -94,7 +94,7 @@
                         </td>
 
                             <td>
-                                {{ flight.completed_at|date('dM Hi')|upper~'Z' }}
+                                {{ flight.completedAt|date('dM Hi')|upper~'Z' }}
                             </td>
                     </tr>
                 {% endfor %}
