@@ -12,7 +12,7 @@ class AppUtilsTest extends KernelTestCase
     public function setUp()
     {
         self::bootKernel();
-        $this->em = static::$kernel->getContainer()->get('doctrine')->getEntityManager();
+        $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
     }
 
     public function testProposalNight()

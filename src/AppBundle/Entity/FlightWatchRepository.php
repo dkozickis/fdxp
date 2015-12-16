@@ -102,10 +102,10 @@ class FlightWatchRepository extends EntityRepository
             ->andWhere('f.completed is NULL')
             ->andWhere('i.pointType = :pointType')
             ->setParameter('pointType', 'dp')
-            ->andWhere('i.eto > :time')
+            ->andWhere('f.dpTime > :time')
             ->setParameter('time', date("Y-m-d H:i:s"))
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
 
     }
 }

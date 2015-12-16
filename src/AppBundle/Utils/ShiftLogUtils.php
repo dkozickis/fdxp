@@ -3,15 +3,15 @@
 namespace AppBundle\Utils;
 
 use AppBundle\Entity\ShiftLogOnShift;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
 
 class ShiftLogUtils
 {
-    private $managerRegistry;
+    private $entityManager;
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->managerRegistry = $managerRegistry;
+        $this->entityManager = $entityManager;
     }
 
     public function currentHours()
@@ -40,7 +40,7 @@ class ShiftLogUtils
     {
         $date = isset($date) ? $date : new \DateTime('now');
         $shift = isset($shift) ? $shift : $this->currentShift();
-        $em = $this->managerRegistry->getManager();
+        $em = $this->entityManager;
 
         $info = file_get_contents("http://ey.lidousers.com/roster/index.php/roster/on_shift/"
             .$date->format('Y')
@@ -89,7 +89,7 @@ class ShiftLogUtils
         $proposer = $this->archiveDateShiftProposal($hours_now);
 
         if (in_array($hours_now, array(2, 3, 14, 15)) && !empty($proposer['date'])) {
-            $checker = $this->managerRegistry->getManager()
+            $checker = $this->entityManager
                 ->getRepository('AppBundle:ShiftLogArchive')->checkExistsShiftReport($proposer['date'],
                 $proposer['shift']);
             if (!$checker) {

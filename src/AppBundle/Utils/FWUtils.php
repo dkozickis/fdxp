@@ -92,7 +92,7 @@ class FWUtils
     /**
      * @param $flights
      */
-    public function prepareFlightsForView($flights)
+    public function prepareFlightsForOutput($flights)
     {
         /** @var FlightWatch $flight */
         foreach ($flights as $flight) {

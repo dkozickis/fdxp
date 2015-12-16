@@ -21,3 +21,4 @@ deploy.php
 recipe
 /public/
 .vagrant
+/web/tests

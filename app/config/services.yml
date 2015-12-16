@@ -10,7 +10,7 @@ services:
 
     app.app_utils:
         class: AppBundle\Utils\ShiftLogUtils
-        arguments: [@doctrine]
+        arguments: [@doctrine.orm.entity_manager]
 
     app.comparison_utils:
         class: AppBundle\Utils\ComparisonUtils

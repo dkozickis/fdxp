@@ -19,6 +19,10 @@ class OFPUtils
 
     }
 
+    /**
+     * @param $ofp
+     * @return array|bool
+     */
     public function getDPInfo($ofp)
     {
         $dp_array = [];
@@ -63,6 +67,11 @@ class OFPUtils
 
     }
 
+    /**
+     * @param $ofp
+     * @return array
+     * @throws \Exception
+     */
     public function getETOPSInfo($ofp) {
 
         $nav = $this->getETOPSInfoFromNav($ofp);

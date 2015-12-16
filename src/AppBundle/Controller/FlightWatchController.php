@@ -39,7 +39,7 @@ class FlightWatchController extends Controller
             $filterDP
         );
 
-        $this->get('app.fw_utils')->prepareFlightsForView($flights);
+        $this->get('app.fw_utils')->prepareFlightsForOutput($flights);
 
         $html = $this->renderView(
             'AppBundle:FlightWatch:index.html.twig',
@@ -106,7 +106,7 @@ class FlightWatchController extends Controller
 
         $flights = $em->getRepository('AppBundle:FlightWatch')->findCompletedByDate($date);
 
-        $this->get('app.fw_utils')->prepareFlightsForView($flights);
+        $this->get('app.fw_utils')->prepareFlightsForOutput($flights);
 
 
         return $this->render(
@@ -127,12 +127,13 @@ class FlightWatchController extends Controller
     {
 
         $flash = $this->get('braincrafted_bootstrap.flash');
+        $ofpUtils = $this->get('app.ofp_utils');
+        $fwUtils = $this->get('app.fw_utils');
         $form = $this->createOFPForm($desk);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $ofpUtils = $this->get('app.ofp_utils');
-            $fwUtils = $this->get('app.fw_utils');
+
             $ofp = $form->getData()['ofp'];
             $formDesk = $form->getData()['desk'];
 
@@ -141,7 +142,11 @@ class FlightWatchController extends Controller
             $dpInfo = $ofpUtils->getDPInfo($ofp);
             $erdErda = $ofpUtils->getErdErda($ofp);
 
-            $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $formDesk);
+            if($dpInfo === false && count($pointInfo) == 0){
+                $flash->error('There is no ETOPS or DP information in the OFP. Flight not entered into the system.');
+            }else{
+                $fwUtils->addNewFlight($flightInfo, $pointInfo, $dpInfo, $erdErda, $formDesk);
+            }
 
             return $this->redirect($this->get('request')->headers->get('referer'));
 
