@@ -34,8 +34,6 @@ class FlightWatchController extends Controller
     public function indexAction($desk = 'all', $filterDP = '0', $print = 'no')
     {
 
-        dump($filterDP);
-
         $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:FlightWatch')->findByDeskWithInfo(
             $desk,
             $filterDP
