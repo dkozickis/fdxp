@@ -23,7 +23,7 @@ class FlightWatchController extends Controller
 
     /**
      * @Route("/view/desk/{desk}/{filterDP}/{print}", name="fw_index",
-    defaults={"desk" : "all", "filterDP" : 0, "print" : "no"}, options={"expose"=true})
+    defaults={"desk" : "all", "filterDP" : "off", "print" : "no"}, options={"expose"=true})
      * @Route("/view/")
      * @Route("/view")
      * @Route("/")
@@ -31,7 +31,7 @@ class FlightWatchController extends Controller
      * @Template()
      *
      */
-    public function indexAction($desk = 'all', $filterDP = '0', $print = 'no')
+    public function indexAction($desk = 'all', $filterDP = 'off', $print = 'no')
     {
 
         $flights = $this->getDoctrine()->getManager()->getRepository('AppBundle:FlightWatch')->findByDeskWithInfo(

@@ -16,6 +16,10 @@ class FlightWatchRepository extends EntityRepository
 {
     public function findByDeskWithInfo($desk, $dp = NULL) {
 
+        if($dp != 'filter-DP'){
+            $dp = NULL;
+        }
+
         $qb = $this->createQueryBuilder('f');
 
         $qb
