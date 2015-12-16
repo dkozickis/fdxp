@@ -5,6 +5,8 @@
     "bootstrap": "3.1.*",
     "eonasdan-bootstrap-datetimepicker": "~4.7.14",
     "bootstrap-fileinput": "~4.2.0",
-    "bootstrap-switch": "~3.3.2"
+    "bootstrap-switch": "~3.3.2",
+    "moment": "~2.10.6",
+    "leaflet-ajax": "~2.0.0"
   }
 }

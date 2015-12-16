@@ -24,7 +24,10 @@ module.exports = function (grunt) {
                     'jquery-json.js': 'jquery-json/src/jquery.json.js',
                     'bootstrap.js': 'bootstrap/dist/js/bootstrap.js',
                     'bootstrap-fileinput.js': 'bootstrap-fileinput/js/fileinput.js',
-                    'bootstrap-switch.js': 'bootstrap-switch/dist/js/bootstrap-switch.min.js'
+                    'bootstrap-switch.js': 'bootstrap-switch/dist/js/bootstrap-switch.min.js',
+                    'bootstrap-datepicker.js': 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+                    'moment.js': 'moment/min/moment.min.js',
+                    'leaflet-ajax.js': 'leaflet-ajax/dist/leaflet.ajax.min.js'
                 }
             },
             stylesheets: {
@@ -75,8 +78,7 @@ module.exports = function (grunt) {
         uglify : {
             js: {
                 files: {
-                    'web/js/bundled.min.js': ['web/js/bundled.js'],
-                    'web/js/leaflet-ajax.js': ['src/AppBundle/Resources/public/js/leaflet-ajax.js']
+                    'web/js/bundled.min.js': ['web/js/bundled.js']
                 }
             }
         },
