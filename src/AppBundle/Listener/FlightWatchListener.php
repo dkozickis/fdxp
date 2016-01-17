@@ -23,7 +23,7 @@ class FlightWatchListener
                 $immutableTOT = \DateTimeImmutable::createFromMutable($takeOffTime);
 
                 /** @var FlightwatchInfo $dp */
-                $dp = $em->getRepository('AppBundle:FlightwatchInfo')->findOneBy(array(
+                $dp = $em->getRepository('AppBundle:FlightWatchInfo')->findOneBy(array(
                     'pointType' => 'dp',
                     'flight' => $entity->getId()
                 ));
