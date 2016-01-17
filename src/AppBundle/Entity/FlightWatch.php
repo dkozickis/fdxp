@@ -511,4 +511,10 @@ class FlightWatch
 
         return $this;
     }
+
+    public function getSTDDateTimeString(){
+
+        return strtoupper($this->getFlightDate()->format('dM')).' '.$this->getStd()->format('H:i');
+
+    }
 }

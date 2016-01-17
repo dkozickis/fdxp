@@ -22,6 +22,9 @@ class FlightWatchType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var FlightWatch $entity */
+        $entity = $builder->getData();
+
         $builder
             ->add('flightNumber', null, array(
                 'read_only' => true
@@ -45,7 +48,8 @@ class FlightWatchType extends AbstractType
             ->add('takeOffTime', null, array(
                 'widget' => 'single_text',
                 'html5' => 'false',
-                'format' => 'dd-MMM-yyyy HH:mm'
+                'format' => 'dd-MMM-yyyy HH:mm',
+                'label' => 'Takeoff time (STD '.$entity->getSTDDateTimeString().')'
                 //'date_format' => 'yyyy-MMM-dd',
             ))
             ->add('ref', 'hidden', array(

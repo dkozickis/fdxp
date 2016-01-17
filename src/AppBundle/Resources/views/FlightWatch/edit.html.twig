@@ -25,10 +25,26 @@
     <script src="{{ asset('js/moment.js') }}"></script>
     <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
     <script type="text/javascript">
+        var flightSTD = moment.utc("{{ entity.flightDate|date('d-m-Y') }} 00:00", "DD-MM-YYYY HH:mm");
+        flightSTD.add({{ entity.std|date('G') }}, 'hours').add({{ entity.std|date('i') }}, 'minutes');
+        flightSTD.utc();
+
         $(function () {
             $('#datetimepicker1').datetimepicker({
                 format: "DD-MMM-YYYY HH:mm",
                 sideBySide: true
+            });
+
+            $('#datetimepicker1').on('dp.change', function(e){
+                var pickerTime = moment.utc(e.date);
+                // DXP put UTC times but DateTimePicker registers as local time, need to add 4 hours to align timezones
+                pickerTime.add(4, 'hours');
+                var hourDifference = Math.abs(pickerTime.diff(flightSTD, 'hours'));
+                if(hourDifference > 6){
+                    $("#std-to").html('NB: Diff between TO and STD more than 6 hours, make sure TO time is correct. ')
+                }else{
+                    $("#std-to").html('');
+                }
             });
         });
     </script>

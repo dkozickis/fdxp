@@ -40,7 +40,7 @@ class FlightWatchController extends Controller
         );
 
         $this->get('app.fw_utils')->prepareFlightsForOutput($flights);
-        
+
         $html = $this->renderView(
             'AppBundle:FlightWatch:index.html.twig',
             array(
