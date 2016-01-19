@@ -18,6 +18,9 @@ use Symfony\Component\Form\AbstractType;
 class FlightWatchFinalizeFlightType extends AbstractType
 {
 
+    private $flightID;
+    private $router;
+
     public function __construct($flightID, Router $router)
     {
 

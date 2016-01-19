@@ -3,7 +3,6 @@
 namespace AppBundle\Listener;
 
 use AppBundle\Entity\FlightWatch;
-use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 class FlightWatchListener

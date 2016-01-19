@@ -11,6 +11,9 @@ use Symfony\Component\Routing\Router;
 class FlightWatchDeleteFlightType extends AbstractType
 {
 
+    private $flightID;
+    private $router;
+
     public function __construct($flightID, Router $router)
     {
 

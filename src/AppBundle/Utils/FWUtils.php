@@ -16,6 +16,10 @@ class FWUtils
 {
 
     private $managerRegistry;
+    private $WXUtils;
+    private $formFactory;
+    private $router;
+    private $knpSnappyPDF;
 
     /**
      * FWUtils constructor.

@@ -18,6 +18,9 @@ use Symfony\Component\Routing\Router;
 class FlightWatchFinalizePointType extends AbstractType
 {
 
+    private $flightID;
+    private $router;
+
     public function __construct($flightID, Router $router)
     {
 
