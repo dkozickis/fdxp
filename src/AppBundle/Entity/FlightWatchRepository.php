@@ -38,9 +38,6 @@ class FlightWatchRepository extends EntityRepository
         if($dp){
             $qb
                 ->andWhere('f.erd IS NOT NULL');
-        }
-
-        if($dp){
             $qb
                 ->addOrderBy('f.dpTime', 'ASC');
         }
@@ -49,11 +46,8 @@ class FlightWatchRepository extends EntityRepository
             ->addOrderBy('f.flightDate', 'ASC')
             ->addOrderBy('f.std', 'ASC');
 
-
-
         return $qb
             ->getQuery()
-            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
             ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'AppBundle\Doctrine\Walker\SortableNullsWalker')
             ->setHint('SortableNullsWalker.fields', array(
                 'dpTime' => SortableNullsWalker::NULLS_LAST
@@ -62,23 +56,6 @@ class FlightWatchRepository extends EntityRepository
 
     }
 
-    public function findAllWithInfo() {
-
-        return $this->createQueryBuilder('f')
-            ->addSelect('i')
-            ->join('f.info', 'i')
-            ->where('f.completed is null')
-            ->andWhere('i.pointName not like :pointName')
-            ->setParameter('pointName', 'EXP%')
-            ->orderBy('f.flightDate', 'ASC')
-            ->addOrderBy('f.std', 'ASC')
-            ->getQuery()
-            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
-            ->getArrayResult();
-
-    }
-
-    //TODO : Fix, this is ugly.
     public function findCompletedByDate($date){
 
         return $this->createQueryBuilder('f')
@@ -88,7 +65,6 @@ class FlightWatchRepository extends EntityRepository
             ->andWhere('f.flightDate = :date')
             ->setParameter('date', $date)
             ->getQuery()
-            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
             ->getResult();
 
     }
