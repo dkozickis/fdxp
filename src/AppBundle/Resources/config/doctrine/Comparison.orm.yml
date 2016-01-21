@@ -1,0 +1,17 @@
+AppBundle\Entity\Comparison:
+  type: entity
+  table: comparison
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    name:
+      type: string
+      length: 100
+  oneToMany:
+    cases:
+      targetEntity: AppBundle\Entity\ComparisonCase
+      mappedBy: comparison
+      orphanRemoval: true
+      cascade: ['remove']

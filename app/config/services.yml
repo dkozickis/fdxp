@@ -45,6 +45,11 @@ services:
             tags:
                 - { name: knp_menu.menu, alias: comparison_menu }
 
+    app.comparison_listener:
+      class: AppBundle\Listener\ComparisonListener
+      tags:
+        - { name : doctrine.event_listener, event : onFlush }
+
     app.flightwatch_listener:
       class: AppBundle\Listener\FlightWatchListener
       tags:
