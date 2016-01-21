@@ -23,5 +23,3 @@ To rollout on server:
 4. php app/console cache:clear --env=prod --no-debug
 5. php app/console doctrine:schema:update --dump-sql (check before update)
 6. php app/console doctrine:schema:update --force (update)
-
-Rebase test... ? 

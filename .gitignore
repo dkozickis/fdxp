@@ -9,7 +9,6 @@
 /composer.phar
 /vendor/
 /web/bundles/
-/.idea
 /web/cov
 /web/uploads
 /bower_components
@@ -18,7 +17,7 @@
 /web/config.php
 npm-debug.log
 deploy.php
-recipe
 /public/
 .vagrant
 /web/tests
+/.idea

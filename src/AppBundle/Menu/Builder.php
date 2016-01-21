@@ -3,26 +3,20 @@
 namespace AppBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\SecurityContext;
-use Doctrine\Common\Persistence\ManagerRegistry;
 
 class Builder extends ContainerAware
 {
     private $factory;
-    private $managerRegistry;
-    private $requestStack;
+
 
     /**
      * @param FactoryInterface $factory
      */
-    public function __construct(FactoryInterface $factory, ManagerRegistry $managerRegistry, RequestStack $requestStack)
+    public function __construct(FactoryInterface $factory)
     {
         $this->factory = $factory;
-        $this->managerRegistry = $managerRegistry;
-        $this->requestStack = $requestStack;
     }
 
     public function createMainMenu(SecurityContext $securityContext)

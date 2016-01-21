@@ -6,15 +6,11 @@ parameters:
 services:
     app.menu_builder:
         class: AppBundle\Menu\Builder
-        arguments: ["@knp_menu.factory", @doctrine, @request_stack]
+        arguments: ["@knp_menu.factory"]
 
     app.app_utils:
         class: AppBundle\Utils\ShiftLogUtils
         arguments: [@doctrine.orm.entity_manager]
-
-    app.comparison_utils:
-        class: AppBundle\Utils\ComparisonUtils
-        arguments: [@doctrine]
 
     app.wx_utils:
         class: AppBundle\Utils\WXUtils
@@ -36,14 +32,6 @@ services:
             arguments: ["@security.context"]
             tags:
                 - { name: knp_menu.menu, alias: main }
-
-    app.comparison_menu:
-            class: Knp\Menu\MenuItem
-            factory_service: app.menu_builder
-            factory_method: createComparisonMenu
-            arguments: []
-            tags:
-                - { name: knp_menu.menu, alias: comparison_menu }
 
     app.flightwatch_listener:
       class: AppBundle\Listener\FlightWatchListener
