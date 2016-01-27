@@ -18,6 +18,4 @@
 npm-debug.log
 deploy.php
 /public/
-.vagrant
 /web/tests
-/.idea
