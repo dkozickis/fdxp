@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class DefaultController extends Controller
 {
     /**
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/")
      *
      * @Method({"GET"})
@@ -17,5 +16,28 @@ class DefaultController extends Controller
     public function indexAction()
     {
         return $this->render('AppBundle::layout.html.twig');
+    }
+
+    /**
+     * @Route("/tools/")
+     *
+     * @Method({"GET"})
+     */
+    public function toolsAction()
+    {
+        return $this->render('AppBundle:Default:placeholder.html.twig', array(
+            'pageName' => 'Tools'
+        ));
+    }
+    /**
+     * @Route("/time/")
+     *
+     * @Method({"GET"})
+     */
+    public function timeAction()
+    {
+        return $this->render('AppBundle:Default:placeholder.html.twig', array(
+            'pageName' => 'Time'
+        ));
     }
 }
