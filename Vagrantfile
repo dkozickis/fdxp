@@ -17,7 +17,6 @@ Vagrant.configure("2") do |config|
     config.ssh.password = "vagrant"
 
     config.vm.provision "shell", inline: <<-SHELL
-        mv /var/www/public /var/www/web
         sudo sed -i s,/var/www/public,/var/www/web,g /etc/apache2/sites-available/000-default.conf
         sudo sed -i s,/var/www/public,/var/www/web,g /etc/apache2/sites-available/scotchbox.local.conf
         sudo service apache2 restart
