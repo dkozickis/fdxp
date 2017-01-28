@@ -95,7 +95,7 @@ class OFPUtils
         $etops_info = [];
 
         preg_match_all(
-            '~EDTO (EEP [0-9]?|EXP [0-9]?|ETP [0-9]|ETP [0-9]-[0-9])\s+((N|S)[0-9]{4}.[0-9]\s+\/\s+(E|W)[0-9]{5}.[0-9])\s+ETA\s+([0-9]{4})~',
+            '~EDTO (EEP [0-9]?|EXP [0-9]?|ETP [0-9]|ETP [0-9]-[0-9])\s+((N|S)[0-9]{4}.[0-9]\s+\/\s+(E|W)[0-9]{5}.[0-9])\s+EET\s+([0-9]{4})~',
             $ofp, $etops_matches, PREG_SET_ORDER);
 
         foreach ($etops_matches as $value) {
