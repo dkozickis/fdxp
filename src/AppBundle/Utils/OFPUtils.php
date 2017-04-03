@@ -149,7 +149,7 @@ class OFPUtils
 
     public function getFlightNumber($ofp)
     {
-        preg_match_all('~D I S P A T C H B R I E F I N G I N F O ([A-Z]{2}[0-9]{1,4})~',
+        preg_match_all('~D I S P A T C H B R I E F I N G I N F O\s{4}([A-Z]{2}[0-9]{1,4})~',
             $ofp, $fn_cs_preg, PREG_SET_ORDER);
 
         return $fn_cs_preg[0][1];
