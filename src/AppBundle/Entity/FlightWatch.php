@@ -446,7 +446,7 @@ class FlightWatch
 
     public function setMainData($flightInfo, $desk){
 
-        $this->setFlightNumber($flightInfo['atcCs']);
+        $this->setFlightNumber($flightInfo['fn']);
         $this->setDep($flightInfo['dep']);
         $this->setDest($flightInfo['dest']);
         $this->setFlightDate(new \DateTime($flightInfo['dof']));

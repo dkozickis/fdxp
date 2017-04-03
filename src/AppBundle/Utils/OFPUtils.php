@@ -51,7 +51,8 @@ class OFPUtils
         }
     }
 
-    public function getErdErda($ofp) {
+    public function getErdErda($ofp)
+    {
 
         $dp_info = [];
 
@@ -72,7 +73,8 @@ class OFPUtils
      * @return array
      * @throws \Exception
      */
-    public function getETOPSInfo($ofp) {
+    public function getETOPSInfo($ofp)
+    {
 
         $nav = $this->getETOPSInfoFromNav($ofp);
         $portion = $this->getETOPSInfoFromPortion($ofp);
@@ -96,7 +98,10 @@ class OFPUtils
 
         preg_match_all(
             '~EDTO (EEP [0-9]?|EXP [0-9]?|ETP [0-9]|ETP [0-9]-[0-9])\s+((N|S)[0-9]{4}.[0-9]\s+\/\s+(E|W)[0-9]{5}.[0-9])\s+EET\s+([0-9]{4})~',
-            $ofp, $etops_matches, PREG_SET_ORDER);
+            $ofp,
+            $etops_matches,
+            PREG_SET_ORDER
+        );
 
         foreach ($etops_matches as $value) {
             $etops_info[] = array('name' => $value[1], 'time' => $value[5]);
@@ -106,11 +111,15 @@ class OFPUtils
 
     }
 
-    public function getETOPSInfoFromPortion($ofp) {
+    public function getETOPSInfoFromPortion($ofp)
+    {
 
         preg_match_all(
             '~(EEP[0-9]|EXP[0-9]|ETP[0-9]|ETP[0-9]-[0-9])\s([A-Z]{4}\/[A-Z]{0,4}).+?(DX|DC|1X).{28}\s*([0-9.]+)\s+~',
-            $ofp, $etops_matches, PREG_SET_ORDER);
+            $ofp,
+            $etops_matches,
+            PREG_SET_ORDER
+        );
 
         return $etops_matches;
 
@@ -119,6 +128,7 @@ class OFPUtils
     public function getEBOFromLine($line)
     {
         preg_match('~\s*([0-9]{2,3}\.[0-9]{1})\|\s{5}\|~', $line, $ebo_matches);
+
         return $ebo_matches;
 
     }
@@ -126,53 +136,71 @@ class OFPUtils
     public function getETOFromLine($line)
     {
         preg_match('~([0-9]{4})\s_____\|\s?[0-9]{1,3}\.[0-9]{1}\|_____\|____~', $line, $eto_matches);
+
         return $eto_matches;
     }
 
-    public function getATCCS($ofp) {
-
+    public function getATCCS($ofp)
+    {
         preg_match_all('~ATC C\/S ([A-Z]{3}[0-9A-Z]{1,4})\s~', $ofp, $atc_cs_preg, PREG_SET_ORDER);
 
         return $atc_cs_preg[0][1];
-
     }
 
-    public function getDepDest($ofp) {
+    public function getFlightNumber($ofp)
+    {
+        preg_match_all('~D I S P A T C H B R I E F I N G I N F O ([A-Z]{2}[0-9]{1,4})~',
+            $ofp, $fn_cs_preg, PREG_SET_ORDER);
+
+        return $fn_cs_preg[0][1];
+    }
+
+    public function getDepDest($ofp)
+    {
         preg_match_all('~([A-Z]{4})\/[A-Z]{3}\s+([A-Z]{4})\/[A-Z]{3}\s+GND~', $ofp, $route_preg, PREG_SET_ORDER);
 
         return array('dep' => $route_preg[0][1], 'dest' => $route_preg[0][2]);
     }
 
-    public function getDOF($ofp) {
+    public function getDOF($ofp)
+    {
         preg_match_all('~ATC C\/S ETD[0-9A-Z]{1,4}\s+([0-9]{2}[A-Z]{3}[0-9]{4})~', $ofp, $dof, PREG_SET_ORDER);
 
         return $dof[0][1];
     }
 
-    public function getSTD($ofp) {
+    public function getSTD($ofp)
+    {
         preg_match_all('~STD ([0-9]{4})Z~', $ofp, $std);
 
         return $std[1][0];
     }
 
-    public function getAltn($ofp) {
+    public function getAltn($ofp)
+    {
         preg_match('~ALTN\s+([A-Z]{3,4})~', $ofp, $matches);
+
         return $matches[1];
     }
 
-    public function getMainInfo($ofp) {
+    public function getMainInfo($ofp)
+    {
 
         $atcCs = $this->getATCCS($ofp);
+        $fn = $this->getFlightNumber($ofp);
         $depDest = $this->getDepDest($ofp);
         $dof = $this->getDOF($ofp);
         $std = $this->getSTD($ofp);
         $altn = $this->getAltn($ofp);
 
-        return array('atcCs' => $atcCs,
+        return array(
+            'atcCs' => $atcCs,
+            'fn' => $fn,
             'dep' => $depDest['dep'],
             'dest' => $depDest['dest'],
             'dof' => $dof,
             'std' => $std,
-            'altn' => $altn);
+            'altn' => $altn
+        );
     }
 }
